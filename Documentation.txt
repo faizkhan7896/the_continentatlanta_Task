@@ -1,0 +1,1 @@
+ML- kit (for detection image under the image) = https://rnfb-docs.netlify.app/ml-vision/image-labeling
