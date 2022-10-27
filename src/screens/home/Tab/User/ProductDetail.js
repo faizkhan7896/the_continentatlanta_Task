@@ -194,7 +194,7 @@ export default function LogOut({navigation}) {
                             item?.position[3],
                           ],
                         ]);
-                        setModal(true);
+                        // setModal(true);
                       }}
                       style={{
                         position: 'absolute',
@@ -426,6 +426,29 @@ export default function LogOut({navigation}) {
                         borderRadius: 10,
                         overflow: 'hidden',
                       }}
+                      // imageStyle={{
+                      //   borderRadius: 10,
+                      //   resizeMode: 'contain',
+                      //   width:
+                      //     (1 * 30) /
+                      //     (parseFloat(item[2]) - parseFloat(item[0])),
+                      //   height:
+                      //     (1 * 60) /
+                      //     (parseFloat(item[3]) - parseFloat(item[1])),
+                      //   borderWidth: 1,
+                      //   top:
+                      //     -(
+                      //       (dimensionsss.height /
+                      //         15 /
+                      //         (parseFloat(item[3]) - parseFloat(item[1]))) *
+                      //       parseFloat(item[1])
+                      //     ) / 1,
+                      //   left:
+                      //     -(
+                      //       ((1 * 30) /
+                      //         (parseFloat(item[2]) - parseFloat(item[0]))) *
+                      //       parseFloat(item[0])
+                      //     ) / 1,
                       imageStyle={{
                         borderRadius: 10,
                         resizeMode: 'cover',
