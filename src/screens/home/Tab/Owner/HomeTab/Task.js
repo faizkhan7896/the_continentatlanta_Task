@@ -6,26 +6,25 @@ import {
   Image,
   ImageBackground,
   Modal,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   useWindowDimensions,
   View,
 } from 'react-native';
+import {launchImageLibrary} from 'react-native-image-picker';
+import Video from 'react-native-video';
 import {useSelector} from 'react-redux';
+import Button from '../../../../../components/Button';
 import LoadingSpinner from '../../../../../components/LoadingSpinner';
 import SolidButton from '../../../../../components/SolidButton';
-import TextFormated from '../../../../../components/TextFormated';
+import {
+  default as TextFormated,
+  default as TextFormatted,
+} from '../../../../../components/TextFormated';
 import {baseUrl} from '../../../../../utils/constance';
 import {theme} from '../../../../../utils/theme';
 import {ShowToast} from '../../../../../utils/ToastFunction';
-import Header from '../../../../../components/Header';
-import Statusbar from '../../../../../components/Statusbar';
-import TextFormatted from '../../../../../components/TextFormated';
-import {launchImageLibrary} from 'react-native-image-picker';
-import Button from '../../../../../components/Button';
-import Video from 'react-native-video';
 var RNFS = require('react-native-fs');
 
 export default function History({navigation, setGet_followed_event}) {
@@ -35,7 +34,6 @@ export default function History({navigation, setGet_followed_event}) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [Step3, setStep3] = useState(false);
   const [uri, setUri] = useState('');
   const [modalThree, setModalThree] = useState(false);
   const [currentID, setCurrentID] = useState(0);
@@ -89,11 +87,17 @@ export default function History({navigation, setGet_followed_event}) {
     GetProduct();
   }, []);
 
-  async function UpdateOrder(id, type) {
+  async function UpdateOrder(id, type, ParentID) {
     try {
       setLoading(true);
       const url =
-        baseUrl + 'update_status_post_by_owner?id=' + id + '&type=' + type;
+        baseUrl +
+        'update_status_post_by_owner?id=' +
+        id +
+        '&type=' +
+        type +
+        '&parent_id=' +
+        ParentID;
       console.log('update_status_post_by_owner', url);
 
       const res = await fetch(url, {
@@ -107,6 +111,7 @@ export default function History({navigation, setGet_followed_event}) {
       if (rslt.success == '1') {
         setLoading(false);
         GetProduct(true);
+        // UpdateOrder(ParentID, 'ACCEPT');
       } else {
         ShowToast(rslt.message || 'Unknown error', 'error');
         setLoading(false);
@@ -121,7 +126,7 @@ export default function History({navigation, setGet_followed_event}) {
   // alert(JSON.stringify(auth.id));
   // alert(JSON.stringify(currentID));
 
-  async function AddImage_1() {
+  async function AddImage_1(uri) {
     try {
       const url = baseUrl + 'update_order_image1';
 
@@ -164,7 +169,7 @@ export default function History({navigation, setGet_followed_event}) {
     }
   }
 
-  async function AddImage_2() {
+  async function AddImage_2(uri) {
     try {
       const url = baseUrl + 'update_order_image2';
 
@@ -209,7 +214,7 @@ export default function History({navigation, setGet_followed_event}) {
     }
   }
 
-  async function AddImage_3() {
+  async function AddImage_3(uri) {
     try {
       const url = baseUrl + 'update_order_image3';
       console.log(url);
@@ -225,7 +230,7 @@ export default function History({navigation, setGet_followed_event}) {
       // console.log(body);
 
       console.log('JSON.stringify(body)', JSON.stringify(body));
-      return;
+      // return;
       const res = await fetch(url, {
         method: 'POST',
         body: body,
@@ -252,7 +257,7 @@ export default function History({navigation, setGet_followed_event}) {
       console.log(e);
     }
   }
-  async function AddVideo() {
+  async function AddVideo(video) {
     try {
       const url = baseUrl + 'update_order_video1';
       console.log(url);
@@ -298,7 +303,7 @@ export default function History({navigation, setGet_followed_event}) {
       }
     } catch (e) {
       // alert('An error occured.');
-      ShowToast('An error occured, Upload video again ', 'error');
+      // ShowToast('An error occured, Upload video again ', 'error');
 
       console.log(e);
     }
@@ -312,17 +317,17 @@ export default function History({navigation, setGet_followed_event}) {
         setModalThree(false);
         if (currentID == 1) {
           setTimeout(() => {
-            AddImage_1();
+            AddImage_1(response.assets[0]);
           }, 500);
         }
         if (currentID == 2) {
           setTimeout(() => {
-            AddImage_2();
+            AddImage_2(response.assets[0]);
           }, 500);
         }
         if (currentID == 3) {
           setTimeout(() => {
-            AddImage_3();
+            AddImage_3(response.assets[0]);
           }, 500);
         }
       }
@@ -353,7 +358,7 @@ export default function History({navigation, setGet_followed_event}) {
         setVideo(response.assets[0]);
         // console.log('response.assets[0]', video);
         // console.log('response.assets[0]', response.assets[0]);
-        AddVideo();
+        AddVideo(response.assets[0]);
         // setTimeout(() => {}, 3000);
       }
     });
@@ -385,1110 +390,20 @@ export default function History({navigation, setGet_followed_event}) {
         contentContainerStyle={{marginVertical: 0}}
         // style={{flex: 1}}
         renderItem={({item, index}) => (
-          <View
-            // onPress={() =>
-            //   navigation.navigate('HomeScreensNavigation', {
-            //     screen: 'EventDetail',
-            //     item,
-            //   })
-            // }
-            style={{
-              borderRadius: 12,
-              backgroundColor: theme.colors.primary,
-              marginHorizontal: 13,
-              marginVertical: 15,
-            }}>
-            <TouchableOpacity
-              style={{
-                borderRadius: 12,
-                backgroundColor: theme.colors.Black,
-                // marginHorizontal: 13,
-                // marginVertical: 15,
-                flexDirection: 'row',
-                borderWidth: 1,
-                borderColor: theme.colors.green,
-              }}>
-              <View
-                style={{
-                  backgroundColor: 'transparent',
-                  width: dimensions.width / 3.5,
-                  height: dimensions.width / 3.5,
-                  borderRadius: 10,
-                  overflow: 'hidden',
-                }}>
-                <ImageBackground
-                  source={{uri: item?.post?.image}}
-                  style={{
-                    width: dimensions.width / 3.5,
-                    height: dimensions.width / 3.5,
-                    backgroundColor: theme.colors.Tabbg,
-                  }}
-                  imageStyle={{
-                    resizeMode: 'cover',
-                    borderRadius: 10,
-                  }}></ImageBackground>
-              </View>
-              <View
-                style={{
-                  width: dimensions.width / 1.6,
-                  paddingHorizontal: 15,
-                  paddingTop: 10,
-                }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    width: dimensions.width / 1.6,
-                    justifyContent: 'space-between',
-                  }}>
-                  <View style={{}}>
-                    <TextFormated
-                      style={{
-                        fontSize: 19,
-                        fontWeight: '600',
-                        color: theme.colors.primary,
-                      }}>
-                      {item.id}
-                    </TextFormated>
-                    <TextFormated
-                      style={{
-                        fontWeight: '600',
-                        color: theme.colors.primary,
-                        fontSize: 12,
-                        marginTop: 5,
-                      }}>
-                      {moment(item.date_time).format('lll')}
-                    </TextFormated>
-                  </View>
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor:
-                        item?.status == 'PENDING'
-                          ? theme.colors.yellow
-                          : item?.status == 'ACCEPT'
-                          ? theme.colors.green
-                          : theme.colors.red,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      paddingHorizontal: 10,
-                      borderRadius: 5,
-                      paddingVertical: 8,
-                      marginRight: 15,
-                    }}>
-                    <Text
-                      style={{
-                        fontWeight: '600',
-                        color: theme.colors.primary,
-                        fontSize: 12,
-                      }}>
-                      {item.status}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    marginVertical: 15,
-                  }}>
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={() => {}}
-                    style={{
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      paddingVertical: 10,
-                      flexDirection: 'row',
-                      borderRadius: 6,
-                      backgroundColor: theme.colors.yellow,
-                      flex: 1,
-                    }}>
-                    <TextFormated
-                      style={{
-                        fontWeight: '500',
-                        color: theme.colors.Black,
-                        fontSize: 10,
-                      }}>
-                      LIKE {item.post?.like || '0'}
-                    </TextFormated>
-                  </TouchableOpacity>
-
-                  <View style={{width: 7}} />
-
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={() => {}}
-                    style={{
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      paddingVertical: 10,
-                      flexDirection: 'row',
-                      borderRadius: 6,
-                      backgroundColor: theme.colors.primary,
-                      flex: 1,
-                    }}>
-                    <TextFormated
-                      style={{
-                        fontWeight: '500',
-                        color: theme.colors.Black,
-                        fontSize: 10,
-                      }}>
-                      ASK {item.post?.ask || '0'}
-                    </TextFormated>
-                  </TouchableOpacity>
-
-                  <View style={{width: 7}} />
-
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={() => {}}
-                    style={{
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      paddingVertical: 10,
-                      flexDirection: 'row',
-                      borderRadius: 6,
-                      backgroundColor: theme.colors.yellow,
-                      flex: 1,
-                    }}>
-                    <TextFormated
-                      style={{
-                        fontWeight: '500',
-                        color: theme.colors.Black,
-                        fontSize: 10,
-                      }}>
-                      ORDER {item.post?.order || '0'}
-                    </TextFormated>
-                  </TouchableOpacity>
-
-                  <View style={{width: 7}} />
-
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={() => {}}
-                    style={{
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      paddingVertical: 10,
-                      flexDirection: 'row',
-                      borderRadius: 6,
-                      backgroundColor: theme.colors.primary,
-                      flex: 1,
-                    }}>
-                    <TextFormated
-                      style={{
-                        fontWeight: '500',
-                        color: theme.colors.Black,
-                        fontSize: 10,
-                      }}>
-                      RENT {item.post?.rent || '0'}
-                    </TextFormated>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </TouchableOpacity>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                marginTop: 15,
-              }}>
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => {}}
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  paddingVertical: 10,
-                  flexDirection: 'row',
-                  borderRadius: 6,
-                  backgroundColor:
-                    item.post.avaibility_atstor == 'AT STORE'
-                      ? theme.colors.yellow
-                      : theme.colors.primary,
-                  flex: 1,
-                  shadowColor: '#000',
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 3.84,
-
-                  elevation: 5,
-                }}>
-                <TextFormated
-                  style={{
-                    fontWeight: '500',
-                    color: theme.colors.Black,
-                  }}>
-                  At Store
-                </TextFormated>
-              </TouchableOpacity>
-
-              <View style={{width: 10}} />
-
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => {}}
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  paddingVertical: 10,
-                  flexDirection: 'row',
-                  borderRadius: 6,
-                  backgroundColor:
-                    item.post.avaibility_tackout == 'TAKE OUT'
-                      ? theme.colors.yellow
-                      : theme.colors.primary,
-                  flex: 1,
-                  shadowColor: '#000',
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 3.84,
-
-                  elevation: 5,
-                }}>
-                <TextFormated
-                  style={{
-                    fontWeight: '500',
-                    color: theme.colors.Black,
-                  }}>
-                  Take Out
-                </TextFormated>
-              </TouchableOpacity>
-
-              <View style={{width: 10}} />
-
-              <TouchableOpacity
-                activeOpacity={0.7}
-                onPress={() => {}}
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  paddingVertical: 10,
-                  flexDirection: 'row',
-                  borderRadius: 6,
-                  backgroundColor:
-                    item.post.avaibility_delivery == 'DELIVERY'
-                      ? theme.colors.yellow
-                      : theme.colors.primary,
-                  flex: 1,
-                  shadowColor: '#000',
-                  shadowOffset: {
-                    width: 0,
-                    height: 2,
-                  },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 3.84,
-
-                  elevation: 5,
-                }}>
-                <TextFormated
-                  style={{
-                    fontWeight: '500',
-                    color: theme.colors.Black,
-                  }}>
-                  Delivery
-                </TextFormated>
-              </TouchableOpacity>
-            </View>
-            {/* {item?.status != 'CANCEL' && ( */}
-            <View style={{marginVertical: 20}}>
-              <SolidButton
-                source={require('../../../../../assets/ScrollDown.png')}
-                backgroundColor={theme.colors.ScrollDown}
-                onPress={() => {
-                  if (item?.status != 'PENDING') {
-                    setStep3(!Step3);
-                  } else {
-                    setVisible(!visible);
-                  }
-                }}
-                marginHorizontal={0.1}
-              />
-            </View>
-            {/* )} */}
-            {visible == true && (
-              <View>
-                {item?.status == 'PENDING' && (
-                  <View>
-                    <View
-                      style={{
-                        borderRadius: 12,
-                        backgroundColor: theme.colors.primary,
-                        // marginHorizontal: 13,
-                        // marginTop: 15,
-                        flexDirection: 'row',
-                        borderWidth: 1,
-                        borderColor: theme.colors.green,
-                      }}>
-                      <View
-                        style={{
-                          backgroundColor: 'transparent',
-                          width: dimensions.width / 3.5,
-                          // height: dimensions.width / 3.1,
-                          borderRadius: 10,
-                          overflow: 'hidden',
-                        }}>
-                        <ImageBackground
-                          source={{uri: item?.post?.image}}
-                          style={{
-                            width: dimensions.width / 3.5,
-                            height: dimensions.width / 3.5,
-                            backgroundColor: theme.colors.Tabbg,
-                          }}
-                          imageStyle={{
-                            resizeMode: 'cover',
-                            borderRadius: 10,
-                          }}></ImageBackground>
-                      </View>
-                      <View
-                        style={{
-                          // width: dimensions.width / 16,
-                          // paddingHorizontal: 15,
-                          paddingVertical: 10,
-                        }}>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            width: dimensions.width / 1.6,
-                            justifyContent: 'space-between',
-                            paddingHorizontal: 15,
-                          }}>
-                          <View style={{}}>
-                            <View style={{}}>
-                              <Text
-                                style={{
-                                  fontWeight: '600',
-                                  color: theme.colors.Black,
-                                }}>
-                                Order Price
-                              </Text>
-                              <View
-                                style={{
-                                  backgroundColor: theme.colors.Tabbg,
-                                  // paddingHorizontal: 5,
-                                  paddingVertical: 5,
-                                  borderRadius: 6,
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  marginTop: 5,
-                                }}>
-                                <Text
-                                  style={{
-                                    fontWeight: '600',
-                                    color: theme.colors.Black,
-                                  }}>
-                                  {item?.extra_details}
-                                </Text>
-                              </View>
-                            </View>
-
-                            <View style={{marginTop: 5}}>
-                              <Text
-                                style={{
-                                  fontWeight: '600',
-                                  color: theme.colors.Black,
-                                }}>
-                                Owner Price
-                              </Text>
-                              <View
-                                style={{
-                                  backgroundColor: theme.colors.green + '99',
-                                  // paddingHorizontal: 5,
-                                  paddingVertical: 5,
-                                  borderRadius: 6,
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  marginTop: 5,
-                                }}>
-                                <Text
-                                  style={{
-                                    fontWeight: '600',
-                                    color: theme.colors.Black,
-                                  }}>
-                                  {item?.post?.price}
-                                </Text>
-                              </View>
-                            </View>
-                          </View>
-
-                          <View style={{}}>
-                            <TouchableOpacity
-                              onPress={() => UpdateOrder(item.id, 'ACCEPT')}>
-                              <Image
-                                source={require('../../../../../assets/righticon.png')}
-                                style={{
-                                  width: 30,
-                                  height: 30,
-                                  resizeMode: 'contain',
-                                  marginTop: 15,
-                                }}
-                              />
-                            </TouchableOpacity>
-                          </View>
-                          <View style={{}}>
-                            {/* <Text
-                              style={{
-                                fontWeight: '600',
-                                color: theme.colors.Black,
-                                fontSize: 18,
-                              }}>
-                              ${item?.post?.price}
-                            </Text> */}
-                            <TouchableOpacity
-                              onPress={() => UpdateOrder(item.id, 'CANCEL')}>
-                              <Image
-                                source={require('../../../../../assets/wrongicon.png')}
-                                style={{
-                                  width: 30,
-                                  height: 30,
-                                  resizeMode: 'contain',
-                                  marginTop: 15,
-                                }}
-                              />
-                            </TouchableOpacity>
-                          </View>
-                        </View>
-                      </View>
-                    </View>
-                    {/* <View style={{marginVertical: 20}}>
-                      <SolidButton
-                        source={require('../../../../../assets/ScrollDown.png')}
-                        backgroundColor={theme.colors.ScrollDown}
-                        onPress={() => {
-                          setStep3(!Step3);
-                        }}
-                        marginHorizontal={0.1}
-                      />
-                    </View> */}
-                  </View>
-                )}
-                {/* <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={() => {}}
-                  style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    paddingVertical: 15,
-                    flexDirection: 'row',
-                    backgroundColor: theme.colors.red,
-                    flex: 1,
-                    shadowColor: '#000',
-                    shadowOffset: {
-                      width: 0,
-                      height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 3.84,
-
-                    elevation: 5,
-                    marginTop: 10,
-                    borderRadius: 50,
-                  }}>
-                  <TextFormated
-                    style={{
-                      fontWeight: '500',
-                      color: theme.colors.Black,
-                    }}>
-                    Paid
-                  </TextFormated>
-                </TouchableOpacity> */}
-              </View>
-            )}
-            {Step3 == true && (
-              <View
-                style={{
-                  flex: 1,
-                  backgroundColor: theme.colors.primary,
-                }}>
-                {item?.order_otp != 'PENDING' && (
-                  <View
-                    style={{
-                      alignSelf: 'center',
-                      borderWidth: 1,
-                      paddingHorizontal: 40,
-                      borderRadius: 25,
-                      marginBottom: 20,
-                      paddingVertical: 10,
-                      borderColor: theme.colors.C4C4C4,
-                      marginHorizontal: 20,
-                    }}>
-                    <TextFormatted style={{fontSize: 18, fontWeight: '700'}}>
-                      Pick Code: {item?.order_otp}
-                    </TextFormatted>
-                  </View>
-                )}
-                <View>
-                  <View
-                    style={{
-                      borderWidth: 1,
-                      borderRadius: 10,
-                      marginVertical: 20,
-                      paddingVertical: 10,
-                      borderColor: theme.colors.C4C4C4,
-                      backgroundColor: theme.colors.Black,
-                      // marginHorizontal: 2/0,
-                    }}>
-                    <View
-                      style={{
-                        alignSelf: 'center',
-                        borderRadius: 25,
-                        marginVertical: 20,
-                        paddingVertical: 7,
-                        marginHorizontal: 20,
-                        position: 'absolute',
-                        top: -40,
-                        backgroundColor: theme.colors.yellow,
-                      }}>
-                      <TextFormatted
-                        style={{fontWeight: '500', paddingHorizontal: 80}}>
-                        Contains
-                      </TextFormatted>
-                    </View>
-
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        paddingHorizontal: 30,
-                        marginTop: 10,
-                      }}>
-                      <Image
-                        source={{uri: 'https://picsum.photos/500'}}
-                        style={{
-                          height: 60,
-                          width: 60,
-                          resizeMode: 'contain',
-                          borderRadius: 50,
-                          marginRight: 20,
-                        }}
-                      />
-                      <TextFormatted
-                        style={{
-                          fontSize: 16,
-                          fontWeight: '700',
-                          color: theme.colors.primary,
-                        }}>
-                        {item?.last_update}
-                      </TextFormatted>
-                    </View>
-
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        paddingHorizontal: 30,
-                        marginTop: 20,
-                        justifyContent: 'space-between',
-                      }}>
-                      <TouchableOpacity
-                        onPress={() => {
-                          if (
-                            item?.image_1 ==
-                            'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                          ) {
-                            setModalThree(true);
-                            setCurrentID(1);
-                            setOrderID(item?.id);
-                          } else {
-                            navigation.navigate('ImageZoom', {
-                              image: item?.image_1,
-                            });
-                          }
-                        }}>
-                        <Image
-                          // source={{uri: uri.uri}}
-                          source={
-                            item?.image_1 ==
-                            'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                              ? uri == ''
-                                ? require('../../../../../assets/bi_camera.png')
-                                : {uri: uri.uri}
-                              : {uri: item?.image_1}
-                          }
-                          style={{
-                            height: 30,
-                            width: 30,
-                            resizeMode: 'cover',
-                            borderRadius: 3,
-                          }}
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() => {
-                          if (
-                            item?.image_2 ==
-                            'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                          ) {
-                            setModalThree(true);
-                            setCurrentID(2);
-                            setOrderID(item?.id);
-                          } else {
-                            navigation.navigate('ImageZoom', {
-                              image: item?.image_2,
-                            });
-                          }
-                        }}>
-                        <Image
-                          source={
-                            item?.image_2 ==
-                            'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                              ? uri == ''
-                                ? require('../../../../../assets/bi_camera.png')
-                                : {uri: uri.uri}
-                              : {uri: item?.image_2}
-                          }
-                          style={{
-                            height: 30,
-                            width: 30,
-                            resizeMode: 'cover',
-                            borderRadius: 3,
-                          }}
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() => {
-                          if (
-                            item?.image_3 ==
-                            'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                          ) {
-                            setModalThree(true);
-                            setCurrentID(3);
-                            setOrderID(item?.id);
-                          } else {
-                            navigation.navigate('ImageZoom', {
-                              image: item?.image_3,
-                            });
-                          }
-                        }}>
-                        <Image
-                          source={
-                            item?.image_3 ==
-                            'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                              ? uri == ''
-                                ? require('../../../../../assets/bi_camera.png')
-                                : {uri: uri.uri}
-                              : {uri: item?.image_3}
-                          }
-                          style={{
-                            height: 30,
-                            width: 30,
-                            resizeMode: 'cover',
-                            borderRadius: 3,
-                          }}
-                        />
-                      </TouchableOpacity>
-                      <TouchableOpacity
-                        onPress={() => {
-                          if (
-                            item?.video_1 ==
-                            'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                          ) {
-                            pickVideo();
-                            setOrderID(item?.id);
-                            AddVideo();
-                          } else {
-                            navigation.navigate('FullVideo', {
-                              uri: item?.video_1,
-                            });
-                          }
-                        }}>
-                        {item?.video_1 ==
-                          'https://pickpic4u.com/app.pickpic4u.com/uploads/NO' &&
-                        video == '' ? (
-                          <Image
-                            source={require('../../../../../assets/video.png')}
-                            style={{
-                              height: 30,
-                              width: 30,
-                              resizeMode: 'contain',
-                            }}
-                          />
-                        ) : (
-                          <View
-                            style={{
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              borderRadius: 3,
-                            }}>
-                            <Video
-                              paused={true}
-                              source={
-                                item?.video_1 ==
-                                'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                                  ? {uri: video?.uri}
-                                  : {uri: item?.video_1}
-                              }
-                              ref={ref => (videoRef.current = ref)}
-                              onBuffer={onBuffer}
-                              onError={onError}
-                              style={{
-                                height: 40,
-                                width: 40,
-                                borderRadius: 3,
-                              }}
-                              resizeMode="cover"
-                              // controls={true}
-                              // audioOnly={false}
-                              play
-                            />
-                          </View>
-                        )}
-                      </TouchableOpacity>
-                      <TouchableOpacity>
-                        <Image
-                          source={require('../../../../../assets/mic.png')}
-                          style={{height: 30, width: 30, resizeMode: 'contain'}}
-                        />
-                      </TouchableOpacity>
-                      {/* <TouchableOpacity>
-                        <Image
-                          source={require('../../../../../assets/plus_white.png')}
-                          style={{height: 30, width: 30, resizeMode: 'contain'}}
-                        />
-                      </TouchableOpacity> */}
-                    </View>
-                  </View>
-
-                  {/* STEP 2 */}
-
-                  {/* <View
-                    style={{
-                      borderWidth: 1,
-                      borderRadius: 10,
-                      marginVertical: 20,
-                      paddingVertical: 10,
-                      borderColor: theme.colors.C4C4C4,
-                      backgroundColor: theme.colors.Black,
-                      marginHorizontal: 20,
-                    }}>
-                    <View
-                      style={{
-                        alignSelf: 'center',
-                        borderRadius: 25,
-                        marginVertical: 20,
-                        paddingVertical: 7,
-                        marginHorizontal: 20,
-                        position: 'absolute',
-                        top: -40,
-                        backgroundColor: theme.colors.red,
-                      }}>
-                      <TextFormatted
-                        style={{fontWeight: '500', paddingHorizontal: 80}}>
-                        Package Ready
-                      </TextFormatted>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        paddingHorizontal: 30,
-                        marginTop: 10,
-                      }}>
-                      <Image
-                        source={{uri: 'https://picsum.photos/500'}}
-                        style={{
-                          height: 60,
-                          width: 60,
-                          resizeMode: 'contain',
-                          borderRadius: 50,
-                          marginRight: 20,
-                        }}
-                      />
-                      <View style={{alignItems: 'center'}}>
-                        <TextFormatted
-                          style={{
-                            fontSize: 16,
-                            fontWeight: '700',
-                            color: theme.colors.primary,
-                          }}>
-                          04:30 PM 11/04/2022
-                        </TextFormatted>
-                        <Image
-                          source={require('../../../../../assets/gps.png')}
-                          style={{
-                            height: 60,
-                            width: 90,
-                            resizeMode: 'contain',
-                            marginRight: 20,
-                          }}
-                        />
-                      </View>
-                      <Image
-                        source={require('../../../../../assets/clock.png')}
-                        style={{
-                          height: 40,
-                          width: 40,
-                          resizeMode: 'contain',
-                          borderRadius: 50,
-                          marginLeft: 20,
-                        }}
-                      />
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        paddingHorizontal: 30,
-                        marginTop: 20,
-                        justifyContent: 'space-between',
-                      }}>
-                      <Image
-                        source={require('../../../../../assets/bi_camera.png')}
-                        style={{height: 30, width: 30, resizeMode: 'contain'}}
-                      />
-                      <Image
-                        source={require('../../../../../assets/bi_camera.png')}
-                        style={{height: 30, width: 30, resizeMode: 'contain'}}
-                      />
-                      <Image
-                        source={require('../../../../../assets/bi_camera.png')}
-                        style={{height: 30, width: 30, resizeMode: 'contain'}}
-                      />
-                      <Image
-                        source={require('../../../../../assets/video.png')}
-                        style={{height: 30, width: 30, resizeMode: 'contain'}}
-                      />
-                      <Image
-                        source={require('../../../../../assets/mic.png')}
-                        style={{height: 30, width: 30, resizeMode: 'contain'}}
-                      />
-                      <Image
-                        source={require('../../../../../assets/plus_white.png')}
-                        style={{height: 30, width: 30, resizeMode: 'contain'}}
-                      />
-                    </View>
-                  </View> */}
-
-                  {/* STEP 3 */}
-
-                  {/* <View
-                    style={{
-                      alignSelf: 'center',
-                      borderWidth: 1,
-                      paddingHorizontal: 40,
-                      borderRadius: 25,
-                      marginVertical: 20,
-                      paddingVertical: 10,
-                      borderColor: theme.colors.C4C4C4,
-                      marginHorizontal: 20,
-                    }}>
-                    <TextFormatted style={{fontSize: 18, fontWeight: '700'}}>
-                      Pick Code: 9999
-                    </TextFormatted>
-                  </View> */}
-
-                  {/* <View
-                    style={{
-                      borderWidth: 1,
-                      borderRadius: 10,
-                      marginVertical: 20,
-                      paddingVertical: 10,
-                      borderColor: theme.colors.C4C4C4,
-                      backgroundColor: theme.colors.Black,
-                      marginHorizontal: 20,
-                    }}>
-                    <View
-                      style={{
-                        alignSelf: 'center',
-                        borderRadius: 25,
-                        marginVertical: 20,
-                        paddingVertical: 7,
-                        marginHorizontal: 20,
-                        position: 'absolute',
-                        top: -40,
-                        backgroundColor: theme.colors.red,
-                      }}>
-                      <TextFormatted
-                        style={{fontWeight: '500', paddingHorizontal: 80}}>
-                        Recieved & Paid
-                      </TextFormatted>
-                    </View>
-
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        paddingHorizontal: 30,
-                        marginTop: 10,
-                      }}>
-                      <Image
-                        source={{uri: 'https://picsum.photos/500'}}
-                        style={{
-                          height: 60,
-                          width: 60,
-                          resizeMode: 'contain',
-                          borderRadius: 50,
-                          marginRight: 20,
-                        }}
-                      />
-                      <View style={{alignItems: 'center'}}>
-                        <TextFormatted
-                          style={{
-                            fontSize: 16,
-                            fontWeight: '700',
-                            color: theme.colors.primary,
-                          }}>
-                          04:30 PM 11/04/2022
-                        </TextFormatted>
-                        <Image
-                          source={require('../../../../../assets/gps.png')}
-                          style={{
-                            height: 60,
-                            width: 90,
-                            resizeMode: 'contain',
-                            marginRight: 20,
-                          }}
-                        />
-                      </View>
-                      <Image
-                        source={require('../../../../../assets/clock.png')}
-                        style={{
-                          height: 40,
-                          width: 40,
-                          resizeMode: 'contain',
-                          borderRadius: 50,
-                          marginLeft: 20,
-                          opacity: 0,
-                        }}
-                      />
-                    </View>
-
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        paddingHorizontal: 30,
-                        marginTop: 20,
-                        justifyContent: 'space-between',
-                      }}>
-                      <Image
-                        source={require('../../../../../assets/bi_camera.png')}
-                        style={{height: 30, width: 30, resizeMode: 'contain'}}
-                      />
-                      <Image
-                        source={require('../../../../../assets/bi_camera.png')}
-                        style={{height: 30, width: 30, resizeMode: 'contain'}}
-                      />
-                      <Image
-                        source={require('../../../../../assets/bi_camera.png')}
-                        style={{height: 30, width: 30, resizeMode: 'contain'}}
-                      />
-                      <Image
-                        source={require('../../../../../assets/video.png')}
-                        style={{height: 30, width: 30, resizeMode: 'contain'}}
-                      />
-                      <Image
-                        source={require('../../../../../assets/mic.png')}
-                        style={{height: 30, width: 30, resizeMode: 'contain'}}
-                      />
-                      <Image
-                        source={require('../../../../../assets/plus_white.png')}
-                        style={{height: 30, width: 30, resizeMode: 'contain'}}
-                      />
-                    </View>
-
-                    <View style={{alignItems: 'center', marginTop: 20}}>
-                      <TextFormatted
-                        style={{
-                          fontWeight: '500',
-                          color: theme.colors.primary,
-                        }}>
-                        Total Cost:{' '}
-                        <TextFormatted
-                          style={{
-                            fontSize: 16,
-                            fontWeight: '700',
-                            color: theme.colors.primary,
-                          }}>
-                          $36.00
-                        </TextFormatted>
-                      </TextFormatted>
-                      <Image
-                        source={require('../../../../../assets/qr.png')}
-                        style={{
-                          height: 110,
-                          width: 110,
-                          resizeMode: 'contain',
-                          marginTop: 10,
-                        }}
-                      />
-                    </View>
-                    <TouchableOpacity
-                      style={{
-                        backgroundColor: theme.colors.Tabbg,
-                        alignSelf: 'center',
-                        paddingHorizontal: 15,
-                        paddingVertical: 8,
-                        borderRadius: 10,
-                        marginTop: 10,
-                      }}>
-                      <TextFormatted style={{fontSize: 16, fontWeight: '700'}}>
-                        Pay By Code
-                      </TextFormatted>
-                    </TouchableOpacity>
-                    <View
-                      style={{
-                        backgroundColor: theme.colors.C4C4C4,
-                        height: 1,
-                        marginHorizontal: 20,
-                        marginTop: 20,
-                      }}
-                    />
-                    <View style={{alignItems: 'center', marginTop: 20}}>
-                      <Image
-                        source={require('../../../../../assets/qr.png')}
-                        style={{
-                          height: 110,
-                          width: 110,
-                          resizeMode: 'contain',
-                          marginTop: 10,
-                        }}
-                      />
-                    </View>
-                    <TouchableOpacity
-                      style={{
-                        backgroundColor: theme.colors.Tabbg,
-                        alignSelf: 'center',
-                        paddingHorizontal: 15,
-                        paddingVertical: 8,
-                        borderRadius: 10,
-                        marginTop: 10,
-                      }}>
-                      <TextFormatted style={{fontSize: 16, fontWeight: '700'}}>
-                        Pay By Code
-                      </TextFormatted>
-                    </TouchableOpacity>
-                    <View style={{height: 30}} />
-                    <SolidButton
-                      borderRadius={50}
-                      text={'Payment Completed'}
-                      backgroundColor={theme.colors.green}
-                    />
-                    <View style={{height: 30}} />
-                  </View>
-                  <View
-                    style={{
-                      marginTop: 20,
-                      marginHorizontal: 20,
-                      marginBottom: 50,
-                    }}>
-                    <SolidButton
-                      borderRadius={50}
-                      text={'Order Completed'}
-                      backgroundColor={theme.colors.green}
-                    />
-                  </View> */}
-                </View>
-              </View>
-            )}
-          </View>
+          <OrderItem
+            item={item}
+            UpdateOrder={UpdateOrder}
+            pickVideo={pickVideo}
+            AddVideo={AddVideo}
+            uri={uri}
+            setModalThree={setModalThree}
+            setCurrentID={setCurrentID}
+            setOrderID={setOrderID}
+            video={video}
+            videoRef={videoRef}
+            onBuffer={onBuffer}
+            onError={onError}
+          />
         )}
       />
 
@@ -1623,3 +538,1298 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
 });
+
+function OrderItem({
+  item,
+  UpdateOrder,
+  pickVideo,
+  AddVideo,
+  uri,
+  setModalThree,
+  setCurrentID,
+  setOrderID,
+  video,
+  videoRef,
+  onBuffer,
+  onError,
+}) {
+  const dimensions = useWindowDimensions();
+
+  const [visible, setVisible] = useState(false);
+  const [Step3, setStep3] = useState(false);
+  return (
+    <View
+      // onPress={() =>
+      //   navigation.navigate('HomeScreensNavigation', {
+      //     screen: 'EventDetail',
+      //     item,
+      //   })
+      // }
+      style={{
+        borderRadius: 12,
+        backgroundColor: theme.colors.primary,
+        marginHorizontal: 13,
+        marginVertical: 15,
+      }}>
+      {/* {alert(JSON.stringify(item.image_coordinates))} */}
+      <TouchableOpacity
+        style={{
+          borderRadius: 12,
+          backgroundColor: theme.colors.Black,
+          // marginHorizontal: 13,
+          // marginVertical: 15,
+          flexDirection: 'row',
+          borderWidth: 1,
+          borderColor: theme.colors.green,
+          alignItems: 'center',
+        }}>
+        <View
+          style={{
+            backgroundColor: 'transparent',
+            width: dimensions.width / 3.5,
+            height: dimensions.width / 3,
+            borderRadius: 10,
+            overflow: 'hidden',
+          }}>
+          <ImageBackground
+            source={{uri: item?.post?.image}}
+            style={{
+              width: dimensions.width / 3.5,
+              height: dimensions.width / 3,
+              backgroundColor: theme.colors.Tabbg,
+            }}
+            imageStyle={{
+              resizeMode: 'cover',
+              borderRadius: 10,
+            }}></ImageBackground>
+        </View>
+        <View
+          style={{
+            width: dimensions.width / 1.6,
+            paddingHorizontal: 15,
+            paddingTop: 10,
+          }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              width: dimensions.width / 1.6,
+              justifyContent: 'space-between',
+            }}>
+            <View style={{}}>
+              <TextFormated
+                style={{
+                  fontSize: 19,
+                  fontWeight: '600',
+                  color: theme.colors.primary,
+                }}>
+                {item.id}
+              </TextFormated>
+              <TextFormated
+                style={{
+                  fontWeight: '600',
+                  color: theme.colors.primary,
+                  fontSize: 12,
+                  marginTop: 5,
+                }}>
+                {moment(item.date_time).format('lll')}
+              </TextFormated>
+            </View>
+            <TouchableOpacity
+              style={{
+                backgroundColor:
+                  item?.status == 'PENDING'
+                    ? theme.colors.yellow
+                    : item?.status == 'ACCEPT'
+                    ? theme.colors.green
+                    : theme.colors.red,
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingHorizontal: 10,
+                borderRadius: 5,
+                paddingVertical: 8,
+                marginRight: 15,
+              }}>
+              <Text
+                style={{
+                  fontWeight: '600',
+                  color: theme.colors.primary,
+                  fontSize: 12,
+                }}>
+                {item.status}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginVertical: 15,
+            }}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => {}}
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingVertical: 10,
+                flexDirection: 'row',
+                borderRadius: 6,
+                backgroundColor: theme.colors.yellow,
+                flex: 1,
+              }}>
+              <TextFormated
+                style={{
+                  fontWeight: '500',
+                  color: theme.colors.Black,
+                  fontSize: 10,
+                }}>
+                LIKE {item.post?.like || '0'}
+              </TextFormated>
+            </TouchableOpacity>
+
+            <View style={{width: 7}} />
+
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => {}}
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingVertical: 10,
+                flexDirection: 'row',
+                borderRadius: 6,
+                backgroundColor: theme.colors.primary,
+                flex: 1,
+              }}>
+              <TextFormated
+                style={{
+                  fontWeight: '500',
+                  color: theme.colors.Black,
+                  fontSize: 10,
+                }}>
+                ASK {item.post?.ask || '0'}
+              </TextFormated>
+            </TouchableOpacity>
+
+            <View style={{width: 7}} />
+
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => {}}
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingVertical: 10,
+                flexDirection: 'row',
+                borderRadius: 6,
+                backgroundColor: theme.colors.yellow,
+                flex: 1,
+              }}>
+              <TextFormated
+                style={{
+                  fontWeight: '500',
+                  color: theme.colors.Black,
+                  fontSize: 10,
+                }}>
+                ORDER {item.post?.order || '0'}
+              </TextFormated>
+            </TouchableOpacity>
+
+            <View style={{width: 7}} />
+
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => {}}
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingVertical: 10,
+                flexDirection: 'row',
+                borderRadius: 6,
+                backgroundColor: theme.colors.primary,
+                flex: 1,
+              }}>
+              <TextFormated
+                style={{
+                  fontWeight: '500',
+                  color: theme.colors.Black,
+                  fontSize: 10,
+                }}>
+                RENT {item.post?.rent || '0'}
+              </TextFormated>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </TouchableOpacity>
+
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          marginTop: 15,
+        }}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => {}}
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingVertical: 10,
+            flexDirection: 'row',
+            borderRadius: 6,
+            backgroundColor:
+              item.post.avaibility_atstor == 'AT STORE'
+                ? theme.colors.yellow
+                : theme.colors.primary,
+            flex: 1,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+
+            elevation: 5,
+          }}>
+          <TextFormated
+            style={{
+              fontWeight: '500',
+              color: theme.colors.Black,
+            }}>
+            At Store
+          </TextFormated>
+        </TouchableOpacity>
+
+        <View style={{width: 10}} />
+
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => {}}
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingVertical: 10,
+            flexDirection: 'row',
+            borderRadius: 6,
+            backgroundColor:
+              item.post.avaibility_tackout == 'TAKE OUT'
+                ? theme.colors.yellow
+                : theme.colors.primary,
+            flex: 1,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+
+            elevation: 5,
+          }}>
+          <TextFormated
+            style={{
+              fontWeight: '500',
+              color: theme.colors.Black,
+            }}>
+            Take Out
+          </TextFormated>
+        </TouchableOpacity>
+
+        <View style={{width: 10}} />
+
+        <TouchableOpacity
+          activeOpacity={0.7}
+          onPress={() => {}}
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            paddingVertical: 10,
+            flexDirection: 'row',
+            borderRadius: 6,
+            backgroundColor:
+              item.post.avaibility_delivery == 'DELIVERY'
+                ? theme.colors.yellow
+                : theme.colors.primary,
+            flex: 1,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+
+            elevation: 5,
+          }}>
+          <TextFormated
+            style={{
+              fontWeight: '500',
+              color: theme.colors.Black,
+            }}>
+            Delivery
+          </TextFormated>
+        </TouchableOpacity>
+      </View>
+
+      {/* {item?.status != 'CANCEL' && ( */}
+      <View style={{marginVertical: 20}}>
+        <SolidButton
+          source={require('../../../../../assets/ScrollDown.png')}
+          backgroundColor={theme.colors.ScrollDown}
+          onPress={() => {
+            if (item?.status == 'ACCEPT') {
+              setStep3(!Step3);
+              console.log('ACCEPT');
+            }
+            if (item?.status == 'PENDING') {
+              setVisible(!visible);
+              console.log('PENDING');
+            }
+          }}
+          marginHorizontal={0.1}
+        />
+      </View>
+      {/* )} */}
+      {visible == true && (
+        <View>
+          {item?.status == 'PENDING' && (
+            <View>
+              {item?.sub_orders?.map((v, i) => (
+                <View>
+                  {v.status == 'PENDING' && (
+                    <View
+                      style={{
+                        borderRadius: 12,
+                        backgroundColor: theme.colors.primary,
+                        // marginHorizontal: 13,
+                        marginTop: 15,
+                        flexDirection: 'row',
+                        borderWidth: 1,
+                        borderColor: theme.colors.green,
+                      }}>
+                      {/* {alert(JSON.stringify(v.id))} */}
+                      <View
+                        style={{
+                          backgroundColor: 'transparent',
+                          width: dimensions.width / 3.5,
+                          borderRadius: 10,
+                          overflow: 'hidden',
+                        }}>
+                        <ImageBackground
+                          source={{uri: item?.post?.image}}
+                          style={{
+                            width: dimensions.width / 3.5,
+                            height: dimensions.width / 3.5,
+                            backgroundColor: theme.colors.Tabbg,
+                          }}
+                          imageStyle={{
+                            borderRadius: 10,
+                            resizeMode: 'stretch',
+                            width:
+                              (1 * 80) /
+                              (parseFloat(v.image_coordinates?.position[2]) -
+                                parseFloat(v.image_coordinates?.position[0])),
+                            height:
+                              (1 * 60) /
+                              (parseFloat(v.image_coordinates?.position[3]) -
+                                parseFloat(v.image_coordinates?.position[1])),
+                            borderWidth: 1,
+                            top:
+                              -(
+                                (dimensions.height /
+                                  15 /
+                                  (parseFloat(
+                                    v.image_coordinates?.position[3],
+                                  ) -
+                                    parseFloat(
+                                      v.image_coordinates?.position[1],
+                                    ))) *
+                                parseFloat(v.image_coordinates?.position[1])
+                              ) / 1,
+                            left:
+                              -(
+                                ((1 * 80) /
+                                  (parseFloat(
+                                    v.image_coordinates?.position[2],
+                                  ) -
+                                    parseFloat(
+                                      v.image_coordinates?.position[0],
+                                    ))) *
+                                parseFloat(v.image_coordinates?.position[0])
+                              ) / 1,
+                          }}
+                          // imageStyle={{
+                          //   resizeMode: 'cover',
+                          //   borderRadius: 10,
+                          // }}
+                        />
+                      </View>
+                      <View style={{paddingVertical: 10}}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            width: dimensions.width / 1.6,
+                            justifyContent: 'space-between',
+                            paddingHorizontal: 15,
+                          }}>
+                          <View style={{}}>
+                            <View style={{marginTop: 5}}>
+                              <Text
+                                style={{
+                                  fontWeight: '600',
+                                  color: theme.colors.Black,
+                                }}>
+                                Selling Price
+                              </Text>
+                              <View
+                                style={{
+                                  backgroundColor: theme.colors.green + '99',
+                                  paddingVertical: 5,
+                                  borderRadius: 6,
+                                  alignItems: 'center',
+                                  justifyContent: 'center',
+                                  marginTop: 5,
+                                }}>
+                                <Text
+                                  style={{
+                                    fontWeight: '600',
+                                    color: theme.colors.Black,
+                                  }}>
+                                  {item?.post?.price}
+                                </Text>
+                              </View>
+                            </View>
+                          </View>
+
+                          {/* {v.status == 'PENDING' ? ( */}
+                          <View style={{flexDirection: 'row'}}>
+                            <View style={{}}>
+                              <TouchableOpacity
+                                onPress={() => {
+                                  UpdateOrder(v.id, 'ACCEPT', item.id);
+                                }}>
+                                <Image
+                                  source={require('../../../../../assets/righticon.png')}
+                                  style={{
+                                    width: 30,
+                                    height: 30,
+                                    resizeMode: 'contain',
+                                    marginTop: 15,
+                                  }}
+                                />
+                              </TouchableOpacity>
+                            </View>
+                            <View style={{width: 30}} />
+                            <View style={{}}>
+                              <TouchableOpacity
+                                onPress={() =>
+                                  UpdateOrder(v.id, 'CANCEL', item.id)
+                                }>
+                                <Image
+                                  source={require('../../../../../assets/wrongicon.png')}
+                                  style={{
+                                    width: 30,
+                                    height: 30,
+                                    resizeMode: 'contain',
+                                    marginTop: 15,
+                                  }}
+                                />
+                              </TouchableOpacity>
+                            </View>
+                          </View>
+                          {/* ) : (
+                      <View
+                        style={{
+                          backgroundColor:
+                            v?.status == 'PENDING'
+                              ? theme.colors.yellow
+                              : v?.status == 'ACCEPT'
+                              ? theme.colors.green
+                              : theme.colors.red,
+                          paddingVertical: 15,
+                          borderRadius: 6,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          paddingHorizontal: 15,
+                        }}>
+                        <Text
+                          style={{
+                            fontWeight: '600',
+                            color: theme.colors.Black,
+                          }}>
+                          {v?.status}
+                        </Text>
+                      </View> */}
+                          {/* )} */}
+                        </View>
+                      </View>
+                    </View>
+                  )}
+                </View>
+              ))}
+            </View>
+          )}
+        </View>
+      )}
+      {Step3 == true && (
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: theme.colors.primary,
+          }}>
+          {item?.sub_orders?.map((v, i) => (
+            <View style={{marginBottom: 0}}>
+              {/* {v.status == 'PENDING' && ( */}
+              <View
+                style={{
+                  borderRadius: 12,
+                  backgroundColor: theme.colors.primary,
+                  // marginHorizontal: 13,
+                  marginTop: 15,
+                  flexDirection: 'row',
+                  borderWidth: 1,
+                  borderColor: theme.colors.green,
+                }}>
+                {/* {alert(JSON.stringify(v.id))} */}
+                <View
+                  style={{
+                    backgroundColor: 'transparent',
+                    width: dimensions.width / 3.5,
+                    borderRadius: 10,
+                    overflow: 'hidden',
+                  }}>
+                  <ImageBackground
+                    source={{uri: item?.post?.image}}
+                    style={{
+                      width: dimensions.width / 3.5,
+                      height: dimensions.width / 3.5,
+                      backgroundColor: theme.colors.Tabbg,
+                    }}
+                    imageStyle={{
+                      borderRadius: 10,
+                      resizeMode: 'stretch',
+                      width:
+                        (1 * 80) /
+                        (parseFloat(v.image_coordinates?.position[2]) -
+                          parseFloat(v.image_coordinates?.position[0])),
+                      height:
+                        (1 * 60) /
+                        (parseFloat(v.image_coordinates?.position[3]) -
+                          parseFloat(v.image_coordinates?.position[1])),
+                      borderWidth: 1,
+                      top:
+                        -(
+                          (dimensions.height /
+                            15 /
+                            (parseFloat(v.image_coordinates?.position[3]) -
+                              parseFloat(v.image_coordinates?.position[1]))) *
+                          parseFloat(v.image_coordinates?.position[1])
+                        ) / 1,
+                      left:
+                        -(
+                          ((1 * 80) /
+                            (parseFloat(v.image_coordinates?.position[2]) -
+                              parseFloat(v.image_coordinates?.position[0]))) *
+                          parseFloat(v.image_coordinates?.position[0])
+                        ) / 1,
+                    }}
+                    // imageStyle={{
+                    //   resizeMode: 'cover',
+                    //   borderRadius: 10,
+                    // }}
+                  />
+                </View>
+                <View style={{paddingVertical: 10}}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      width: dimensions.width / 1.6,
+                      justifyContent: 'space-between',
+                      paddingHorizontal: 15,
+                    }}>
+                    <View style={{}}>
+                      <View style={{marginTop: 5}}>
+                        <Text
+                          style={{
+                            fontWeight: '600',
+                            color: theme.colors.Black,
+                          }}>
+                          Selling Price
+                        </Text>
+                        <View
+                          style={{
+                            backgroundColor: theme.colors.green + '99',
+                            paddingVertical: 5,
+                            borderRadius: 6,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginTop: 5,
+                          }}>
+                          <Text
+                            style={{
+                              fontWeight: '600',
+                              color: theme.colors.Black,
+                            }}>
+                            {item?.post?.price}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+
+                    {v.status == 'PENDING' ? (
+                      <View style={{flexDirection: 'row'}}>
+                        <View style={{}}>
+                          <TouchableOpacity
+                            onPress={() =>
+                              UpdateOrder(v.id, 'ACCEPT', item.id)
+                            }>
+                            <Image
+                              source={require('../../../../../assets/righticon.png')}
+                              style={{
+                                width: 30,
+                                height: 30,
+                                resizeMode: 'contain',
+                                marginTop: 15,
+                              }}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                        <View style={{width: 30}} />
+                        <View style={{}}>
+                          <TouchableOpacity
+                            onPress={() =>
+                              UpdateOrder(v.id, 'CANCEL', item.id)
+                            }>
+                            <Image
+                              source={require('../../../../../assets/wrongicon.png')}
+                              style={{
+                                width: 30,
+                                height: 30,
+                                resizeMode: 'contain',
+                                marginTop: 15,
+                              }}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                      </View>
+                    ) : (
+                      <View
+                        style={{
+                          backgroundColor:
+                            v?.status == 'PENDING'
+                              ? theme.colors.yellow
+                              : v?.status == 'ACCEPT'
+                              ? theme.colors.green + '99'
+                              : theme.colors.red,
+                          paddingVertical: 16,
+                          borderRadius: 6,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          marginTop: 5,
+                          paddingHorizontal: 16,
+                        }}>
+                        <Text
+                          style={{
+                            fontWeight: '600',
+                            color: theme.colors.primary,
+                          }}>
+                          {v.status}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                </View>
+              </View>
+              {/* )} */}
+            </View>
+          ))}
+          <View style={{height: 20}} />
+
+          {item?.order_otp != 'PENDING' && (
+            <View
+              style={{
+                alignSelf: 'center',
+                borderWidth: 1,
+                paddingHorizontal: 40,
+                borderRadius: 25,
+                marginBottom: 20,
+                paddingVertical: 10,
+                borderColor: theme.colors.C4C4C4,
+                marginHorizontal: 20,
+              }}>
+              <TextFormatted style={{fontSize: 18, fontWeight: '700'}}>
+                Pick Code: {item?.order_otp}
+              </TextFormatted>
+            </View>
+          )}
+          <View>
+            <View
+              style={{
+                borderWidth: 1,
+                borderRadius: 10,
+                marginVertical: 20,
+                paddingVertical: 10,
+                borderColor: theme.colors.C4C4C4,
+                backgroundColor: theme.colors.Black,
+                // marginHorizontal: 2/0,
+              }}>
+              <View
+                style={{
+                  alignSelf: 'center',
+                  borderRadius: 25,
+                  marginVertical: 20,
+                  paddingVertical: 7,
+                  marginHorizontal: 20,
+                  position: 'absolute',
+                  top: -40,
+                  backgroundColor: theme.colors.yellow,
+                }}>
+                <TextFormatted
+                  style={{fontWeight: '500', paddingHorizontal: 80}}>
+                  Contains
+                </TextFormatted>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingHorizontal: 30,
+                  marginTop: 10,
+                }}>
+                <Image
+                  source={{uri: 'https://picsum.photos/500'}}
+                  style={{
+                    height: 60,
+                    width: 60,
+                    resizeMode: 'contain',
+                    borderRadius: 50,
+                    marginRight: 20,
+                  }}
+                />
+                <TextFormatted
+                  style={{
+                    fontSize: 16,
+                    fontWeight: '700',
+                    color: theme.colors.primary,
+                  }}>
+                  {item?.last_update}
+                </TextFormatted>
+              </View>
+
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  paddingHorizontal: 30,
+                  marginTop: 20,
+                  justifyContent: 'space-between',
+                }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    if (
+                      item?.image_1 ==
+                      'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                    ) {
+                      setModalThree(true);
+                      setCurrentID(1);
+                      setOrderID(item?.id);
+                    } else {
+                      navigation.navigate('ImageZoom', {
+                        image: item?.image_1,
+                      });
+                    }
+                  }}>
+                  <Image
+                    // source={{uri: uri.uri}}
+                    source={
+                      item?.image_1 ==
+                      'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                        ? uri == ''
+                          ? require('../../../../../assets/bi_camera.png')
+                          : {uri: uri.uri}
+                        : {uri: item?.image_1}
+                    }
+                    style={{
+                      height: 30,
+                      width: 30,
+                      resizeMode: 'cover',
+                      borderRadius: 3,
+                    }}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    if (
+                      item?.image_2 ==
+                      'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                    ) {
+                      setModalThree(true);
+                      setCurrentID(2);
+                      setOrderID(item?.id);
+                    } else {
+                      navigation.navigate('ImageZoom', {
+                        image: item?.image_2,
+                      });
+                    }
+                  }}>
+                  <Image
+                    source={
+                      item?.image_2 ==
+                      'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                        ? uri == ''
+                          ? require('../../../../../assets/bi_camera.png')
+                          : {uri: uri.uri}
+                        : {uri: item?.image_2}
+                    }
+                    style={{
+                      height: 30,
+                      width: 30,
+                      resizeMode: 'cover',
+                      borderRadius: 3,
+                    }}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    if (
+                      item?.image_3 ==
+                      'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                    ) {
+                      setModalThree(true);
+                      setCurrentID(3);
+                      setOrderID(item?.id);
+                    } else {
+                      navigation.navigate('ImageZoom', {
+                        image: item?.image_3,
+                      });
+                    }
+                  }}>
+                  <Image
+                    source={
+                      item?.image_3 ==
+                      'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                        ? uri == ''
+                          ? require('../../../../../assets/bi_camera.png')
+                          : {uri: uri.uri}
+                        : {uri: item?.image_3}
+                    }
+                    style={{
+                      height: 30,
+                      width: 30,
+                      resizeMode: 'cover',
+                      borderRadius: 3,
+                    }}
+                  />
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => {
+                    if (
+                      item?.video_1 ==
+                      'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                    ) {
+                      pickVideo();
+                      setOrderID(item?.id);
+                      AddVideo();
+                    } else {
+                      navigation.navigate('FullVideo', {
+                        uri: item?.video_1,
+                      });
+                    }
+                  }}>
+                  {item?.video_1 ==
+                    'https://pickpic4u.com/app.pickpic4u.com/uploads/NO' &&
+                  video == '' ? (
+                    <Image
+                      source={require('../../../../../assets/video.png')}
+                      style={{
+                        height: 30,
+                        width: 30,
+                        resizeMode: 'contain',
+                      }}
+                    />
+                  ) : (
+                    <View
+                      style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: 3,
+                      }}>
+                      <Video
+                        paused={true}
+                        source={
+                          item?.video_1 ==
+                          'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                            ? {uri: video?.uri}
+                            : {uri: item?.video_1}
+                        }
+                        ref={ref => (videoRef.current = ref)}
+                        onBuffer={onBuffer}
+                        onError={onError}
+                        style={{
+                          height: 40,
+                          width: 40,
+                          borderRadius: 3,
+                        }}
+                        resizeMode="cover"
+                        // controls={true}
+                        // audioOnly={false}
+                        play
+                      />
+                    </View>
+                  )}
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Image
+                    source={require('../../../../../assets/mic.png')}
+                    style={{height: 30, width: 30, resizeMode: 'contain'}}
+                  />
+                </TouchableOpacity>
+                {/* <TouchableOpacity>
+              <Image
+                source={require('../../../../../assets/plus_white.png')}
+                style={{height: 30, width: 30, resizeMode: 'contain'}}
+              />
+            </TouchableOpacity> */}
+              </View>
+            </View>
+
+            {/* STEP 2 */}
+
+            {/* <View
+          style={{
+            borderWidth: 1,
+            borderRadius: 10,
+            marginVertical: 20,
+            paddingVertical: 10,
+            borderColor: theme.colors.C4C4C4,
+            backgroundColor: theme.colors.Black,
+            marginHorizontal: 20,
+          }}>
+          <View
+            style={{
+              alignSelf: 'center',
+              borderRadius: 25,
+              marginVertical: 20,
+              paddingVertical: 7,
+              marginHorizontal: 20,
+              position: 'absolute',
+              top: -40,
+              backgroundColor: theme.colors.red,
+            }}>
+            <TextFormatted
+              style={{fontWeight: '500', paddingHorizontal: 80}}>
+              Package Ready
+            </TextFormatted>
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingHorizontal: 30,
+              marginTop: 10,
+            }}>
+            <Image
+              source={{uri: 'https://picsum.photos/500'}}
+              style={{
+                height: 60,
+                width: 60,
+                resizeMode: 'contain',
+                borderRadius: 50,
+                marginRight: 20,
+              }}
+            />
+            <View style={{alignItems: 'center'}}>
+              <TextFormatted
+                style={{
+                  fontSize: 16,
+                  fontWeight: '700',
+                  color: theme.colors.primary,
+                }}>
+                04:30 PM 11/04/2022
+              </TextFormatted>
+              <Image
+                source={require('../../../../../assets/gps.png')}
+                style={{
+                  height: 60,
+                  width: 90,
+                  resizeMode: 'contain',
+                  marginRight: 20,
+                }}
+              />
+            </View>
+            <Image
+              source={require('../../../../../assets/clock.png')}
+              style={{
+                height: 40,
+                width: 40,
+                resizeMode: 'contain',
+                borderRadius: 50,
+                marginLeft: 20,
+              }}
+            />
+          </View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingHorizontal: 30,
+              marginTop: 20,
+              justifyContent: 'space-between',
+            }}>
+            <Image
+              source={require('../../../../../assets/bi_camera.png')}
+              style={{height: 30, width: 30, resizeMode: 'contain'}}
+            />
+            <Image
+              source={require('../../../../../assets/bi_camera.png')}
+              style={{height: 30, width: 30, resizeMode: 'contain'}}
+            />
+            <Image
+              source={require('../../../../../assets/bi_camera.png')}
+              style={{height: 30, width: 30, resizeMode: 'contain'}}
+            />
+            <Image
+              source={require('../../../../../assets/video.png')}
+              style={{height: 30, width: 30, resizeMode: 'contain'}}
+            />
+            <Image
+              source={require('../../../../../assets/mic.png')}
+              style={{height: 30, width: 30, resizeMode: 'contain'}}
+            />
+            <Image
+              source={require('../../../../../assets/plus_white.png')}
+              style={{height: 30, width: 30, resizeMode: 'contain'}}
+            />
+          </View>
+        </View> */}
+
+            {/* STEP 3 */}
+
+            {/* <View
+          style={{
+            alignSelf: 'center',
+            borderWidth: 1,
+            paddingHorizontal: 40,
+            borderRadius: 25,
+            marginVertical: 20,
+            paddingVertical: 10,
+            borderColor: theme.colors.C4C4C4,
+            marginHorizontal: 20,
+          }}>
+          <TextFormatted style={{fontSize: 18, fontWeight: '700'}}>
+            Pick Code: 9999
+          </TextFormatted>
+        </View> */}
+
+            {/* <View
+          style={{
+            borderWidth: 1,
+            borderRadius: 10,
+            marginVertical: 20,
+            paddingVertical: 10,
+            borderColor: theme.colors.C4C4C4,
+            backgroundColor: theme.colors.Black,
+            marginHorizontal: 20,
+          }}>
+          <View
+            style={{
+              alignSelf: 'center',
+              borderRadius: 25,
+              marginVertical: 20,
+              paddingVertical: 7,
+              marginHorizontal: 20,
+              position: 'absolute',
+              top: -40,
+              backgroundColor: theme.colors.red,
+            }}>
+            <TextFormatted
+              style={{fontWeight: '500', paddingHorizontal: 80}}>
+              Recieved & Paid
+            </TextFormatted>
+          </View>
+
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingHorizontal: 30,
+              marginTop: 10,
+            }}>
+            <Image
+              source={{uri: 'https://picsum.photos/500'}}
+              style={{
+                height: 60,
+                width: 60,
+                resizeMode: 'contain',
+                borderRadius: 50,
+                marginRight: 20,
+              }}
+            />
+            <View style={{alignItems: 'center'}}>
+              <TextFormatted
+                style={{
+                  fontSize: 16,
+                  fontWeight: '700',
+                  color: theme.colors.primary,
+                }}>
+                04:30 PM 11/04/2022
+              </TextFormatted>
+              <Image
+                source={require('../../../../../assets/gps.png')}
+                style={{
+                  height: 60,
+                  width: 90,
+                  resizeMode: 'contain',
+                  marginRight: 20,
+                }}
+              />
+            </View>
+            <Image
+              source={require('../../../../../assets/clock.png')}
+              style={{
+                height: 40,
+                width: 40,
+                resizeMode: 'contain',
+                borderRadius: 50,
+                marginLeft: 20,
+                opacity: 0,
+              }}
+            />
+          </View>
+
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              paddingHorizontal: 30,
+              marginTop: 20,
+              justifyContent: 'space-between',
+            }}>
+            <Image
+              source={require('../../../../../assets/bi_camera.png')}
+              style={{height: 30, width: 30, resizeMode: 'contain'}}
+            />
+            <Image
+              source={require('../../../../../assets/bi_camera.png')}
+              style={{height: 30, width: 30, resizeMode: 'contain'}}
+            />
+            <Image
+              source={require('../../../../../assets/bi_camera.png')}
+              style={{height: 30, width: 30, resizeMode: 'contain'}}
+            />
+            <Image
+              source={require('../../../../../assets/video.png')}
+              style={{height: 30, width: 30, resizeMode: 'contain'}}
+            />
+            <Image
+              source={require('../../../../../assets/mic.png')}
+              style={{height: 30, width: 30, resizeMode: 'contain'}}
+            />
+            <Image
+              source={require('../../../../../assets/plus_white.png')}
+              style={{height: 30, width: 30, resizeMode: 'contain'}}
+            />
+          </View>
+
+          <View style={{alignItems: 'center', marginTop: 20}}>
+            <TextFormatted
+              style={{
+                fontWeight: '500',
+                color: theme.colors.primary,
+              }}>
+              Total Cost:{' '}
+              <TextFormatted
+                style={{
+                  fontSize: 16,
+                  fontWeight: '700',
+                  color: theme.colors.primary,
+                }}>
+                $36.00
+              </TextFormatted>
+            </TextFormatted>
+            <Image
+              source={require('../../../../../assets/qr.png')}
+              style={{
+                height: 110,
+                width: 110,
+                resizeMode: 'contain',
+                marginTop: 10,
+              }}
+            />
+          </View>
+          <TouchableOpacity
+            style={{
+              backgroundColor: theme.colors.Tabbg,
+              alignSelf: 'center',
+              paddingHorizontal: 15,
+              paddingVertical: 8,
+              borderRadius: 10,
+              marginTop: 10,
+            }}>
+            <TextFormatted style={{fontSize: 16, fontWeight: '700'}}>
+              Pay By Code
+            </TextFormatted>
+          </TouchableOpacity>
+          <View
+            style={{
+              backgroundColor: theme.colors.C4C4C4,
+              height: 1,
+              marginHorizontal: 20,
+              marginTop: 20,
+            }}
+          />
+          <View style={{alignItems: 'center', marginTop: 20}}>
+            <Image
+              source={require('../../../../../assets/qr.png')}
+              style={{
+                height: 110,
+                width: 110,
+                resizeMode: 'contain',
+                marginTop: 10,
+              }}
+            />
+          </View>
+          <TouchableOpacity
+            style={{
+              backgroundColor: theme.colors.Tabbg,
+              alignSelf: 'center',
+              paddingHorizontal: 15,
+              paddingVertical: 8,
+              borderRadius: 10,
+              marginTop: 10,
+            }}>
+            <TextFormatted style={{fontSize: 16, fontWeight: '700'}}>
+              Pay By Code
+            </TextFormatted>
+          </TouchableOpacity>
+          <View style={{height: 30}} />
+          <SolidButton
+            borderRadius={50}
+            text={'Payment Completed'}
+            backgroundColor={theme.colors.green}
+          />
+          <View style={{height: 30}} />
+        </View>
+        <View
+          style={{
+            marginTop: 20,
+            marginHorizontal: 20,
+            marginBottom: 50,
+          }}>
+          <SolidButton
+            borderRadius={50}
+            text={'Order Completed'}
+            backgroundColor={theme.colors.green}
+          />
+        </View> */}
+          </View>
+        </View>
+      )}
+    </View>
+  );
+}

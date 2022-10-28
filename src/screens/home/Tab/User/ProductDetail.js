@@ -65,7 +65,7 @@ export default function LogOut({navigation}) {
   const scrollRef = useRef();
   // alert(JSON.stringify(selectedProduct));
   // alert(JSON.stringify(params.item.avaibility_atstor));
-  // console.log('params', params);
+  // console.log('selectedProduct', selectedProduct);
 
   async function getProduct_Like(type) {
     try {
@@ -131,6 +131,7 @@ export default function LogOut({navigation}) {
       body.append('post_id', params.item.id);
       body.append('extra_details', details);
       body.append('availability', selected);
+      body.append('image_coordinates', selectedProduct);
 
       console.log('create_post_order_body', body);
 
@@ -451,7 +452,7 @@ export default function LogOut({navigation}) {
                       //     ) / 1,
                       imageStyle={{
                         borderRadius: 10,
-                        resizeMode: 'cover',
+                        resizeMode: 'stretch',
                         width:
                           (1 * 80) /
                           (parseFloat(item[2]) - parseFloat(item[0])),

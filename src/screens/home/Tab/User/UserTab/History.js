@@ -98,12 +98,13 @@ export default function History({navigation}) {
               flexDirection: 'row',
               borderWidth: 1,
               borderColor: theme.colors.green,
+              alignItems: 'center',
             }}>
             <View
               style={{
                 backgroundColor: 'transparent',
                 width: dimensions.width / 3.5,
-                height: dimensions.width / 3.5,
+                height: dimensions.width / 3,
                 borderRadius: 10,
                 overflow: 'hidden',
               }}>
@@ -111,7 +112,7 @@ export default function History({navigation}) {
                 source={{uri: item?.post?.image}}
                 style={{
                   width: dimensions.width / 3.5,
-                  height: dimensions.width / 3.5,
+                  height: dimensions.width / 3,
                   backgroundColor: theme.colors.Tabbg,
                 }}
                 imageStyle={{
@@ -125,18 +126,8 @@ export default function History({navigation}) {
                 paddingHorizontal: 15,
                 paddingTop: 10,
               }}>
-              <View
-                style={{
-                  // flexDirection: 'row',
-                  alignItems: 'flex-start',
-                  // justifyContent: 'space-between',
-                }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    // justifyContent: 'space-between',
-                  }}>
+              <View style={{alignItems: 'flex-start'}}>
+                <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <Text
                     style={{
                       fontSize: 19,
@@ -188,7 +179,7 @@ export default function History({navigation}) {
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
-                  marginTop: 15,
+                  marginVertical: 15,
                 }}>
                 <TouchableOpacity
                   activeOpacity={0.7}

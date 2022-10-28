@@ -600,8 +600,8 @@ export default function LogOut({navigation}) {
     <View style={{flex: 1, backgroundColor: theme.colors.primary}}>
       <Statusbar backgroundColor="#fff" barStyle="dark-content" />
       <ScrollView
-        scrollEnabled={false}
-        contentContainerStyle={{flex: 1, justifyContent: 'space-between'}}>
+        // scrollEnabled={false}
+        contentContainerStyle={{justifyContent: 'space-between'}}>
         <View>
           <Header navigation={navigation} Headertext={'Shop'} />
           <View>

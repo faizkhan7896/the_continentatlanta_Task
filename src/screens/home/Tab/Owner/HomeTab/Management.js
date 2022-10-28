@@ -297,20 +297,21 @@ export default function History({navigation, setGet_followed_event}) {
                 borderWidth: 1,
                 borderColor: theme.colors.green,
                 flexDirection: 'row',
+                alignItems: 'center',
               }}>
               <View
                 style={{
                   backgroundColor: 'transparent',
                   width: dimensions.width / 3.5,
-                  height: dimensions.width / 3.5,
+                  height: dimensions.width / 3,
                   borderRadius: 10,
                   overflow: 'hidden',
                 }}>
                 <ImageBackground
-                  source={{uri: item.image}}
+                  source={{uri: item?.image}}
                   style={{
                     width: dimensions.width / 3.5,
-                    height: dimensions.width / 3.5,
+                    height: dimensions.width / 3,
                     backgroundColor: theme.colors.Tabbg,
                   }}
                   imageStyle={{
