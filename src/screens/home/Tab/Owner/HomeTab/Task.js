@@ -40,8 +40,10 @@ export default function History({navigation, setGet_followed_event}) {
   const [orderID, setOrderID] = useState(0);
   const [video, setVideo] = useState('');
   // alert(JSON.stringify(video.uri));
-  // alert(JSON.stringify(orderID));
   const videoRef = useRef(null);
+
+  const [productstatus, setproductstatus] = useState([]);
+  // alert(JSON.stringify(productstatus));
 
   async function GetProduct(silent = false) {
     try {
@@ -403,6 +405,7 @@ export default function History({navigation, setGet_followed_event}) {
             videoRef={videoRef}
             onBuffer={onBuffer}
             onError={onError}
+            setproductstatus={setproductstatus}
           />
         )}
       />
@@ -552,11 +555,15 @@ function OrderItem({
   videoRef,
   onBuffer,
   onError,
+  setproductstatus,
 }) {
   const dimensions = useWindowDimensions();
 
   const [visible, setVisible] = useState(false);
   const [Step3, setStep3] = useState(false);
+  const [status, setStatus] = useState([]);
+
+  // alert(JSON.stringify(visible));
   return (
     <View
       // onPress={() =>
@@ -1010,6 +1017,7 @@ function OrderItem({
                               <TouchableOpacity
                                 onPress={() => {
                                   UpdateOrder(v.id, 'ACCEPT', item.id);
+                                  // setproductstatus(I => [...I, v?.id]);
                                 }}>
                                 <Image
                                   source={require('../../../../../assets/righticon.png')}
@@ -1026,7 +1034,8 @@ function OrderItem({
                             <View style={{}}>
                               <TouchableOpacity
                                 onPress={() =>
-                                  UpdateOrder(v.id, 'CANCEL', item.id)
+                                  // UpdateOrder(v.id, 'CANCEL', v.id)
+                                  setproductstatus(I => [...I, v?.id])
                                 }>
                                 <Image
                                   source={require('../../../../../assets/wrongicon.png')}
@@ -1040,30 +1049,6 @@ function OrderItem({
                               </TouchableOpacity>
                             </View>
                           </View>
-                          {/* ) : (
-                      <View
-                        style={{
-                          backgroundColor:
-                            v?.status == 'PENDING'
-                              ? theme.colors.yellow
-                              : v?.status == 'ACCEPT'
-                              ? theme.colors.green
-                              : theme.colors.red,
-                          paddingVertical: 15,
-                          borderRadius: 6,
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          paddingHorizontal: 15,
-                        }}>
-                        <Text
-                          style={{
-                            fontWeight: '600',
-                            color: theme.colors.Black,
-                          }}>
-                          {v?.status}
-                        </Text>
-                      </View> */}
-                          {/* )} */}
                         </View>
                       </View>
                     </View>
@@ -1072,6 +1057,17 @@ function OrderItem({
               ))}
             </View>
           )}
+          <View style={{marginTop: 20}}>
+            <SolidButton
+              text="SUBMIT"
+              backgroundColor={theme.colors.green}
+              onPress={() => {
+                // alert(JSON.stringify(params?.item?.post_position[0].position));
+              }}
+              marginHorizontal={1}
+              // loading={loading}
+            />
+          </View>
         </View>
       )}
       {Step3 == true && (
@@ -1080,20 +1076,17 @@ function OrderItem({
             flex: 1,
             backgroundColor: theme.colors.primary,
           }}>
-          {item?.sub_orders?.map((v, i) => (
+          {/* {item?.sub_orders?.map((v, i) => (
             <View style={{marginBottom: 0}}>
-              {/* {v.status == 'PENDING' && ( */}
               <View
                 style={{
                   borderRadius: 12,
                   backgroundColor: theme.colors.primary,
-                  // marginHorizontal: 13,
                   marginTop: 15,
                   flexDirection: 'row',
                   borderWidth: 1,
                   borderColor: theme.colors.green,
                 }}>
-                {/* {alert(JSON.stringify(v.id))} */}
                 <View
                   style={{
                     backgroundColor: 'transparent',
@@ -1136,10 +1129,6 @@ function OrderItem({
                           parseFloat(v.image_coordinates?.position[0])
                         ) / 1,
                     }}
-                    // imageStyle={{
-                    //   resizeMode: 'cover',
-                    //   borderRadius: 10,
-                    // }}
                   />
                 </View>
                 <View style={{paddingVertical: 10}}>
@@ -1244,10 +1233,9 @@ function OrderItem({
                   </View>
                 </View>
               </View>
-              {/* )} */}
             </View>
-          ))}
-          <View style={{height: 20}} />
+          ))} */}
+          {/* <View style={{height: 20}} /> */}
 
           {item?.order_otp != 'PENDING' && (
             <View

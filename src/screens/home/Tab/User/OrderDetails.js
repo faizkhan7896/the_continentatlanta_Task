@@ -64,6 +64,37 @@ export default function Orders({navigation}) {
     // alert('error raised ....', e);
   };
 
+  async function AcceptOrder(id) {
+    try {
+      setLoading(true);
+      const url =
+        baseUrl +
+        'accept_cancel_status_parent_orders?status=ACCEPT&order_id=' +
+        id;
+
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {'Cache-Control': 'no-cache'},
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        // setData(rslt.post_data.reverse());
+        ShowToast('Order Submitted Successfully');
+        navigation.goBack();
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+      }
+    } catch (e) {
+      // alert('An error occured.');
+      ShowToast('An error occured.', 'error');
+
+      console.log(e);
+    }
+  }
+
   async function CancelOrder(id) {
     try {
       setLoading(true);
@@ -93,7 +124,6 @@ export default function Orders({navigation}) {
       console.log(e);
     }
   }
-
   const SubItem = ({onPress, text, amount}) => {
     return (
       <View
@@ -252,7 +282,7 @@ export default function Orders({navigation}) {
                     paddingHorizontal: 10,
                   }}></View>
                 <TouchableOpacity
-                  onPress={() => CancelOrder(params?.id)}
+                  // onPress={() => CancelOrder(params?.id)}
                   activeOpacity={0.7}
                   style={{
                     alignItems: 'center',
@@ -478,6 +508,42 @@ export default function Orders({navigation}) {
                   </View>
                 </View>
               ))}
+              <View
+                style={{
+                  marginTop: 20,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                {params?.status == 'PENDING' && (
+                  <View style={{}}>
+                    <View style={{flex: 1}}>
+                      <SolidButton
+                        text="Cancel all"
+                        backgroundColor={theme.colors.red}
+                        onPress={() => {
+                          // alert(JSON.stringify(params?.item?.post_position[0].position));
+                          CancelOrder(params?.id);
+                        }}
+                        marginHorizontal={1}
+                        // loading={loading}
+                      />
+                    </View>
+                    <View style={{flex: 0.12}} />
+                    <View style={{flex: 1}}>
+                      <SolidButton
+                        text="SUBMIT"
+                        backgroundColor={theme.colors.green}
+                        onPress={() => {
+                          // alert(JSON.stringify(params?.item?.post_position[0].position));
+                          AcceptOrder(params?.id);
+                        }}
+                        marginHorizontal={1}
+                        // loading={loading}
+                      />
+                    </View>
+                  </View>
+                )}
+              </View>
             </View>
             <View style={{height: 20}} />
             {params?.status == 'ACCEPT' && (
@@ -485,25 +551,23 @@ export default function Orders({navigation}) {
                 style={{
                   flex: 1,
                   backgroundColor: theme.colors.primary,
-                  marginHorizontal: 15,
+                  // marginHorizontal: 15,
                 }}>
-                {params?.order_otp != 'PENDING' && (
-                  <View
-                    style={{
-                      alignSelf: 'center',
-                      borderWidth: 1,
-                      paddingHorizontal: 40,
-                      borderRadius: 25,
-                      marginBottom: 20,
-                      paddingVertical: 10,
-                      borderColor: theme.colors.C4C4C4,
-                      marginHorizontal: 20,
-                    }}>
-                    <TextFormatted style={{fontSize: 18, fontWeight: '700'}}>
-                      Pick Code: {params?.order_otp}
-                    </TextFormatted>
-                  </View>
-                )}
+                <View
+                  style={{
+                    alignSelf: 'center',
+                    borderWidth: 1,
+                    paddingHorizontal: 40,
+                    borderRadius: 25,
+                    marginBottom: 20,
+                    paddingVertical: 10,
+                    borderColor: theme.colors.C4C4C4,
+                    marginHorizontal: 20,
+                  }}>
+                  <TextFormatted style={{fontSize: 18, fontWeight: '700'}}>
+                    Pick Code: {params?.order_otp}
+                  </TextFormatted>
+                </View>
                 <View>
                   <View
                     style={{
