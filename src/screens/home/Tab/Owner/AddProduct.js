@@ -467,12 +467,12 @@ export default function LogOut({navigation}) {
           ),
         ).join(','),
       );
-      body.append('image[]', {
+      body.append('image', {
         uri: uri.uri,
         type: uri.type,
         name: uri.fileName,
       });
-      // console.log(body);
+      console.log(body);
 
       console.log('JSON.stringify(body)', JSON.stringify(body));
       // return;
@@ -816,7 +816,7 @@ export default function LogOut({navigation}) {
                     }}
                     imageStyle={{
                       borderRadius: 10,
-                      resizeMode: 'cover',
+                      resizeMode: 'stretch',
                       width:
                         ((dimensionsss.width - 30) * 80) / (item[2] - item[0]),
                       height:
@@ -1039,7 +1039,8 @@ export default function LogOut({navigation}) {
             style={{
               backgroundColor: theme.colors.primary,
               width: Dimensions.get('window').width - 40,
-              height: Dimensions.get('window').width - 100,
+              height: Dimensions.get('window').width - 200,
+              // height: Dimensions.get('window').width - 100,
               alignItems: 'center',
               borderRadius: 20,
               borderWidth: 0.4,
@@ -1111,7 +1112,7 @@ export default function LogOut({navigation}) {
                   editable={false}
                 />
               </View>
-              <View
+              {/* <View
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
@@ -1181,7 +1182,7 @@ export default function LogOut({navigation}) {
                   setSelected={setTimePeriod}
                   placeholder={time}
                 />
-              </View>
+              </View> */}
               <TouchableOpacity
                 onPress={() => {
                   if (price == '') {
@@ -1214,7 +1215,10 @@ export default function LogOut({navigation}) {
                   width: Dimensions.get('window').width - 80,
                   marginTop: 10,
                   alignSelf: 'center',
-                  // borderWidth: 1,
+                  borderWidth: 0.5,
+                  paddingVertical: 10,
+                  borderColor: theme.colors.SubItem,
+                  borderRadius: 5,
                 }}>
                 <TextFormated style={{fontSize: 16, fontWeight: '600'}}>
                   OK

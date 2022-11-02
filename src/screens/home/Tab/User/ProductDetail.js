@@ -61,9 +61,10 @@ export default function LogOut({navigation}) {
   const [selected_2, setSelected_2] = useState('');
 
   const [selectedProduct, setSelectedProduct] = useState([]);
+  const [ProductIndex, setProductIndex] = useState([]);
 
   const scrollRef = useRef();
-  // alert(JSON.stringify(selectedProduct));
+  // alert(JSON.stringify(ProductIndex));
   // alert(JSON.stringify(params.item.avaibility_atstor));
   // console.log('selectedProduct', selectedProduct);
 
@@ -132,6 +133,7 @@ export default function LogOut({navigation}) {
       body.append('extra_details', details);
       body.append('availability', selected);
       body.append('image_coordinates', selectedProduct);
+      body.append('selected_position_index', ProductIndex.join(','));
 
       console.log('create_post_order_body', body);
 
@@ -182,7 +184,7 @@ export default function LogOut({navigation}) {
                 }}
                 imageStyle={{resizeMode: 'cover'}}>
                 {!!visible &&
-                  params?.item?.post_position?.map(item => (
+                  params?.item?.post_position?.map((item, i) => (
                     <TouchableOpacity
                       onPress={() => {
                         // setSelectedProduct(item);
@@ -195,6 +197,7 @@ export default function LogOut({navigation}) {
                             item?.position[3],
                           ],
                         ]);
+                        setProductIndex(I => [...I, i]);
                         // setModal(true);
                       }}
                       style={{
@@ -427,32 +430,10 @@ export default function LogOut({navigation}) {
                         borderRadius: 10,
                         overflow: 'hidden',
                       }}
-                      // imageStyle={{
-                      //   borderRadius: 10,
-                      //   resizeMode: 'contain',
-                      //   width:
-                      //     (1 * 30) /
-                      //     (parseFloat(item[2]) - parseFloat(item[0])),
-                      //   height:
-                      //     (1 * 60) /
-                      //     (parseFloat(item[3]) - parseFloat(item[1])),
-                      //   borderWidth: 1,
-                      //   top:
-                      //     -(
-                      //       (dimensionsss.height /
-                      //         15 /
-                      //         (parseFloat(item[3]) - parseFloat(item[1]))) *
-                      //       parseFloat(item[1])
-                      //     ) / 1,
-                      //   left:
-                      //     -(
-                      //       ((1 * 30) /
-                      //         (parseFloat(item[2]) - parseFloat(item[0]))) *
-                      //       parseFloat(item[0])
-                      //     ) / 1,
                       imageStyle={{
                         borderRadius: 10,
                         resizeMode: 'stretch',
+                        //   resizeMode: 'contain',
                         width:
                           (1 * 80) /
                           (parseFloat(item[2]) - parseFloat(item[0])),
@@ -689,8 +670,8 @@ export default function LogOut({navigation}) {
                 </TextFormated>
               </TouchableOpacity>
 
-              {params.item.ask_status == 'YES' && <View style={{width: 10}} />}
-
+              {/* {params.item.ask_status == 'YES' && <View style={{width: 10}} />} */}
+              <View style={{width: 10}} />
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => {
@@ -777,7 +758,8 @@ export default function LogOut({navigation}) {
                 </TextFormated>
               </TouchableOpacity>
 
-              {params.item.ask_status == 'YES' && <View style={{width: 10}} />}
+              {/* {params.item.ask_status == 'YES' && <View style={{width: 10}} />} */}
+              <View style={{width: 10}} />
 
               <TouchableOpacity
                 activeOpacity={0.7}

@@ -316,7 +316,7 @@ export default function Orders({navigation}) {
             </View>
           </TouchableOpacity>
           <View style={{height: 20}} />
-          <SubItem text="Total" amount={'$' + params?.post?.price} />
+          {/* <SubItem text="Total" amount={'$' + } /> */}
 
           <View style={{marginVertical: 20}}>
             <SolidButton
@@ -438,7 +438,7 @@ export default function Orders({navigation}) {
                                   fontWeight: '600',
                                   color: theme.colors.Black,
                                 }}>
-                                {params?.post?.price}
+                                {v?.price}
                               </Text>
                             </View>
                           </View>
@@ -515,7 +515,7 @@ export default function Orders({navigation}) {
                   alignItems: 'center',
                 }}>
                 {params?.status == 'PENDING' && (
-                  <View style={{}}>
+                  <View style={{flexDirection: 'row'}}>
                     <View style={{flex: 1}}>
                       <SolidButton
                         text="Cancel all"

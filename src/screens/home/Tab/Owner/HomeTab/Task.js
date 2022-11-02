@@ -125,6 +125,41 @@ export default function History({navigation, setGet_followed_event}) {
       console.log(e);
     }
   }
+  async function SubmitAvailablity(order_id, status) {
+    try {
+      setLoading(true);
+      const url =
+        baseUrl +
+        'accept_cancel_status_sub_orders?order_id=' +
+        order_id +
+        '&status=' +
+        status;
+      console.log('accept_cancel_status_sub_orders', url);
+      // return;
+
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {'Cache-Control': 'no-cache'},
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        setLoading(false);
+        GetProduct(true);
+        // UpdateOrder(ParentID, 'ACCEPT');
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+        setLoading(false);
+      }
+    } catch (e) {
+      setLoading(false);
+      ShowToast('An error occured.', 'error');
+
+      console.log(e);
+    }
+  }
   // alert(JSON.stringify(auth.id));
   // alert(JSON.stringify(currentID));
 
@@ -374,6 +409,9 @@ export default function History({navigation, setGet_followed_event}) {
     // console.log('error raised', e);
     // alert('error raised ....', e);
   };
+  // useEffect(() => {
+  //   setLoading(false);
+  // }, []);
 
   return (
     <View style={{flex: 1}}>
@@ -406,6 +444,8 @@ export default function History({navigation, setGet_followed_event}) {
             onBuffer={onBuffer}
             onError={onError}
             setproductstatus={setproductstatus}
+            SubmitAvailablity={SubmitAvailablity}
+            navigation={navigation}
           />
         )}
       />
@@ -552,33 +592,29 @@ function OrderItem({
   setCurrentID,
   setOrderID,
   video,
+  navigation,
   videoRef,
   onBuffer,
   onError,
   setproductstatus,
+  SubmitAvailablity,
 }) {
   const dimensions = useWindowDimensions();
 
   const [visible, setVisible] = useState(false);
   const [Step3, setStep3] = useState(false);
-  const [status, setStatus] = useState([]);
+  const [status, setStatus] = useState({});
 
-  // alert(JSON.stringify(visible));
+  // alert(JSON.stringify(Object.name(status)));
+  // alert(JSON.stringify(Object.keys(status)));
   return (
     <View
-      // onPress={() =>
-      //   navigation.navigate('HomeScreensNavigation', {
-      //     screen: 'EventDetail',
-      //     item,
-      //   })
-      // }
       style={{
         borderRadius: 12,
         backgroundColor: theme.colors.primary,
         marginHorizontal: 13,
         marginVertical: 15,
       }}>
-      {/* {alert(JSON.stringify(item.image_coordinates))} */}
       <TouchableOpacity
         style={{
           borderRadius: 12,
@@ -880,20 +916,12 @@ function OrderItem({
         </TouchableOpacity>
       </View>
 
-      {/* {item?.status != 'CANCEL' && ( */}
       <View style={{marginVertical: 20}}>
         <SolidButton
           source={require('../../../../../assets/ScrollDown.png')}
           backgroundColor={theme.colors.ScrollDown}
           onPress={() => {
-            if (item?.status == 'ACCEPT') {
-              setStep3(!Step3);
-              console.log('ACCEPT');
-            }
-            if (item?.status == 'PENDING') {
-              setVisible(!visible);
-              console.log('PENDING');
-            }
+            setVisible(!visible);
           }}
           marginHorizontal={0.1}
         />
@@ -901,171 +929,193 @@ function OrderItem({
       {/* )} */}
       {visible == true && (
         <View>
-          {item?.status == 'PENDING' && (
-            <View>
-              {item?.sub_orders?.map((v, i) => (
-                <View>
-                  {v.status == 'PENDING' && (
+          {/* {item?.status == 'PENDING' && ( */}
+          <View>
+            {item?.sub_orders?.map((v, i) => (
+              <View>
+                <View
+                  style={{
+                    borderRadius: 12,
+                    backgroundColor: theme.colors.primary,
+                    // marginHorizontal: 13,
+                    marginTop: 15,
+                    flexDirection: 'row',
+                    borderWidth: 1,
+                    borderColor: theme.colors.green,
+                  }}>
+                  <View
+                    style={{
+                      backgroundColor: 'transparent',
+                      width: dimensions.width / 3.5,
+                      borderRadius: 10,
+                      overflow: 'hidden',
+                    }}>
+                    <ImageBackground
+                      source={{uri: item?.post?.image}}
+                      style={{
+                        width: dimensions.width / 3.5,
+                        height: dimensions.width / 3.5,
+                        backgroundColor: theme.colors.Tabbg,
+                      }}
+                      imageStyle={{
+                        borderRadius: 10,
+                        resizeMode: 'stretch',
+                        width:
+                          (1 * 80) /
+                          (parseFloat(v.image_coordinates?.position[2]) -
+                            parseFloat(v.image_coordinates?.position[0])),
+                        height:
+                          (1 * 60) /
+                          (parseFloat(v.image_coordinates?.position[3]) -
+                            parseFloat(v.image_coordinates?.position[1])),
+                        borderWidth: 1,
+                        top:
+                          -(
+                            (dimensions.height /
+                              15 /
+                              (parseFloat(v.image_coordinates?.position[3]) -
+                                parseFloat(v.image_coordinates?.position[1]))) *
+                            parseFloat(v.image_coordinates?.position[1])
+                          ) / 1,
+                        left:
+                          -(
+                            ((1 * 80) /
+                              (parseFloat(v.image_coordinates?.position[2]) -
+                                parseFloat(v.image_coordinates?.position[0]))) *
+                            parseFloat(v.image_coordinates?.position[0])
+                          ) / 1,
+                      }}
+                      // imageStyle={{
+                      //   resizeMode: 'cover',
+                      //   borderRadius: 10,
+                      // }}
+                    />
+                  </View>
+                  <View style={{paddingVertical: 10}}>
                     <View
                       style={{
-                        borderRadius: 12,
-                        backgroundColor: theme.colors.primary,
-                        // marginHorizontal: 13,
-                        marginTop: 15,
                         flexDirection: 'row',
-                        borderWidth: 1,
-                        borderColor: theme.colors.green,
+                        alignItems: 'center',
+                        width: dimensions.width / 1.6,
+                        justifyContent: 'space-between',
+                        paddingHorizontal: 15,
                       }}>
-                      {/* {alert(JSON.stringify(v.id))} */}
-                      <View
-                        style={{
-                          backgroundColor: 'transparent',
-                          width: dimensions.width / 3.5,
-                          borderRadius: 10,
-                          overflow: 'hidden',
-                        }}>
-                        <ImageBackground
-                          source={{uri: item?.post?.image}}
-                          style={{
-                            width: dimensions.width / 3.5,
-                            height: dimensions.width / 3.5,
-                            backgroundColor: theme.colors.Tabbg,
-                          }}
-                          imageStyle={{
-                            borderRadius: 10,
-                            resizeMode: 'stretch',
-                            width:
-                              (1 * 80) /
-                              (parseFloat(v.image_coordinates?.position[2]) -
-                                parseFloat(v.image_coordinates?.position[0])),
-                            height:
-                              (1 * 60) /
-                              (parseFloat(v.image_coordinates?.position[3]) -
-                                parseFloat(v.image_coordinates?.position[1])),
-                            borderWidth: 1,
-                            top:
-                              -(
-                                (dimensions.height /
-                                  15 /
-                                  (parseFloat(
-                                    v.image_coordinates?.position[3],
-                                  ) -
-                                    parseFloat(
-                                      v.image_coordinates?.position[1],
-                                    ))) *
-                                parseFloat(v.image_coordinates?.position[1])
-                              ) / 1,
-                            left:
-                              -(
-                                ((1 * 80) /
-                                  (parseFloat(
-                                    v.image_coordinates?.position[2],
-                                  ) -
-                                    parseFloat(
-                                      v.image_coordinates?.position[0],
-                                    ))) *
-                                parseFloat(v.image_coordinates?.position[0])
-                              ) / 1,
-                          }}
-                          // imageStyle={{
-                          //   resizeMode: 'cover',
-                          //   borderRadius: 10,
-                          // }}
-                        />
-                      </View>
-                      <View style={{paddingVertical: 10}}>
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            width: dimensions.width / 1.6,
-                            justifyContent: 'space-between',
-                            paddingHorizontal: 15,
-                          }}>
-                          <View style={{}}>
-                            <View style={{marginTop: 5}}>
-                              <Text
-                                style={{
-                                  fontWeight: '600',
-                                  color: theme.colors.Black,
-                                }}>
-                                Selling Price
-                              </Text>
-                              <View
-                                style={{
-                                  backgroundColor: theme.colors.green + '99',
-                                  paddingVertical: 5,
-                                  borderRadius: 6,
-                                  alignItems: 'center',
-                                  justifyContent: 'center',
-                                  marginTop: 5,
-                                }}>
-                                <Text
-                                  style={{
-                                    fontWeight: '600',
-                                    color: theme.colors.Black,
-                                  }}>
-                                  {item?.post?.price}
-                                </Text>
-                              </View>
-                            </View>
-                          </View>
-
-                          {/* {v.status == 'PENDING' ? ( */}
-                          <View style={{flexDirection: 'row'}}>
-                            <View style={{}}>
-                              <TouchableOpacity
-                                onPress={() => {
-                                  UpdateOrder(v.id, 'ACCEPT', item.id);
-                                  // setproductstatus(I => [...I, v?.id]);
-                                }}>
-                                <Image
-                                  source={require('../../../../../assets/righticon.png')}
-                                  style={{
-                                    width: 30,
-                                    height: 30,
-                                    resizeMode: 'contain',
-                                    marginTop: 15,
-                                  }}
-                                />
-                              </TouchableOpacity>
-                            </View>
-                            <View style={{width: 30}} />
-                            <View style={{}}>
-                              <TouchableOpacity
-                                onPress={() =>
-                                  // UpdateOrder(v.id, 'CANCEL', v.id)
-                                  setproductstatus(I => [...I, v?.id])
-                                }>
-                                <Image
-                                  source={require('../../../../../assets/wrongicon.png')}
-                                  style={{
-                                    width: 30,
-                                    height: 30,
-                                    resizeMode: 'contain',
-                                    marginTop: 15,
-                                  }}
-                                />
-                              </TouchableOpacity>
-                            </View>
+                      <View style={{}}>
+                        <View style={{marginTop: 5}}>
+                          <Text
+                            style={{
+                              fontWeight: '600',
+                              color: theme.colors.Black,
+                            }}>
+                            Order Price
+                          </Text>
+                          <View
+                            style={{
+                              backgroundColor: theme.colors.green + '99',
+                              paddingVertical: 5,
+                              borderRadius: 6,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              marginTop: 5,
+                            }}>
+                            <Text
+                              style={{
+                                fontWeight: '600',
+                                color: theme.colors.Black,
+                                paddingHorizontal: 10,
+                              }}>
+                              {v?.price}
+                            </Text>
                           </View>
                         </View>
                       </View>
+
+                      {/* {v.status == 'PENDING' ? ( */}
+                      <View style={{flexDirection: 'row'}}>
+                        <View style={{}}>
+                          <TouchableOpacity
+                            onPress={() => {
+                              // UpdateOrder(v.id, 'ACCEPT', item.id);
+                              // setproductstatus(I => [...I, v?.id]);
+                              setStatus(i => ({...i, [v.id]: 'ACCEPT'}));
+                            }}>
+                            <Image
+                              source={require('../../../../../assets/righticon.png')}
+                              style={{
+                                width: 30,
+                                height: 30,
+                                resizeMode: 'contain',
+                                marginTop: 15,
+                                tintColor:
+                                  v.status == 'ACCEPT' ||
+                                  Object.keys(status) == v?.id
+                                    ? theme.colors.green
+                                    : theme.colors.Black,
+                              }}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                        <View style={{width: 30}} />
+                        <View style={{}}>
+                          <TouchableOpacity
+                            onPress={() => {
+                              // UpdateOrder(v.id, 'CANCEL', v.id)
+                              // setproductstatus(I => [...I, v?.id])
+                              setStatus(i => ({...i, [v.id]: 'CANCEL'}));
+                            }}>
+                            <Image
+                              source={require('../../../../../assets/wrongicon.png')}
+                              style={{
+                                width: 30,
+                                height: 30,
+                                resizeMode: 'contain',
+                                marginTop: 15,
+                                tintColor:
+                                  v.status == 'CANCEL'
+                                    ? theme.colors.red
+                                    : theme.colors.Black,
+                              }}
+                            />
+                          </TouchableOpacity>
+                        </View>
+                      </View>
                     </View>
-                  )}
+                  </View>
                 </View>
-              ))}
-            </View>
-          )}
+              </View>
+            ))}
+          </View>
           <View style={{marginTop: 20}}>
             <SolidButton
               text="SUBMIT"
               backgroundColor={theme.colors.green}
               onPress={() => {
                 // alert(JSON.stringify(params?.item?.post_position[0].position));
+                SubmitAvailablity(
+                  Object.keys(status).join(','),
+                  Object.values(status).join(','),
+                );
               }}
               marginHorizontal={1}
               // loading={loading}
+            />
+          </View>
+          <View style={{marginVertical: 20}}>
+            <SolidButton
+              source={require('../../../../../assets/ScrollDown.png')}
+              backgroundColor={theme.colors.ScrollDown}
+              onPress={() => {
+                // if (item?.status == 'ACCEPT') {
+                //   setStep3(!Step3);
+                //   console.log('ACCEPT');
+                // }
+                // if (item?.status == 'PENDING') {
+                //   setVisible(!visible);
+                //   console.log('PENDING');
+                // }
+                setStep3(!Step3);
+              }}
+              marginHorizontal={0.1}
             />
           </View>
         </View>
