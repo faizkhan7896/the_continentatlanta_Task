@@ -1,6 +1,6 @@
 import {useRoute} from '@react-navigation/native';
 import moment from 'moment';
-import {default as React, useRef, useState} from 'react';
+import {default as React, useEffect, useRef, useState} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -25,6 +25,10 @@ import TextFormatted, {
 import {baseUrl} from '../../../../utils/constance';
 import {theme} from '../../../../utils/theme';
 import {ShowToast} from '../../../../utils/ToastFunction';
+// import Sound from 'react-native-sound';
+import {createThumbnail} from 'react-native-create-thumbnail';
+
+const Sound = require('react-native-sound');
 
 const data = [
   {
@@ -49,12 +53,58 @@ export default function Orders({navigation}) {
   const [modalTwo, setModalTwo] = useState(false);
   const [selected, setSelected] = useState('');
   const [loading, setLoading] = useState(false);
+  const [Accept_loading, setAccept_Loading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [Step3, setStep3] = useState(false);
-
-  // alert(JSON.stringify(params?.video_1));
-
+  const [playing, setPlaying] = useState(false);
+  const [audioloading, setAudioloading] = useState(false);
+  const [thumb, setThumb] = useState();
+  const soundPlaying = useRef();
   const videoRef = useRef(null);
+  // alert(thumb);
+  // console.log('console.log', thumb);
+
+  const play = () => {
+    if (!params?.audio_1) {
+      return;
+    }
+    setAudioloading(true);
+
+    soundPlaying.current = new Sound(
+      {
+        uri: params?.audio_1,
+      },
+      error => {
+        if (error)
+          ShowToast('failed to load the sound ' + params?.audio_1, 'error');
+        console.log(error, params?.audio_1);
+        setAudioloading(false);
+        setPlaying(true);
+        soundPlaying.current.play(() => setPlaying(false));
+      },
+    );
+  };
+  const pause = () => {
+    soundPlaying.current.pause();
+    setPlaying(false);
+  };
+
+  async function generateThumbnail() {
+    try {
+      const response = await createThumbnail({
+        url: params?.video_1,
+      });
+      setThumb(response.path);
+      console.log('response', response.path);
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  useEffect(() => {
+    generateThumbnail();
+  }, []);
+
   const onBuffer = e => {
     console.log('buffering ....', e);
     // alert('buttering ....', e);
@@ -66,7 +116,7 @@ export default function Orders({navigation}) {
 
   async function AcceptOrder(id) {
     try {
-      setLoading(true);
+      setAccept_Loading(true);
       const url =
         baseUrl +
         'accept_cancel_status_parent_orders?status=ACCEPT&order_id=' +
@@ -84,10 +134,13 @@ export default function Orders({navigation}) {
         // setData(rslt.post_data.reverse());
         ShowToast('Order Submitted Successfully');
         navigation.goBack();
+        setAccept_Loading(false);
       } else {
+        setAccept_Loading(false);
         ShowToast(rslt.message || 'Unknown error', 'error');
       }
     } catch (e) {
+      setAccept_Loading(false);
       // alert('An error occured.');
       ShowToast('An error occured.', 'error');
 
@@ -281,7 +334,7 @@ export default function Orders({navigation}) {
                     // flex: 1,
                     paddingHorizontal: 10,
                   }}></View>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   // onPress={() => CancelOrder(params?.id)}
                   activeOpacity={0.7}
                   style={{
@@ -311,12 +364,11 @@ export default function Orders({navigation}) {
                       CANCEL
                     </TextFormated>
                   )}
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             </View>
           </TouchableOpacity>
           <View style={{height: 20}} />
-          {/* <SubItem text="Total" amount={'$' + } /> */}
 
           <View style={{marginVertical: 20}}>
             <SolidButton
@@ -364,46 +416,42 @@ export default function Orders({navigation}) {
                           height: dimensions.width / 3.5,
                           backgroundColor: theme.colors.Tabbg,
                         }}
-                        // imageStyle={{
-                        //   borderRadius: 10,
-                        //   resizeMode: 'stretch',
-                        //   width:
-                        //     (1 * 80) /
-                        //     (parseFloat(v.image_coordinates?.position[2]) -
-                        //       parseFloat(v.image_coordinates?.position[0])),
-                        //   height:
-                        //     (1 * 60) /
-                        //     (parseFloat(v.image_coordinates?.position[3]) -
-                        //       parseFloat(v.image_coordinates?.position[1])),
-                        //   borderWidth: 1,
-                        //   top:
-                        //     -(
-                        //       (dimensions.height /
-                        //         15 /
-                        //         (parseFloat(
-                        //           v.image_coordinates?.position[3],
-                        //         ) -
-                        //           parseFloat(
-                        //             v.image_coordinates?.position[1],
-                        //           ))) *
-                        //       parseFloat(v.image_coordinates?.position[1])
-                        //     ) / 1,
-                        //   left:
-                        //     -(
-                        //       ((1 * 80) /
-                        //         (parseFloat(
-                        //           v.image_coordinates?.position[2],
-                        //         ) -
-                        //           parseFloat(
-                        //             v.image_coordinates?.position[0],
-                        //           ))) *
-                        //       parseFloat(v.image_coordinates?.position[0])
-                        //     ) / 1,
-                        // }}
                         imageStyle={{
-                          resizeMode: 'cover',
                           borderRadius: 10,
+                          resizeMode: 'stretch',
+                          width:
+                            (1 * 80) /
+                            (parseFloat(v.image_coordinates?.position[2]) -
+                              parseFloat(v.image_coordinates?.position[0])),
+                          height:
+                            (1 * 60) /
+                            (parseFloat(v.image_coordinates?.position[3]) -
+                              parseFloat(v.image_coordinates?.position[1])),
+                          borderWidth: 1,
+                          top:
+                            -(
+                              (dimensions.height /
+                                15 /
+                                (parseFloat(v.image_coordinates?.position[3]) -
+                                  parseFloat(
+                                    v.image_coordinates?.position[1],
+                                  ))) *
+                              parseFloat(v.image_coordinates?.position[1])
+                            ) / 1,
+                          left:
+                            -(
+                              ((1 * 80) /
+                                (parseFloat(v.image_coordinates?.position[2]) -
+                                  parseFloat(
+                                    v.image_coordinates?.position[0],
+                                  ))) *
+                              parseFloat(v.image_coordinates?.position[0])
+                            ) / 1,
                         }}
+                        // imageStyle={{
+                        //   resizeMode: 'cover',
+                        //   borderRadius: 10,
+                        // }}
                       />
                     </View>
                     <View style={{paddingVertical: 10}}>
@@ -444,41 +492,49 @@ export default function Orders({navigation}) {
                           </View>
                         </View>
 
-                        {v.status == 'PENDING' ? (
-                          <View style={{flexDirection: 'row'}}>
-                            <View style={{}}>
-                              <View
-                              // onPress={() => UpdateOrder(v.id, 'ACCEPT')}
-                              >
-                                <Image
-                                  source={require('../../../../assets/righticon.png')}
-                                  style={{
-                                    width: 30,
-                                    height: 30,
-                                    resizeMode: 'contain',
-                                    marginTop: 15,
-                                  }}
-                                />
-                              </View>
-                            </View>
-                            <View style={{width: 30}} />
-                            <View style={{}}>
-                              <View
-                              // onPress={() => UpdateOrder(v.id, 'CANCEL')}
-                              >
-                                <Image
-                                  source={require('../../../../assets/wrongicon.png')}
-                                  style={{
-                                    width: 30,
-                                    height: 30,
-                                    resizeMode: 'contain',
-                                    marginTop: 15,
-                                  }}
-                                />
-                              </View>
+                        {/* {v.status == 'PENDING' ? ( */}
+                        <View style={{flexDirection: 'row'}}>
+                          <View style={{}}>
+                            <View
+                            // onPress={() => UpdateOrder(v.id, 'ACCEPT')}
+                            >
+                              <Image
+                                source={require('../../../../assets/righticon.png')}
+                                style={{
+                                  width: 33,
+                                  height: 33,
+                                  resizeMode: 'contain',
+                                  marginTop: 15,
+                                  tintColor:
+                                    v?.status == 'ACCEPT'
+                                      ? theme.colors.green
+                                      : theme.colors.Black,
+                                }}
+                              />
                             </View>
                           </View>
-                        ) : (
+                          <View style={{width: 30}} />
+                          <View style={{}}>
+                            <View
+                            // onPress={() => UpdateOrder(v.id, 'CANCEL')}
+                            >
+                              <Image
+                                source={require('../../../../assets/wrongicon.png')}
+                                style={{
+                                  width: 30,
+                                  height: 30,
+                                  resizeMode: 'contain',
+                                  marginTop: 15,
+                                  tintColor:
+                                    v?.status == 'CANCEL'
+                                      ? theme.colors.red
+                                      : theme.colors.Black,
+                                }}
+                              />
+                            </View>
+                          </View>
+                        </View>
+                        {/* ) : (
                           <View
                             style={{
                               backgroundColor:
@@ -502,12 +558,14 @@ export default function Orders({navigation}) {
                               {v.status}
                             </Text>
                           </View>
-                        )}
+                        )} */}
                       </View>
                     </View>
                   </View>
                 </View>
               ))}
+              <SubItem text="Total" amount={'$' + params?.total_price} />
+
               <View
                 style={{
                   marginTop: 20,
@@ -525,7 +583,7 @@ export default function Orders({navigation}) {
                           CancelOrder(params?.id);
                         }}
                         marginHorizontal={1}
-                        // loading={loading}
+                        loading={loading}
                       />
                     </View>
                     <View style={{flex: 0.12}} />
@@ -538,13 +596,14 @@ export default function Orders({navigation}) {
                           AcceptOrder(params?.id);
                         }}
                         marginHorizontal={1}
-                        // loading={loading}
+                        loading={Accept_loading}
                       />
                     </View>
                   </View>
                 )}
               </View>
             </View>
+
             <View style={{height: 20}} />
             {params?.status == 'ACCEPT' && (
               <View
@@ -568,150 +627,187 @@ export default function Orders({navigation}) {
                     Pick Code: {params?.order_otp}
                   </TextFormatted>
                 </View>
-                <View>
-                  <View
-                    style={{
-                      borderWidth: 1,
-                      borderRadius: 10,
-                      marginVertical: 20,
-                      paddingVertical: 10,
-                      borderColor: theme.colors.C4C4C4,
-                      backgroundColor: theme.colors.Black,
-                      // marginHorizontal: 2/0,
-                    }}>
+
+                {params?.proccess_status == 'contains' ? (
+                  <View>
                     <View
                       style={{
-                        alignSelf: 'center',
-                        borderRadius: 25,
+                        borderWidth: 1,
+                        borderRadius: 10,
                         marginVertical: 20,
-                        paddingVertical: 7,
-                        marginHorizontal: 20,
-                        position: 'absolute',
-                        top: -40,
-                        backgroundColor: theme.colors.yellow,
+                        paddingVertical: 10,
+                        borderColor: theme.colors.C4C4C4,
+                        backgroundColor: theme.colors.Black,
+                        // marginHorizontal: 2/0,
                       }}>
-                      <TextFormatted
-                        style={{fontWeight: '500', paddingHorizontal: 80}}>
-                        Contains
-                      </TextFormatted>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        paddingHorizontal: 30,
-                        marginTop: 10,
-                      }}>
-                      <Image
-                        source={{uri: 'https://picsum.photos/500'}}
+                      <View
                         style={{
-                          height: 60,
-                          width: 60,
-                          resizeMode: 'contain',
-                          borderRadius: 50,
-                          marginRight: 20,
-                        }}
-                      />
-                      <TextFormatted
+                          alignSelf: 'center',
+                          borderRadius: 25,
+                          marginVertical: 20,
+                          paddingVertical: 7,
+                          marginHorizontal: 20,
+                          position: 'absolute',
+                          top: -40,
+                          backgroundColor: theme.colors.yellow,
+                        }}>
+                        <TextFormatted
+                          style={{fontWeight: '500', paddingHorizontal: 80}}>
+                          Contains
+                        </TextFormatted>
+                      </View>
+                      <View
                         style={{
-                          fontSize: 16,
-                          fontWeight: '700',
-                          color: theme.colors.primary,
-                        }}>
-                        {params?.last_update}
-                      </TextFormatted>
-                    </View>
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        paddingHorizontal: 30,
-                        marginTop: 20,
-                        justifyContent: 'space-between',
-                      }}>
-                      <TouchableOpacity
-                        onPress={() => {
-                          if (
-                            params?.image_1 !=
-                            'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                          ) {
-                            navigation.navigate('ImageZoom', {
-                              image: params?.image_1,
-                            });
-                          }
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          paddingHorizontal: 30,
+                          marginTop: 10,
                         }}>
                         <Image
-                          // source={{uri: uri.uri}}
-                          source={
-                            params?.image_1 ==
-                            'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                              ? require('../../../../assets/bi_camera.png')
-                              : {uri: params?.image_1}
-                          }
+                          source={{uri: 'https://picsum.photos/500'}}
                           style={{
-                            height: 30,
-                            width: 30,
-                            resizeMode: 'cover',
-                            borderRadius: 3,
+                            height: 60,
+                            width: 60,
+                            resizeMode: 'contain',
+                            borderRadius: 50,
+                            marginRight: 20,
                           }}
                         />
-                      </TouchableOpacity>
-
-                      <TouchableOpacity
-                        onPress={() => {
-                          if (
-                            params?.image_2 !=
-                            'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                          ) {
-                            navigation.navigate('ImageZoom', {
-                              image: params?.image_2,
-                            });
-                          }
+                        <TextFormatted
+                          style={{
+                            fontSize: 16,
+                            fontWeight: '700',
+                            color: theme.colors.primary,
+                          }}>
+                          {params?.last_update}
+                        </TextFormatted>
+                      </View>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          paddingHorizontal: 30,
+                          marginTop: 20,
+                          justifyContent: 'space-between',
                         }}>
-                        <Image
-                          source={
-                            params?.image_2 ==
-                            'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                              ? require('../../../../assets/bi_camera.png')
-                              : {uri: params?.image_2}
-                          }
+                        <TouchableOpacity
+                          onPress={() => {
+                            if (
+                              params?.image_1 !=
+                              'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                            ) {
+                              navigation.navigate('ImageZoom', {
+                                image: params?.image_1,
+                              });
+                            }
+                          }}>
+                          <Image
+                            // source={{uri: uri.uri}}
+                            source={
+                              params?.image_1 ==
+                              'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                                ? require('../../../../assets/bi_camera.png')
+                                : {uri: params?.image_1}
+                            }
+                            style={{
+                              height: 30,
+                              width: 30,
+                              resizeMode: 'cover',
+                              borderRadius: 3,
+                            }}
+                          />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          onPress={() => {
+                            if (
+                              params?.image_2 !=
+                              'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                            ) {
+                              navigation.navigate('ImageZoom', {
+                                image: params?.image_2,
+                              });
+                            }
+                          }}>
+                          <Image
+                            source={
+                              params?.image_2 ==
+                              'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                                ? require('../../../../assets/bi_camera.png')
+                                : {uri: params?.image_2}
+                            }
+                            style={{
+                              height: 30,
+                              width: 30,
+                              resizeMode: 'cover',
+                              borderRadius: 3,
+                            }}
+                          />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          onPress={() => {
+                            if (
+                              params?.image_3 !=
+                              'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                            ) {
+                              navigation.navigate('ImageZoom', {
+                                image: params?.image_3,
+                              });
+                            }
+                          }}>
+                          <Image
+                            source={
+                              params?.image_3 ==
+                              'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                                ? require('../../../../assets/bi_camera.png')
+                                : {uri: params?.image_3}
+                            }
+                            style={{
+                              height: 30,
+                              width: 30,
+                              resizeMode: 'cover',
+                              borderRadius: 3,
+                            }}
+                          />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          onPress={() => {
+                            if (
+                              params?.video_1 !=
+                              'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                            ) {
+                              navigation.navigate('FullVideo', {
+                                uri: params?.video_1,
+                              });
+                            }
+                          }}
                           style={{
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            backgroundColor: theme.colors.Tabbg + '33',
                             height: 30,
                             width: 30,
-                            resizeMode: 'cover',
-                            borderRadius: 3,
-                          }}
-                        />
-                      </TouchableOpacity>
+                            borderRadius: 5,
+                          }}>
+                          <Image
+                            source={
+                              params?.video_1 ==
+                              'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                                ? require('../../../../assets/video.png')
+                                : {uri: thumb}
+                            }
+                            style={{
+                              height: 30,
+                              width: 30,
+                              resizeMode: 'cover',
+                              borderRadius: 3,
+                            }}
+                          />
+                        </TouchableOpacity>
 
-                      <TouchableOpacity
-                        onPress={() => {
-                          if (
-                            params?.image_3 !=
-                            'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                          ) {
-                            navigation.navigate('ImageZoom', {
-                              image: params?.image_3,
-                            });
-                          }
-                        }}>
-                        <Image
-                          source={
-                            params?.image_3 ==
-                            'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                              ? require('../../../../assets/bi_camera.png')
-                              : {uri: params?.image_3}
-                          }
-                          style={{
-                            height: 30,
-                            width: 30,
-                            resizeMode: 'cover',
-                            borderRadius: 3,
-                          }}
-                        />
-                      </TouchableOpacity>
-
-                      {params?.video_1 ==
+                        {/* {params?.video_1 !=
                       'https://pickpic4u.com/app.pickpic4u.com/uploads/NO' ? (
                         <Image
                           source={require('../../../../assets/video.png')}
@@ -748,237 +844,323 @@ export default function Orders({navigation}) {
                             audioOnly={true}
                           />
                         </TouchableOpacity>
-                      )}
-                      <TouchableOpacity>
+                      )} */}
+
+                        {audioloading ? (
+                          <ActivityIndicator
+                            size={'small'}
+                            style={{}}
+                            color="#fff"
+                          />
+                        ) : (
+                          <TouchableOpacity
+                            onPress={() => {
+                              playing ? pause() : play();
+                            }}>
+                            <Image
+                              source={
+                                params?.audio_1 ==
+                                'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                                  ? require('../../../../assets/mic.png')
+                                  : playing
+                                  ? require('../../../../assets/pause.png')
+                                  : require('../../../../assets/play.png')
+                              }
+                              style={{
+                                height: 30,
+                                width: 30,
+                                resizeMode: 'cover',
+                                borderRadius: 3,
+                              }}
+                            />
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </View>
+                  </View>
+                ) : params?.proccess_status == 'package' ? (
+                  <View
+                    style={{
+                      borderWidth: 1,
+                      borderRadius: 10,
+                      marginVertical: 20,
+                      paddingVertical: 10,
+                      borderColor: theme.colors.C4C4C4,
+                      backgroundColor: theme.colors.Black,
+                      flex: 1,
+                    }}>
+                    <View
+                      style={{
+                        alignSelf: 'center',
+                        borderRadius: 25,
+                        marginVertical: 20,
+                        paddingVertical: 7,
+                        marginHorizontal: 20,
+                        position: 'absolute',
+                        top: -40,
+                        backgroundColor: theme.colors.red,
+                      }}>
+                      <TextFormatted
+                        style={{fontWeight: '500', paddingHorizontal: 80}}>
+                        Package Ready
+                      </TextFormatted>
+                    </View>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        paddingHorizontal: 30,
+                        marginTop: 10,
+                      }}>
+                      <Image
+                        source={{uri: 'https://picsum.photos/500'}}
+                        style={{
+                          height: 60,
+                          width: 60,
+                          resizeMode: 'contain',
+                          borderRadius: 50,
+                          marginRight: 20,
+                        }}
+                      />
+                      <View style={{alignItems: 'center'}}>
+                        <TextFormatted
+                          style={{
+                            fontSize: 16,
+                            fontWeight: '700',
+                            color: theme.colors.primary,
+                          }}>
+                          04:30 PM 11/04/2022
+                        </TextFormatted>
                         <Image
-                          source={require('../../../../assets/mic.png')}
+                          source={require('../../../../assets/gps.png')}
+                          style={{
+                            height: 60,
+                            width: 90,
+                            resizeMode: 'contain',
+                            // marginRight: 20,
+                          }}
+                        />
+                      </View>
+                      <Image
+                        source={require('../../../../assets/clock.png')}
+                        style={{
+                          height: 40,
+                          width: 40,
+                          resizeMode: 'contain',
+                          borderRadius: 50,
+                          // marginHorizontal: 20,
+                        }}
+                      />
+                    </View>
+
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        paddingHorizontal: 30,
+                        marginTop: 20,
+                        justifyContent: 'space-between',
+                      }}>
+                      <TouchableOpacity
+                        style={{
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          backgroundColor:
+                            params?.package_image_1 == ''
+                              ? theme.colors.Black
+                              : theme.colors.Tabbg + '33',
+                          height: 30,
+                          width: 30,
+                          borderRadius: 5,
+                        }}
+                        // onPress={() => {
+                        //   if (item?.package_image_1 == '') {
+                        //     setModalThree(true);
+                        //     setPackage_CurrentID(1);
+                        //     setOrderID(item?.id);
+                        //   } else {
+                        //     navigation.navigate('ImageZoom', {
+                        //       image: item?.package_image_1,
+                        //     });
+                        //   }
+                        // }}
+                        // style={{
+                        //   alignItems: 'center',
+                        //   justifyContent: 'center',
+                        //   backgroundColor:
+                        //     item?.package_image_3 == ''
+                        //       ? theme.colors.Black
+                        //       : theme.colors.Tabbg + '33',
+                        //   height: 30,
+                        //   width: 30,
+                        //   borderRadius: 5,
+                        // }}
+                      >
+                        <Image
+                          // source={{uri: uri.uri}}
+                          source={
+                            params?.package_image_1 == ''
+                              ? require('../../../../assets/bi_camera.png')
+                              : {uri: params?.package_image_1}
+                          }
+                          style={{
+                            height: 30,
+                            width: 30,
+                            resizeMode: 'cover',
+                            borderRadius: 3,
+                          }}
+                        />
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        onPress={() => {}}
+                        style={{
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          backgroundColor:
+                            params?.package_image_2 == ''
+                              ? theme.colors.Black
+                              : theme.colors.Tabbg + '33',
+                          height: 30,
+                          width: 30,
+                          borderRadius: 5,
+                        }}>
+                        <Image
+                          source={
+                            params?.package_image_2 == ''
+                              ? require('../../../../assets/bi_camera.png')
+                              : {uri: params?.package_image_2}
+                          }
+                          style={{
+                            height: 30,
+                            width: 30,
+                            resizeMode: 'cover',
+                            borderRadius: 3,
+                          }}
+                        />
+                      </TouchableOpacity>
+
+                      <TouchableOpacity
+                        onPress={() => {}}
+                        style={{
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          backgroundColor:
+                            params?.package_image_3 == ''
+                              ? theme.colors.Black
+                              : theme.colors.Tabbg + '33',
+                          height: 30,
+                          width: 30,
+                          borderRadius: 5,
+                        }}>
+                        <Image
+                          source={
+                            params?.package_image_3 == ''
+                              ? require('../../../../assets/bi_camera.png')
+                              : {uri: params?.package_image_3}
+                          }
+                          style={{
+                            height: 30,
+                            width: 30,
+                            resizeMode: 'cover',
+                            borderRadius: 3,
+                          }}
+                        />
+                      </TouchableOpacity>
+
+                      <TouchableOpacity onPress={() => {}}>
+                        {params?.package_video_1 == '' ? (
+                          <Image
+                            source={require('../../../../assets/video.png')}
+                            style={{
+                              height: 30,
+                              width: 30,
+                              resizeMode: 'contain',
+                            }}
+                          />
+                        ) : (
+                          <View
+                            style={{
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              backgroundColor: theme.colors.Tabbg + '33',
+                              height: 30,
+                              width: 30,
+                              borderRadius: 5,
+                            }}>
+                            {/* <Video
+                              paused={true}
+                              source={
+                                params?.package_video_1 ==
+                                'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                                  ? {uri: video?.uri}
+                                  : {uri: params?.package_video_1}
+                              }
+                              ref={ref => (videoRef.current = ref)}
+                              onBuffer={onBuffer}
+                              onError={onError}
+                              style={{
+                                height: 30,
+                                width: 30,
+                                borderRadius: 3,
+                              }}
+                              resizeMode="cover"
+                              // play
+                            /> */}
+                          </View>
+                        )}
+                      </TouchableOpacity>
+
+                      {audioloading ? (
+                        <ActivityIndicator
+                          size={'small'}
+                          style={{paddingHorizontal: 5}}
+                          color="#fff"
+                        />
+                      ) : (
+                        <TouchableOpacity
+                          onPress={() => {
+                            if (params?.package_audio_1 == '') {
+                              handleDocumentSelection();
+                            } else {
+                              playing ? pause() : play();
+                            }
+                          }}>
+                          <Image
+                            // source={require('../../../../assets/mic.png')}
+                            source={
+                              params?.package_audio_1 == ''
+                                ? require('../../../../assets/mic.png')
+                                : playing
+                                ? require('../../../../assets/pause.png')
+                                : require('../../../../assets/play.png')
+                            }
+                            style={{
+                              height: 30,
+                              width: 30,
+                              resizeMode: 'contain',
+                            }}
+                          />
+                        </TouchableOpacity>
+                      )}
+
+                      <TouchableOpacity
+                      // onPress={() => UpdateOrderTracking('package')}
+                      >
+                        <Image
+                          source={require('../../../../assets/Check.png')}
                           style={{height: 30, width: 30, resizeMode: 'contain'}}
                         />
                       </TouchableOpacity>
                     </View>
                   </View>
-                </View>
+                ) : (
+                  <View />
+                )}
               </View>
             )}
-            {/* )} */}
           </View>
         )}
-        {/* {params?.status == 'ACCEPT' && (
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: theme.colors.primary,
-              marginHorizontal: 15,
-            }}>
-            {params?.order_otp != 'PENDING' && (
-              <View
-                style={{
-                  alignSelf: 'center',
-                  borderWidth: 1,
-                  paddingHorizontal: 40,
-                  borderRadius: 25,
-                  marginBottom: 20,
-                  paddingVertical: 10,
-                  borderColor: theme.colors.C4C4C4,
-                  marginHorizontal: 20,
-                }}>
-                <TextFormatted style={{fontSize: 18, fontWeight: '700'}}>
-                  Pick Code: {params?.order_otp}
-                </TextFormatted>
-              </View>
-            )}
-            <View>
-              <View
-                style={{
-                  borderWidth: 1,
-                  borderRadius: 10,
-                  marginVertical: 20,
-                  paddingVertical: 10,
-                  borderColor: theme.colors.C4C4C4,
-                  backgroundColor: theme.colors.Black,
-                  // marginHorizontal: 2/0,
-                }}>
-                <View
-                  style={{
-                    alignSelf: 'center',
-                    borderRadius: 25,
-                    marginVertical: 20,
-                    paddingVertical: 7,
-                    marginHorizontal: 20,
-                    position: 'absolute',
-                    top: -40,
-                    backgroundColor: theme.colors.yellow,
-                  }}>
-                  <TextFormatted
-                    style={{fontWeight: '500', paddingHorizontal: 80}}>
-                    Contains
-                  </TextFormatted>
-                </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    paddingHorizontal: 30,
-                    marginTop: 10,
-                  }}>
-                  <Image
-                    source={{uri: 'https://picsum.photos/500'}}
-                    style={{
-                      height: 60,
-                      width: 60,
-                      resizeMode: 'contain',
-                      borderRadius: 50,
-                      marginRight: 20,
-                    }}
-                  />
-                  <TextFormatted
-                    style={{
-                      fontSize: 16,
-                      fontWeight: '700',
-                      color: theme.colors.primary,
-                    }}>
-                    {params?.last_update}
-                  </TextFormatted>
-                </View>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    paddingHorizontal: 30,
-                    marginTop: 20,
-                    justifyContent: 'space-between',
-                  }}>
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (
-                        params?.image_1 !=
-                        'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                      ) {
-                        navigation.navigate('ImageZoom', {
-                          image: params?.image_1,
-                        });
-                      }
-                    }}>
-                    <Image
-                      // source={{uri: uri.uri}}
-                      source={
-                        params?.image_1 ==
-                        'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                          ? require('../../../../assets/bi_camera.png')
-                          : {uri: params?.image_1}
-                      }
-                      style={{
-                        height: 30,
-                        width: 30,
-                        resizeMode: 'cover',
-                        borderRadius: 3,
-                      }}
-                    />
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (
-                        params?.image_2 !=
-                        'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                      ) {
-                        navigation.navigate('ImageZoom', {
-                          image: params?.image_2,
-                        });
-                      }
-                    }}>
-                    <Image
-                      source={
-                        params?.image_2 ==
-                        'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                          ? require('../../../../assets/bi_camera.png')
-                          : {uri: params?.image_2}
-                      }
-                      style={{
-                        height: 30,
-                        width: 30,
-                        resizeMode: 'cover',
-                        borderRadius: 3,
-                      }}
-                    />
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (
-                        params?.image_3 !=
-                        'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                      ) {
-                        navigation.navigate('ImageZoom', {
-                          image: params?.image_3,
-                        });
-                      }
-                    }}>
-                    <Image
-                      source={
-                        params?.image_3 ==
-                        'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                          ? require('../../../../assets/bi_camera.png')
-                          : {uri: params?.image_3}
-                      }
-                      style={{
-                        height: 30,
-                        width: 30,
-                        resizeMode: 'cover',
-                        borderRadius: 3,
-                      }}
-                    />
-                  </TouchableOpacity>
-
-                  {params?.video_1 ==
-                  'https://pickpic4u.com/app.pickpic4u.com/uploads/NO' ? (
-                    <Image
-                      source={require('../../../../assets/video.png')}
-                      style={{
-                        height: 30,
-                        width: 30,
-                        resizeMode: 'contain',
-                      }}
-                    />
-                  ) : (
-                    <TouchableOpacity
-                      onPress={() => {
-                        navigation.navigate('FullVideo', {
-                          uri: params?.video_1,
-                        });
-                      }}
-                      style={{
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderRadius: 3,
-                      }}>
-                      <Video
-                        source={{uri: params?.video_1}}
-                        ref={ref => (videoRef.current = ref)}
-                        onBuffer={onBuffer}
-                        onError={onError}
-                        style={{
-                          height: 40,
-                          width: 40,
-                          borderRadius: 3,
-                        }}
-                        resizeMode="cover"
-                        // controls={true}
-                        audioOnly={true}
-                      />
-                    </TouchableOpacity>
-                  )}
-                  <TouchableOpacity>
-                    <Image
-                      source={require('../../../../assets/mic.png')}
-                      style={{height: 30, width: 30, resizeMode: 'contain'}}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </View>
-          </View>
-        )} */}
       </ScrollView>
       <Modal
         animationType="fade"

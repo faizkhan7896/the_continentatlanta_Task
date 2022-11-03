@@ -55,7 +55,7 @@ export default function Image_Zoom({navigation}) {
             width: Dimensions.get('window').width,
             borderRadius: 3,
           }}
-          resizeMode="stretch"
+          resizeMode="contain"
           controls={true}
           audioOnly={true}
         />
