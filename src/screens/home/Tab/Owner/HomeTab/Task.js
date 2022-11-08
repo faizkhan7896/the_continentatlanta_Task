@@ -1,7 +1,14 @@
 import moment from 'moment';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+} from 'react';
 import {
   ActivityIndicator,
+  Alert,
   Dimensions,
   FlatList,
   Image,
@@ -346,6 +353,7 @@ export default function History({navigation, setGet_followed_event}) {
         ShowToast('Video added successfully');
       } else {
         ShowToast(rslt.message || 'Unknown error', 'error');
+        GetProduct(true);
       }
     } catch (e) {
       // alert('An error occured.');
@@ -620,6 +628,231 @@ export default function History({navigation, setGet_followed_event}) {
     }
   }
 
+  async function Add_Recieved_Image_1(uri) {
+    try {
+      const url = baseUrl + 'received_paid_image_1';
+
+      const body = new FormData();
+
+      body.append('order_id', orderID);
+      body.append('image_1', {
+        uri: uri.uri,
+        type: uri.type,
+        name: uri.fileName,
+      });
+      console.log(body);
+
+      console.log('JSON.stringify(body)', JSON.stringify(body));
+      // return;
+      const res = await fetch(url, {
+        method: 'POST',
+        body: body,
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        setCurrentID(0);
+        setUri('');
+        GetProduct(true);
+        ShowToast('Image added successfully');
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+      }
+    } catch (e) {
+      // alert('An error occured.');
+      ShowToast('An error occured.', 'error');
+
+      console.log(e);
+    }
+  }
+
+  async function Add_Recieved_Image_2(uri) {
+    try {
+      const url = baseUrl + 'received_paid_image_2';
+
+      console.log(url);
+      const body = new FormData();
+
+      body.append('order_id', orderID);
+      body.append('image_2', {
+        uri: uri.uri,
+        type: uri.type,
+        name: uri.fileName,
+      });
+      // return;
+
+      console.log('JSON.stringify(body)', JSON.stringify(body));
+      // console.log(body);
+      // return;
+      const res = await fetch(url, {
+        method: 'POST',
+        body: body,
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        setCurrentID(0);
+        setUri('');
+        GetProduct(true);
+        ShowToast('Image added successfully');
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+      }
+    } catch (e) {
+      // alert('An error occured.');
+      ShowToast('An error occured.', 'error');
+
+      console.log(e);
+    }
+  }
+
+  async function Add_Recieved_Image_3(uri) {
+    try {
+      const url = baseUrl + 'received_paid_image_3';
+      console.log(url);
+
+      const body = new FormData();
+
+      body.append('order_id', orderID);
+      body.append('image_3', {
+        uri: uri.uri,
+        type: uri.type,
+        name: uri.fileName,
+      });
+      // console.log(body);
+
+      console.log('JSON.stringify(body)', JSON.stringify(body));
+      // return;
+      const res = await fetch(url, {
+        method: 'POST',
+        body: body,
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        setCurrentID(0);
+        setUri('');
+        GetProduct(true);
+        ShowToast('Image added successfully');
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+      }
+    } catch (e) {
+      // alert('An error occured.');
+      ShowToast('An error occured.', 'error');
+
+      console.log(e);
+    }
+  }
+
+  async function Add_Recieved_Video(video) {
+    try {
+      const url = baseUrl + 'received_paid_video_1';
+      console.log(url);
+      console.log(Package_currentID);
+
+      const body = new FormData();
+
+      body.append('order_id', Package_currentID);
+      const urlComponents = video?.uri.split('/');
+      const fileNameAndExtension = urlComponents[urlComponents?.length - 1];
+      const destPath = `${RNFS?.TemporaryDirectoryPath}/${fileNameAndExtension}`;
+      await RNFS.copyFile(video?.uri, destPath);
+      // alert('file://' + destPath);
+
+      console.log('file://' + destPath);
+
+      body.append('video_1', {
+        name: 'video.mp4',
+        uri: 'file://' + destPath,
+        type: video.type,
+      });
+
+      console.log('JSON.stringify(body)', JSON.stringify(body));
+      return;
+      const res = await fetch(url, {
+        method: 'POST',
+        body: body,
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        setCurrentID(0);
+        setUri('');
+        setVideo('');
+        GetProduct(true);
+        ShowToast('Video added successfully');
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+      }
+    } catch (e) {
+      // alert('An error occured.');
+      // ShowToast('An error occured, Upload video again ', 'error');
+
+      console.log(e);
+    }
+  }
+
+  async function Add_Recieved_Audio(orderID, name, uri, type) {
+    try {
+      const url = baseUrl + 'received_paid_video_1';
+      console.log(url);
+
+      const body = new FormData();
+
+      body.append('order_id', orderID);
+      body.append('audio_1', {
+        name: name,
+        uri: uri,
+        type: type,
+      });
+
+      console.log('JSON.stringify(body)', JSON.stringify(body));
+      // return;
+      const res = await fetch(url, {
+        method: 'POST',
+        body: body,
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        ShowToast('Audio uploaded successfully');
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+      }
+    } catch (e) {
+      // alert('An error occured.');
+      // ShowToast('An error occured, Upload video again ', 'error');
+
+      console.log(e);
+    }
+  }
+
   const pickImage = () => {
     launchImageLibrary({quality: 1, mediaType: 'photo'}, response => {
       if (!response.didCancel) {
@@ -691,12 +924,18 @@ export default function History({navigation, setGet_followed_event}) {
     launchImageLibrary({quality: 1, mediaType: 'video'}, response => {
       if (!response.didCancel) {
         setVideo(response.assets[0]);
-        // console.log(/);
-
         AddPackage_Video(response.assets[0]);
       }
     });
   };
+  // const pickRecievedVideo = () => {
+  //   launchImageLibrary({quality: 1, mediaType: 'video'}, response => {
+  //     if (!response.didCancel) {
+  //       setVideo(response.assets[0]);
+  //       AddPackage_Video(response.assets[0]);
+  //     }
+  //   });
+  // };
 
   const onBuffer = e => {
     console.log('buffering ....', e);
@@ -745,9 +984,13 @@ export default function History({navigation, setGet_followed_event}) {
             AddPackage_Image_1={AddPackage_Image_1}
             AddPackage_Image_2={AddPackage_Image_2}
             AddPackage_Image_3={AddPackage_Image_3}
-            AddPackage_Video={AddPackage_Video}
             AddPackage_Audio={AddPackage_Audio}
             pickPackageVideo={pickPackageVideo}
+            // Add_Recieved_Image_1={Add_Recieved_Image_1}
+            // Add_Recieved_Image_2={Add_Recieved_Image_2}
+            // Add_Recieved_Image_3={Add_Recieved_Image_3}
+            // pickRecievedVideo={pickRecievedVideo}
+            // Add_Recieved_Audio={Add_Recieved_Audio}
             navigation={navigation}
           />
         )}
@@ -903,9 +1146,13 @@ function OrderItem({
   SubmitAvailablity,
   GetProduct,
   setPackage_CurrentID,
-  AddPackage_Video,
   AddPackage_Audio,
   pickPackageVideo,
+  // Add_Recieved_Image_1,
+  // Add_Recieved_Image_2,
+  // Add_Recieved_Image_3,
+  // pickRecievedVideo,
+  // Add_Recieved_Audio,
 }) {
   const dimensions = useWindowDimensions();
 
@@ -917,9 +1164,61 @@ function OrderItem({
   const [playing, setPlaying] = useState(false);
   const [audioloading, setAudioloading] = useState(false);
   const soundPlaying = useRef();
-  // alert(JSON.stringify(item?.video_1));
+  const [delay, setDelay] = useState(+'600');
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
+  const [isPending, startTransition] = useTransition();
   // console.log('item?.video_1', thumb);
+  // const [time, setTime] = useState(1000);
+  // const timerRef = useRef(time);
+  // alert(JSON.stringify(delay));
 
+  const ChangeFirstStep = () =>
+    Alert.alert(
+      'Complete this step',
+      'Are you sure you want to complete this step?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {text: 'OK', onPress: () => UpdateOrderTracking('package')},
+      ],
+    );
+  const ChangeSecondStep = () =>
+    Alert.alert(
+      'Complete this step',
+      'Are you sure you want to complete this step?',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {text: 'OK', onPress: () => UpdateOrderTracking('received_paid')},
+      ],
+    );
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      startTransition(() => {
+        setDelay(delay - 1);
+        setMinutes(Math.floor(delay / 60));
+        setSeconds(Math.floor(delay % 60));
+      });
+    }, 1000);
+
+    if (delay === 0) {
+      clearInterval(timer);
+      // alert('first');
+    }
+
+    return () => {
+      clearInterval(timer);
+      // alert('Second');
+    };
+  });
   async function UpdateOrderTracking(status) {
     try {
       const url =
@@ -1003,6 +1302,30 @@ function OrderItem({
     }
   }, []);
 
+  const Add_Package_Audio = useCallback(async () => {
+    try {
+      if (item?.package_audio_1 == '') {
+        const response = await DocumentPicker.pick({
+          presentationStyle: 'fullScreen',
+          type: [types.audio],
+        });
+
+        setFileResponse(response);
+        AddPackage_Audio(
+          item?.id,
+          response[0]?.name,
+          response[0]?.uri,
+          response[0]?.type,
+        );
+        GetProduct(true);
+      } else {
+        ShowToast('An error occurred', 'error');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  }, []);
+
   const SubItem = ({onPress, text, amount}) => {
     return (
       <View
@@ -1044,7 +1367,7 @@ function OrderItem({
         marginHorizontal: 13,
         marginVertical: 15,
       }}>
-      <TouchableOpacity
+      <View
         style={{
           borderRadius: 12,
           backgroundColor: theme.colors.Black,
@@ -1233,7 +1556,7 @@ function OrderItem({
             </TouchableOpacity>
           </View>
         </View>
-      </TouchableOpacity>
+      </View>
 
       <View
         style={{
@@ -1394,7 +1717,7 @@ function OrderItem({
                           (parseFloat(v.image_coordinates?.position[2]) -
                             parseFloat(v.image_coordinates?.position[0])),
                         height:
-                          (1 * 60) /
+                          (1 * 110) /
                           (parseFloat(v.image_coordinates?.position[3]) -
                             parseFloat(v.image_coordinates?.position[1])),
                         borderWidth: 1,
@@ -1408,7 +1731,7 @@ function OrderItem({
                           ) / 1,
                         left:
                           -(
-                            ((1 * 80) /
+                            ((1 * 60) /
                               (parseFloat(v.image_coordinates?.position[2]) -
                                 parseFloat(v.image_coordinates?.position[0]))) *
                             parseFloat(v.image_coordinates?.position[0])
@@ -1522,39 +1845,43 @@ function OrderItem({
           </View>
           <SubItem text="Total" amount={'$' + item?.total_price} />
 
-          <View style={{marginTop: 20}}>
-            <SolidButton
-              text="SUBMIT"
-              backgroundColor={theme.colors.green}
-              onPress={() => {
-                // alert(JSON.stringify(params?.item?.post_position[0].position));
-                SubmitAvailablity(
-                  Object.keys(status).join(','),
-                  Object.values(status).join(','),
-                );
-              }}
-              marginHorizontal={1}
-              // loading={loading}
-            />
-          </View>
-          <View style={{marginVertical: 20}}>
-            <SolidButton
-              source={require('../../../../../assets/ScrollDown.png')}
-              backgroundColor={theme.colors.ScrollDown}
-              onPress={() => {
-                if (
-                  item?.video_1 !=
-                  'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                ) {
-                  setStep3(!Step3);
-                  item?.video_1;
-                } else {
-                  setStep3(!Step3);
-                }
-              }}
-              marginHorizontal={0.1}
-            />
-          </View>
+          {item?.status == 'PENDING' && (
+            <View style={{marginTop: 20}}>
+              <SolidButton
+                text="SUBMIT"
+                backgroundColor={theme.colors.green}
+                onPress={() => {
+                  // alert(JSON.stringify(params?.item?.post_position[0].position));
+                  SubmitAvailablity(
+                    Object.keys(status).join(','),
+                    Object.values(status).join(','),
+                  );
+                }}
+                marginHorizontal={1}
+                // loading={loading}
+              />
+            </View>
+          )}
+          {item?.order_otp != 'PENDING' && (
+            <View style={{marginVertical: 20}}>
+              <SolidButton
+                source={require('../../../../../assets/ScrollDown.png')}
+                backgroundColor={theme.colors.ScrollDown}
+                onPress={() => {
+                  if (
+                    item?.video_1 !=
+                    'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                  ) {
+                    setStep3(!Step3);
+                    item?.video_1;
+                  } else {
+                    setStep3(!Step3);
+                  }
+                }}
+                marginHorizontal={0.1}
+              />
+            </View>
+          )}
         </View>
       )}
       {Step3 == true && (
@@ -1580,7 +1907,7 @@ function OrderItem({
               </TextFormatted>
             </View>
           )}
-          {item?.proccess_status == 'contains' ? (
+          {item?.contains_status == 'contains' && (
             <View>
               <View
                 style={{
@@ -1621,9 +1948,10 @@ function OrderItem({
                     style={{
                       height: 60,
                       width: 60,
-                      resizeMode: 'contain',
+                      resizeMode: 'cover',
                       borderRadius: 50,
                       marginRight: 20,
+                      backgroundColor: theme.colors.Tabbg + '33',
                     }}
                   />
                   <TextFormatted
@@ -1632,7 +1960,9 @@ function OrderItem({
                       fontWeight: '700',
                       color: theme.colors.primary,
                     }}>
-                    {item?.last_update}
+                    {item?.contains_time == 'NO'
+                      ? 'Details will add its time'
+                      : item?.contains_time}
                   </TextFormatted>
                 </View>
 
@@ -1674,6 +2004,11 @@ function OrderItem({
                         width: 30,
                         resizeMode: 'cover',
                         borderRadius: 3,
+                        backgroundColor:
+                          item?.image_1 ==
+                          'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                            ? theme.colors.Black
+                            : theme.colors.Tabbg + '33',
                       }}
                     />
                   </TouchableOpacity>
@@ -1707,6 +2042,11 @@ function OrderItem({
                         width: 30,
                         resizeMode: 'cover',
                         borderRadius: 3,
+                        backgroundColor:
+                          item?.image_2 ==
+                          'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                            ? theme.colors.Black
+                            : theme.colors.Tabbg + '33',
                       }}
                     />
                   </TouchableOpacity>
@@ -1740,6 +2080,11 @@ function OrderItem({
                         width: 30,
                         resizeMode: 'cover',
                         borderRadius: 3,
+                        backgroundColor:
+                          item?.image_3 ==
+                          'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                            ? theme.colors.Black
+                            : theme.colors.Tabbg + '33',
                       }}
                     />
                   </TouchableOpacity>
@@ -1760,14 +2105,18 @@ function OrderItem({
                       }
                     }}>
                     {item?.video_1 ==
-                      'https://pickpic4u.com/app.pickpic4u.com/uploads/NO' &&
-                    video == '' ? (
+                    'https://pickpic4u.com/app.pickpic4u.com/uploads/NO' ? (
                       <Image
                         source={require('../../../../../assets/video.png')}
                         style={{
                           height: 30,
                           width: 30,
                           resizeMode: 'contain',
+                          backgroundColor:
+                            item?.video_1 ==
+                            'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                              ? theme.colors.Black
+                              : theme.colors.Tabbg + '33',
                         }}
                       />
                     ) : (
@@ -1775,7 +2124,11 @@ function OrderItem({
                         style={{
                           alignItems: 'center',
                           justifyContent: 'center',
-                          backgroundColor: theme.colors.Tabbg + '33',
+                          backgroundColor:
+                            item?.video_1 ==
+                            'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                              ? theme.colors.Black
+                              : theme.colors.Tabbg + '33',
                           height: 30,
                           width: 30,
                           borderRadius: 5,
@@ -1838,8 +2191,7 @@ function OrderItem({
                     </TouchableOpacity>
                   )}
 
-                  <TouchableOpacity
-                    onPress={() => UpdateOrderTracking('package')}>
+                  <TouchableOpacity onPress={() => ChangeFirstStep()}>
                     <Image
                       source={require('../../../../../assets/Check.png')}
                       style={{height: 30, width: 30, resizeMode: 'contain'}}
@@ -1848,7 +2200,9 @@ function OrderItem({
                 </View>
               </View>
             </View>
-          ) : item?.proccess_status == 'package' ? (
+          )}
+
+          {item?.package_status == 'package' && (
             <View
               style={{
                 borderWidth: 1,
@@ -1875,6 +2229,7 @@ function OrderItem({
                   Package Ready
                 </TextFormatted>
               </View>
+
               <View
                 style={{
                   flexDirection: 'row',
@@ -1883,23 +2238,30 @@ function OrderItem({
                   marginTop: 10,
                 }}>
                 <Image
-                  source={{uri: 'https://picsum.photos/500'}}
+                  source={{uri: item?.post?.image}}
                   style={{
                     height: 60,
                     width: 60,
-                    resizeMode: 'contain',
+                    resizeMode: 'cover',
                     borderRadius: 50,
                     marginRight: 20,
+                    backgroundColor: theme.colors.Tabbg + '33',
                   }}
                 />
-                <View style={{alignItems: 'center'}}>
+                <View
+                  style={{
+                    alignItems: 'center',
+                    width: dimensions.width / 2.5,
+                    marginRight: dimensions.width / 8,
+                  }}>
                   <TextFormatted
                     style={{
-                      fontSize: 16,
                       fontWeight: '700',
                       color: theme.colors.primary,
                     }}>
-                    04:30 PM 11/04/2022
+                    {item?.package_time == 'NO'
+                      ? 'Details will add its time'
+                      : item?.package_time}
                   </TextFormatted>
                   <Image
                     source={require('../../../../../assets/gps.png')}
@@ -1911,16 +2273,30 @@ function OrderItem({
                     }}
                   />
                 </View>
-                <Image
-                  source={require('../../../../../assets/clock.png')}
-                  style={{
-                    height: 40,
-                    width: 40,
-                    resizeMode: 'contain',
-                    borderRadius: 50,
-                    // marginHorizontal: 20,
-                  }}
-                />
+                <View style={{alignItems: 'center'}}>
+                  <Image
+                    source={require('../../../../../assets/clock.png')}
+                    style={{
+                      height: 40,
+                      width: 40,
+                      resizeMode: 'contain',
+                      borderRadius: 50,
+                      // marginHorizontal: 20,
+                    }}
+                  />
+                  <TextFormatted
+                    style={{
+                      fontWeight: '700',
+                      color: theme.colors.primary,
+                    }}>
+                    {minutes < 10 ? '0' + minutes : minutes}:
+                    {seconds < 10
+                      ? '0' + (delay == 0 ? '0' : seconds)
+                      : delay == 0
+                      ? '00'
+                      : seconds}
+                  </TextFormatted>
+                </View>
               </View>
 
               <View
@@ -1947,7 +2323,7 @@ function OrderItem({
                     alignItems: 'center',
                     justifyContent: 'center',
                     backgroundColor:
-                      item?.package_image_3 == ''
+                      item?.package_image_1 == ''
                         ? theme.colors.Black
                         : theme.colors.Tabbg + '33',
                     height: 30,
@@ -1988,7 +2364,7 @@ function OrderItem({
                     alignItems: 'center',
                     justifyContent: 'center',
                     backgroundColor:
-                      item?.package_image_3 == ''
+                      item?.package_image_2 == ''
                         ? theme.colors.Black
                         : theme.colors.Tabbg + '33',
                     height: 30,
@@ -2077,7 +2453,11 @@ function OrderItem({
                       style={{
                         alignItems: 'center',
                         justifyContent: 'center',
-                        backgroundColor: theme.colors.Tabbg + '33',
+                        backgroundColor:
+                          item?.package_video_1 == '' ||
+                          'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                            ? theme.colors.Black
+                            : theme.colors.Tabbg,
                         height: 30,
                         width: 30,
                         borderRadius: 5,
@@ -2085,7 +2465,7 @@ function OrderItem({
                       <Video
                         paused={true}
                         source={
-                          item?.package_video_1 ==
+                          item?.package_video_1 == '' ||
                           'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
                             ? {uri: video?.uri}
                             : {uri: item?.package_video_1}
@@ -2115,7 +2495,7 @@ function OrderItem({
                   <TouchableOpacity
                     onPress={() => {
                       if (item?.package_audio_1 == '') {
-                        handleDocumentSelection();
+                        Add_Package_Audio();
                       } else {
                         playing ? pause() : play();
                       }
@@ -2134,9 +2514,7 @@ function OrderItem({
                   </TouchableOpacity>
                 )}
 
-                <TouchableOpacity
-                // onPress={() => UpdateOrderTracking('package')}
-                >
+                <TouchableOpacity onPress={() => ChangeSecondStep()}>
                   <Image
                     source={require('../../../../../assets/Check.png')}
                     style={{height: 30, width: 30, resizeMode: 'contain'}}
@@ -2144,8 +2522,212 @@ function OrderItem({
                 </TouchableOpacity>
               </View>
             </View>
-          ) : (
-            <View />
+          )}
+          {item?.received_paid_status == 'received_paid' && (
+            <View>
+              <View
+                style={{
+                  borderWidth: 1,
+                  borderRadius: 10,
+                  marginVertical: 20,
+                  paddingVertical: 10,
+                  borderColor: theme.colors.C4C4C4,
+                  backgroundColor: theme.colors.Black,
+                }}>
+                <View
+                  style={{
+                    alignSelf: 'center',
+                    borderRadius: 25,
+                    marginVertical: 20,
+                    paddingVertical: 7,
+                    marginHorizontal: 20,
+                    position: 'absolute',
+                    top: -40,
+                    backgroundColor: theme.colors.red,
+                  }}>
+                  <TextFormatted
+                    style={{fontWeight: '500', paddingHorizontal: 80}}>
+                    Recieved & Paid
+                  </TextFormatted>
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingHorizontal: 30,
+                    marginTop: 10,
+                  }}>
+                  <Image
+                    source={{uri: item?.post?.image}}
+                    style={{
+                      height: 60,
+                      width: 60,
+                      resizeMode: 'cover',
+                      borderRadius: 50,
+                      marginRight: 20,
+                      backgroundColor: theme.colors.Tabbg + '33',
+                    }}
+                  />
+                  <View style={{alignItems: 'center'}}>
+                    <TextFormatted
+                      style={{
+                        fontSize: 16,
+                        fontWeight: '700',
+                        color: theme.colors.primary,
+                      }}>
+                      04:30 PM 11/04/2022
+                    </TextFormatted>
+                    <Image
+                      source={require('../../../../../assets/gps.png')}
+                      style={{
+                        height: 60,
+                        width: 90,
+                        resizeMode: 'contain',
+                        marginRight: 20,
+                      }}
+                    />
+                  </View>
+                  <Image
+                    source={require('../../../../../assets/clock.png')}
+                    style={{
+                      height: 40,
+                      width: 40,
+                      resizeMode: 'contain',
+                      borderRadius: 50,
+                      marginLeft: 20,
+                      opacity: 0,
+                    }}
+                  />
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingHorizontal: 30,
+                    marginTop: 20,
+                    justifyContent: 'space-between',
+                  }}>
+                  <Image
+                    source={require('../../../../../assets/bi_camera.png')}
+                    style={{height: 30, width: 30, resizeMode: 'contain'}}
+                  />
+                  <Image
+                    source={require('../../../../../assets/bi_camera.png')}
+                    style={{height: 30, width: 30, resizeMode: 'contain'}}
+                  />
+                  <Image
+                    source={require('../../../../../assets/bi_camera.png')}
+                    style={{height: 30, width: 30, resizeMode: 'contain'}}
+                  />
+                  <Image
+                    source={require('../../../../../assets/video.png')}
+                    style={{height: 30, width: 30, resizeMode: 'contain'}}
+                  />
+                  <Image
+                    source={require('../../../../../assets/mic.png')}
+                    style={{height: 30, width: 30, resizeMode: 'contain'}}
+                  />
+                  <Image
+                    source={require('../../../../../assets/plus_white.png')}
+                    style={{height: 30, width: 30, resizeMode: 'contain'}}
+                  />
+                </View>
+
+                <View style={{alignItems: 'center', marginTop: 20}}>
+                  <TextFormatted
+                    style={{
+                      fontWeight: '500',
+                      color: theme.colors.primary,
+                    }}>
+                    Total Cost:{' '}
+                    <TextFormatted
+                      style={{
+                        fontSize: 16,
+                        fontWeight: '700',
+                        color: theme.colors.primary,
+                      }}>
+                      ¥ {item?.total_price}
+                    </TextFormatted>
+                  </TextFormatted>
+                  <Image
+                    source={require('../../../../../assets/qr.png')}
+                    style={{
+                      height: 110,
+                      width: 110,
+                      resizeMode: 'contain',
+                      marginTop: 10,
+                    }}
+                  />
+                </View>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: theme.colors.Tabbg,
+                    alignSelf: 'center',
+                    paddingHorizontal: 15,
+                    paddingVertical: 8,
+                    borderRadius: 10,
+                    marginTop: 10,
+                  }}>
+                  <TextFormatted style={{fontSize: 16, fontWeight: '700'}}>
+                    Pay By Code
+                  </TextFormatted>
+                </TouchableOpacity>
+                <View
+                  style={{
+                    backgroundColor: theme.colors.C4C4C4,
+                    height: 1,
+                    marginHorizontal: 20,
+                    marginTop: 20,
+                  }}
+                />
+                <View style={{alignItems: 'center', marginTop: 20}}>
+                  <Image
+                    source={require('../../../../../assets/qr.png')}
+                    style={{
+                      height: 110,
+                      width: 110,
+                      resizeMode: 'contain',
+                      marginTop: 10,
+                    }}
+                  />
+                </View>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: theme.colors.Tabbg,
+                    alignSelf: 'center',
+                    paddingHorizontal: 15,
+                    paddingVertical: 8,
+                    borderRadius: 10,
+                    marginTop: 10,
+                  }}>
+                  <TextFormatted style={{fontSize: 16, fontWeight: '700'}}>
+                    Pay By Code
+                  </TextFormatted>
+                </TouchableOpacity>
+                <View style={{height: 30}} />
+                <SolidButton
+                  borderRadius={50}
+                  text={'Payment Completed'}
+                  backgroundColor={theme.colors.green}
+                  marginHorizontal={40}
+                />
+                <View style={{height: 30}} />
+              </View>
+
+              <View
+                style={{
+                  marginTop: 20,
+                  marginBottom: 50,
+                }}>
+                <SolidButton
+                  borderRadius={50}
+                  text={'Order Completed'}
+                  backgroundColor={theme.colors.green}
+                />
+              </View>
+            </View>
           )}
         </View>
       )}
@@ -2172,209 +2754,5 @@ function OrderItem({
           <TextFormatted style={{fontSize: 18, fontWeight: '700'}}>
             Pick Code: 9999
           </TextFormatted>
-        </View> */
-}
-
-{
-  /* <View
-          style={{
-            borderWidth: 1,
-            borderRadius: 10,
-            marginVertical: 20,
-            paddingVertical: 10,
-            borderColor: theme.colors.C4C4C4,
-            backgroundColor: theme.colors.Black,
-            marginHorizontal: 20,
-          }}>
-          <View
-            style={{
-              alignSelf: 'center',
-              borderRadius: 25,
-              marginVertical: 20,
-              paddingVertical: 7,
-              marginHorizontal: 20,
-              position: 'absolute',
-              top: -40,
-              backgroundColor: theme.colors.red,
-            }}>
-            <TextFormatted
-              style={{fontWeight: '500', paddingHorizontal: 80}}>
-              Recieved & Paid
-            </TextFormatted>
-          </View>
-
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              paddingHorizontal: 30,
-              marginTop: 10,
-            }}>
-            <Image
-              source={{uri: 'https://picsum.photos/500'}}
-              style={{
-                height: 60,
-                width: 60,
-                resizeMode: 'contain',
-                borderRadius: 50,
-                marginRight: 20,
-              }}
-            />
-            <View style={{alignItems: 'center'}}>
-              <TextFormatted
-                style={{
-                  fontSize: 16,
-                  fontWeight: '700',
-                  color: theme.colors.primary,
-                }}>
-                04:30 PM 11/04/2022
-              </TextFormatted>
-              <Image
-                source={require('../../../../../assets/gps.png')}
-                style={{
-                  height: 60,
-                  width: 90,
-                  resizeMode: 'contain',
-                  marginRight: 20,
-                }}
-              />
-            </View>
-            <Image
-              source={require('../../../../../assets/clock.png')}
-              style={{
-                height: 40,
-                width: 40,
-                resizeMode: 'contain',
-                borderRadius: 50,
-                marginLeft: 20,
-                opacity: 0,
-              }}
-            />
-          </View>
-
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              paddingHorizontal: 30,
-              marginTop: 20,
-              justifyContent: 'space-between',
-            }}>
-            <Image
-              source={require('../../../../../assets/bi_camera.png')}
-              style={{height: 30, width: 30, resizeMode: 'contain'}}
-            />
-            <Image
-              source={require('../../../../../assets/bi_camera.png')}
-              style={{height: 30, width: 30, resizeMode: 'contain'}}
-            />
-            <Image
-              source={require('../../../../../assets/bi_camera.png')}
-              style={{height: 30, width: 30, resizeMode: 'contain'}}
-            />
-            <Image
-              source={require('../../../../../assets/video.png')}
-              style={{height: 30, width: 30, resizeMode: 'contain'}}
-            />
-            <Image
-              source={require('../../../../../assets/mic.png')}
-              style={{height: 30, width: 30, resizeMode: 'contain'}}
-            />
-            <Image
-              source={require('../../../../../assets/plus_white.png')}
-              style={{height: 30, width: 30, resizeMode: 'contain'}}
-            />
-          </View>
-
-          <View style={{alignItems: 'center', marginTop: 20}}>
-            <TextFormatted
-              style={{
-                fontWeight: '500',
-                color: theme.colors.primary,
-              }}>
-              Total Cost:{' '}
-              <TextFormatted
-                style={{
-                  fontSize: 16,
-                  fontWeight: '700',
-                  color: theme.colors.primary,
-                }}>
-                $36.00
-              </TextFormatted>
-            </TextFormatted>
-            <Image
-              source={require('../../../../../assets/qr.png')}
-              style={{
-                height: 110,
-                width: 110,
-                resizeMode: 'contain',
-                marginTop: 10,
-              }}
-            />
-          </View>
-          <TouchableOpacity
-            style={{
-              backgroundColor: theme.colors.Tabbg,
-              alignSelf: 'center',
-              paddingHorizontal: 15,
-              paddingVertical: 8,
-              borderRadius: 10,
-              marginTop: 10,
-            }}>
-            <TextFormatted style={{fontSize: 16, fontWeight: '700'}}>
-              Pay By Code
-            </TextFormatted>
-          </TouchableOpacity>
-          <View
-            style={{
-              backgroundColor: theme.colors.C4C4C4,
-              height: 1,
-              marginHorizontal: 20,
-              marginTop: 20,
-            }}
-          />
-          <View style={{alignItems: 'center', marginTop: 20}}>
-            <Image
-              source={require('../../../../../assets/qr.png')}
-              style={{
-                height: 110,
-                width: 110,
-                resizeMode: 'contain',
-                marginTop: 10,
-              }}
-            />
-          </View>
-          <TouchableOpacity
-            style={{
-              backgroundColor: theme.colors.Tabbg,
-              alignSelf: 'center',
-              paddingHorizontal: 15,
-              paddingVertical: 8,
-              borderRadius: 10,
-              marginTop: 10,
-            }}>
-            <TextFormatted style={{fontSize: 16, fontWeight: '700'}}>
-              Pay By Code
-            </TextFormatted>
-          </TouchableOpacity>
-          <View style={{height: 30}} />
-          <SolidButton
-            borderRadius={50}
-            text={'Payment Completed'}
-            backgroundColor={theme.colors.green}
-          />
-          <View style={{height: 30}} />
-        </View>
-        <View
-          style={{
-            marginTop: 20,
-            marginHorizontal: 20,
-            marginBottom: 50,
-          }}>
-          <SolidButton
-            borderRadius={50}
-            text={'Order Completed'}
-            backgroundColor={theme.colors.green}
-          />
         </View> */
 }

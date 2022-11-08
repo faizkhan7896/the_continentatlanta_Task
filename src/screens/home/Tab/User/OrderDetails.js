@@ -1,6 +1,12 @@
 import {useRoute} from '@react-navigation/native';
 import moment from 'moment';
-import {default as React, useEffect, useRef, useState} from 'react';
+import {
+  default as React,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -61,8 +67,34 @@ export default function Orders({navigation}) {
   const [thumb, setThumb] = useState();
   const soundPlaying = useRef();
   const videoRef = useRef(null);
-  // alert(thumb);
-  // console.log('console.log', thumb);
+  const [delay, setDelay] = useState(+'600');
+  const [minutes, setMinutes] = useState(0);
+  const [seconds, setSeconds] = useState(0);
+  const [isPending, startTransition] = useTransition();
+  // console.log('item?.video_1', thumb);
+  // const [time, setTime] = useState(1000);
+  // const timerRef = useRef(time);
+  // alert(JSON.stringify(delay));
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      startTransition(() => {
+        setDelay(delay - 1);
+        setMinutes(Math.floor(delay / 60));
+        setSeconds(Math.floor(delay % 60));
+      });
+    }, 1000);
+
+    if (delay === 0) {
+      clearInterval(timer);
+      // alert('first');
+    }
+
+    return () => {
+      clearInterval(timer);
+      // alert('Second');
+    };
+  });
 
   const play = () => {
     if (!params?.audio_1) {
@@ -102,17 +134,12 @@ export default function Orders({navigation}) {
   }
 
   useEffect(() => {
-    generateThumbnail();
+    {
+      params?.video_1 != '' ||
+        ('https://pickpic4u.com/app.pickpic4u.com/uploads/NO' &&
+          generateThumbnail());
+    }
   }, []);
-
-  const onBuffer = e => {
-    console.log('buffering ....', e);
-    // alert('buttering ....', e);
-  };
-  const onError = e => {
-    // console.log('error raised', e);
-    // alert('error raised ....', e);
-  };
 
   async function AcceptOrder(id) {
     try {
@@ -252,6 +279,7 @@ export default function Orders({navigation}) {
                 source={{uri: params?.post?.image}}
                 style={{
                   width: dimensions.width / 3.5,
+                  backgroundColor: theme.colors.Tabbg + '33',
                   height: dimensions.width / 3.05,
                 }}
                 imageStyle={{
@@ -424,7 +452,7 @@ export default function Orders({navigation}) {
                             (parseFloat(v.image_coordinates?.position[2]) -
                               parseFloat(v.image_coordinates?.position[0])),
                           height:
-                            (1 * 60) /
+                            (1 * 110) /
                             (parseFloat(v.image_coordinates?.position[3]) -
                               parseFloat(v.image_coordinates?.position[1])),
                           borderWidth: 1,
@@ -440,7 +468,7 @@ export default function Orders({navigation}) {
                             ) / 1,
                           left:
                             -(
-                              ((1 * 80) /
+                              ((1 * 60) /
                                 (parseFloat(v.image_coordinates?.position[2]) -
                                   parseFloat(
                                     v.image_coordinates?.position[0],
@@ -628,7 +656,7 @@ export default function Orders({navigation}) {
                   </TextFormatted>
                 </View>
 
-                {params?.proccess_status == 'contains' ? (
+                {params?.contains_status == 'contains' && (
                   <View>
                     <View
                       style={{
@@ -656,6 +684,7 @@ export default function Orders({navigation}) {
                           Contains
                         </TextFormatted>
                       </View>
+
                       <View
                         style={{
                           flexDirection: 'row',
@@ -664,11 +693,12 @@ export default function Orders({navigation}) {
                           marginTop: 10,
                         }}>
                         <Image
-                          source={{uri: 'https://picsum.photos/500'}}
+                          source={{uri: params?.post?.image}}
                           style={{
                             height: 60,
                             width: 60,
-                            resizeMode: 'contain',
+                            resizeMode: 'cover',
+                            backgroundColor: theme.colors.Tabbg + '33',
                             borderRadius: 50,
                             marginRight: 20,
                           }}
@@ -682,6 +712,7 @@ export default function Orders({navigation}) {
                           {params?.last_update}
                         </TextFormatted>
                       </View>
+
                       <View
                         style={{
                           flexDirection: 'row',
@@ -714,6 +745,11 @@ export default function Orders({navigation}) {
                               width: 30,
                               resizeMode: 'cover',
                               borderRadius: 3,
+                              backgroundColor:
+                                params?.image_1 ==
+                                'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                                  ? theme.colors.Black
+                                  : theme.colors.Tabbg + '33',
                             }}
                           />
                         </TouchableOpacity>
@@ -741,6 +777,11 @@ export default function Orders({navigation}) {
                               width: 30,
                               resizeMode: 'cover',
                               borderRadius: 3,
+                              backgroundColor:
+                                params?.image_2 ==
+                                'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                                  ? theme.colors.Black
+                                  : theme.colors.Tabbg + '33',
                             }}
                           />
                         </TouchableOpacity>
@@ -768,6 +809,11 @@ export default function Orders({navigation}) {
                               width: 30,
                               resizeMode: 'cover',
                               borderRadius: 3,
+                              backgroundColor:
+                                params?.image_3 ==
+                                'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                                  ? theme.colors.Black
+                                  : theme.colors.Tabbg + '33',
                             }}
                           />
                         </TouchableOpacity>
@@ -786,7 +832,11 @@ export default function Orders({navigation}) {
                           style={{
                             alignItems: 'center',
                             justifyContent: 'center',
-                            backgroundColor: theme.colors.Tabbg + '33',
+                            backgroundColor:
+                              params?.video_1 ==
+                              'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                                ? theme.colors.Black
+                                : theme.colors.Tabbg + '33',
                             height: 30,
                             width: 30,
                             borderRadius: 5,
@@ -806,45 +856,6 @@ export default function Orders({navigation}) {
                             }}
                           />
                         </TouchableOpacity>
-
-                        {/* {params?.video_1 !=
-                      'https://pickpic4u.com/app.pickpic4u.com/uploads/NO' ? (
-                        <Image
-                          source={require('../../../../assets/video.png')}
-                          style={{
-                            height: 30,
-                            width: 30,
-                            resizeMode: 'contain',
-                          }}
-                        />
-                      ) : (
-                        <TouchableOpacity
-                          onPress={() => {
-                            navigation.navigate('FullVideo', {
-                              uri: params?.video_1,
-                            });
-                          }}
-                          style={{
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            borderRadius: 3,
-                          }}>
-                          <Video
-                            source={{uri: params?.video_1}}
-                            ref={ref => (videoRef.current = ref)}
-                            onBuffer={onBuffer}
-                            onError={onError}
-                            style={{
-                              height: 40,
-                              width: 40,
-                              borderRadius: 3,
-                            }}
-                            resizeMode="cover"
-                            // controls={true}
-                            audioOnly={true}
-                          />
-                        </TouchableOpacity>
-                      )} */}
 
                         {audioloading ? (
                           <ActivityIndicator
@@ -878,12 +889,14 @@ export default function Orders({navigation}) {
                       </View>
                     </View>
                   </View>
-                ) : params?.proccess_status == 'package' ? (
+                )}
+                {params?.package_status == 'package' && (
                   <View
                     style={{
                       borderWidth: 1,
                       borderRadius: 10,
-                      marginVertical: 20,
+                      marginTop: 20,
+                      marginBottom: 40,
                       paddingVertical: 10,
                       borderColor: theme.colors.C4C4C4,
                       backgroundColor: theme.colors.Black,
@@ -913,23 +926,29 @@ export default function Orders({navigation}) {
                         marginTop: 10,
                       }}>
                       <Image
-                        source={{uri: 'https://picsum.photos/500'}}
+                        source={{uri: params?.post?.image}}
                         style={{
                           height: 60,
                           width: 60,
-                          resizeMode: 'contain',
+                          resizeMode: 'cover',
                           borderRadius: 50,
+                          backgroundColor: theme.colors.Tabbg + '33',
                           marginRight: 20,
                         }}
                       />
-                      <View style={{alignItems: 'center'}}>
+                      <View
+                        style={{
+                          alignItems: 'center',
+                          width: dimensions.width / 2.5,
+                          marginRight: dimensions.width / 8,
+                        }}>
                         <TextFormatted
                           style={{
                             fontSize: 16,
                             fontWeight: '700',
                             color: theme.colors.primary,
                           }}>
-                          04:30 PM 11/04/2022
+                          {params?.package_time}
                         </TextFormatted>
                         <Image
                           source={require('../../../../assets/gps.png')}
@@ -941,16 +960,30 @@ export default function Orders({navigation}) {
                           }}
                         />
                       </View>
-                      <Image
-                        source={require('../../../../assets/clock.png')}
-                        style={{
-                          height: 40,
-                          width: 40,
-                          resizeMode: 'contain',
-                          borderRadius: 50,
-                          // marginHorizontal: 20,
-                        }}
-                      />
+                      <View style={{alignItems: 'center'}}>
+                        <Image
+                          source={require('../../../../assets/clock.png')}
+                          style={{
+                            height: 40,
+                            width: 40,
+                            resizeMode: 'contain',
+                            borderRadius: 50,
+                            // marginHorizontal: 20,
+                          }}
+                        />
+                        <TextFormatted
+                          style={{
+                            fontWeight: '700',
+                            color: theme.colors.primary,
+                          }}>
+                          {minutes < 10 ? '0' + minutes : minutes}:
+                          {seconds < 10
+                            ? '0' + (delay == 0 ? '0' : seconds)
+                            : delay == 0
+                            ? '00'
+                            : seconds}
+                        </TextFormatted>
+                      </View>
                     </View>
 
                     <View
@@ -973,29 +1006,13 @@ export default function Orders({navigation}) {
                           width: 30,
                           borderRadius: 5,
                         }}
-                        // onPress={() => {
-                        //   if (item?.package_image_1 == '') {
-                        //     setModalThree(true);
-                        //     setPackage_CurrentID(1);
-                        //     setOrderID(item?.id);
-                        //   } else {
-                        //     navigation.navigate('ImageZoom', {
-                        //       image: item?.package_image_1,
-                        //     });
-                        //   }
-                        // }}
-                        // style={{
-                        //   alignItems: 'center',
-                        //   justifyContent: 'center',
-                        //   backgroundColor:
-                        //     item?.package_image_3 == ''
-                        //       ? theme.colors.Black
-                        //       : theme.colors.Tabbg + '33',
-                        //   height: 30,
-                        //   width: 30,
-                        //   borderRadius: 5,
-                        // }}
-                      >
+                        onPress={() => {
+                          if (params?.package_image_1 != '') {
+                            navigation.navigate('ImageZoom', {
+                              image: params?.package_image_1,
+                            });
+                          }
+                        }}>
                         <Image
                           // source={{uri: uri.uri}}
                           source={
@@ -1013,7 +1030,6 @@ export default function Orders({navigation}) {
                       </TouchableOpacity>
 
                       <TouchableOpacity
-                        onPress={() => {}}
                         style={{
                           alignItems: 'center',
                           justifyContent: 'center',
@@ -1024,6 +1040,13 @@ export default function Orders({navigation}) {
                           height: 30,
                           width: 30,
                           borderRadius: 5,
+                        }}
+                        onPress={() => {
+                          if (params?.package_image_2 != '') {
+                            navigation.navigate('ImageZoom', {
+                              image: params?.package_image_2,
+                            });
+                          }
                         }}>
                         <Image
                           source={
@@ -1041,7 +1064,6 @@ export default function Orders({navigation}) {
                       </TouchableOpacity>
 
                       <TouchableOpacity
-                        onPress={() => {}}
                         style={{
                           alignItems: 'center',
                           justifyContent: 'center',
@@ -1052,6 +1074,13 @@ export default function Orders({navigation}) {
                           height: 30,
                           width: 30,
                           borderRadius: 5,
+                        }}
+                        onPress={() => {
+                          if (params?.package_image_3 != '') {
+                            navigation.navigate('ImageZoom', {
+                              image: params?.package_image_3,
+                            });
+                          }
                         }}>
                         <Image
                           source={
@@ -1120,9 +1149,7 @@ export default function Orders({navigation}) {
                       ) : (
                         <TouchableOpacity
                           onPress={() => {
-                            if (params?.package_audio_1 == '') {
-                              handleDocumentSelection();
-                            } else {
+                            if (params?.package_audio_1 != '') {
                               playing ? pause() : play();
                             }
                           }}>
@@ -1154,8 +1181,214 @@ export default function Orders({navigation}) {
                       </TouchableOpacity>
                     </View>
                   </View>
-                ) : (
-                  <View />
+                )}
+                {params?.received_paid_status == 'received_paid' && (
+                  <View>
+                    <View
+                      style={{
+                        borderWidth: 1,
+                        borderRadius: 10,
+                        marginVertical: 20,
+                        paddingVertical: 10,
+                        borderColor: theme.colors.C4C4C4,
+                        backgroundColor: theme.colors.Black,
+                      }}>
+                      <View
+                        style={{
+                          alignSelf: 'center',
+                          borderRadius: 25,
+                          marginVertical: 20,
+                          paddingVertical: 7,
+                          marginHorizontal: 20,
+                          position: 'absolute',
+                          top: -40,
+                          backgroundColor: theme.colors.red,
+                        }}>
+                        <TextFormatted
+                          style={{fontWeight: '500', paddingHorizontal: 80}}>
+                          Recieved & Paid
+                        </TextFormatted>
+                      </View>
+
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          paddingHorizontal: 30,
+                          marginTop: 10,
+                        }}>
+                        <Image
+                          source={{uri: params?.post?.image}}
+                          style={{
+                            height: 60,
+                            width: 60,
+                            resizeMode: 'cover',
+                            borderRadius: 50,
+                            marginRight: 20,
+                            backgroundColor: theme.colors.Tabbg + '33',
+                          }}
+                        />
+                        <View style={{alignItems: 'center'}}>
+                          <TextFormatted
+                            style={{
+                              fontSize: 16,
+                              fontWeight: '700',
+                              color: theme.colors.primary,
+                            }}>
+                            04:30 PM 11/04/2022
+                          </TextFormatted>
+                          <Image
+                            source={require('../../../../assets/gps.png')}
+                            style={{
+                              height: 60,
+                              width: 90,
+                              resizeMode: 'contain',
+                              marginRight: 20,
+                            }}
+                          />
+                        </View>
+                        <Image
+                          source={require('../../../../assets/clock.png')}
+                          style={{
+                            height: 40,
+                            width: 40,
+                            resizeMode: 'contain',
+                            borderRadius: 50,
+                            marginLeft: 20,
+                            opacity: 0,
+                          }}
+                        />
+                      </View>
+
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          paddingHorizontal: 30,
+                          marginTop: 20,
+                          justifyContent: 'space-between',
+                        }}>
+                        <Image
+                          source={require('../../../../assets/bi_camera.png')}
+                          style={{height: 30, width: 30, resizeMode: 'contain'}}
+                        />
+                        <Image
+                          source={require('../../../../assets/bi_camera.png')}
+                          style={{height: 30, width: 30, resizeMode: 'contain'}}
+                        />
+                        <Image
+                          source={require('../../../../assets/bi_camera.png')}
+                          style={{height: 30, width: 30, resizeMode: 'contain'}}
+                        />
+                        <Image
+                          source={require('../../../../assets/video.png')}
+                          style={{height: 30, width: 30, resizeMode: 'contain'}}
+                        />
+                        <Image
+                          source={require('../../../../assets/mic.png')}
+                          style={{height: 30, width: 30, resizeMode: 'contain'}}
+                        />
+                        <Image
+                          source={require('../../../../assets/plus_white.png')}
+                          style={{height: 30, width: 30, resizeMode: 'contain'}}
+                        />
+                      </View>
+
+                      <View style={{alignItems: 'center', marginTop: 20}}>
+                        <TextFormatted
+                          style={{
+                            fontWeight: '500',
+                            color: theme.colors.primary,
+                          }}>
+                          Total Cost:{' '}
+                          <TextFormatted
+                            style={{
+                              fontSize: 16,
+                              fontWeight: '700',
+                              color: theme.colors.primary,
+                            }}>
+                            ¥ {params?.total_price}
+                          </TextFormatted>
+                        </TextFormatted>
+                        <Image
+                          source={require('../../../../assets/qr.png')}
+                          style={{
+                            height: 110,
+                            width: 110,
+                            resizeMode: 'contain',
+                            marginTop: 10,
+                          }}
+                        />
+                      </View>
+                      <TouchableOpacity
+                        style={{
+                          backgroundColor: theme.colors.Tabbg,
+                          alignSelf: 'center',
+                          paddingHorizontal: 15,
+                          paddingVertical: 8,
+                          borderRadius: 10,
+                          marginTop: 10,
+                        }}>
+                        <TextFormatted
+                          style={{fontSize: 16, fontWeight: '700'}}>
+                          Pay By Code
+                        </TextFormatted>
+                      </TouchableOpacity>
+                      <View
+                        style={{
+                          backgroundColor: theme.colors.C4C4C4,
+                          height: 1,
+                          marginHorizontal: 20,
+                          marginTop: 20,
+                        }}
+                      />
+                      <View style={{alignItems: 'center', marginTop: 20}}>
+                        <Image
+                          source={require('../../../../assets/qr.png')}
+                          style={{
+                            height: 110,
+                            width: 110,
+                            resizeMode: 'contain',
+                            marginTop: 10,
+                          }}
+                        />
+                      </View>
+                      <TouchableOpacity
+                        style={{
+                          backgroundColor: theme.colors.Tabbg,
+                          alignSelf: 'center',
+                          paddingHorizontal: 15,
+                          paddingVertical: 8,
+                          borderRadius: 10,
+                          marginTop: 10,
+                        }}>
+                        <TextFormatted
+                          style={{fontSize: 16, fontWeight: '700'}}>
+                          Pay By Code
+                        </TextFormatted>
+                      </TouchableOpacity>
+                      <View style={{height: 30}} />
+                      <SolidButton
+                        borderRadius={50}
+                        text={'Payment Completed'}
+                        backgroundColor={theme.colors.green}
+                        marginHorizontal={40}
+                      />
+                      <View style={{height: 30}} />
+                    </View>
+
+                    <View
+                      style={{
+                        marginTop: 20,
+                        marginBottom: 50,
+                      }}>
+                      <SolidButton
+                        borderRadius={50}
+                        text={'Order Completed'}
+                        backgroundColor={theme.colors.green}
+                      />
+                    </View>
+                  </View>
                 )}
               </View>
             )}
