@@ -986,11 +986,6 @@ export default function History({navigation, setGet_followed_event}) {
             AddPackage_Image_3={AddPackage_Image_3}
             AddPackage_Audio={AddPackage_Audio}
             pickPackageVideo={pickPackageVideo}
-            // Add_Recieved_Image_1={Add_Recieved_Image_1}
-            // Add_Recieved_Image_2={Add_Recieved_Image_2}
-            // Add_Recieved_Image_3={Add_Recieved_Image_3}
-            // pickRecievedVideo={pickRecievedVideo}
-            // Add_Recieved_Audio={Add_Recieved_Audio}
             navigation={navigation}
           />
         )}
@@ -1148,11 +1143,6 @@ function OrderItem({
   setPackage_CurrentID,
   AddPackage_Audio,
   pickPackageVideo,
-  // Add_Recieved_Image_1,
-  // Add_Recieved_Image_2,
-  // Add_Recieved_Image_3,
-  // pickRecievedVideo,
-  // Add_Recieved_Audio,
 }) {
   const dimensions = useWindowDimensions();
 
@@ -2191,12 +2181,15 @@ function OrderItem({
                     </TouchableOpacity>
                   )}
 
-                  <TouchableOpacity onPress={() => ChangeFirstStep()}>
-                    <Image
-                      source={require('../../../../../assets/Check.png')}
-                      style={{height: 30, width: 30, resizeMode: 'contain'}}
-                    />
-                  </TouchableOpacity>
+                  {item?.package_status == '' && (
+                    <TouchableOpacity
+                      onPress={() => UpdateOrderTracking('package')}>
+                      <Image
+                        source={require('../../../../../assets/Check.png')}
+                        style={{height: 30, width: 30, resizeMode: 'contain'}}
+                      />
+                    </TouchableOpacity>
+                  )}
                 </View>
               </View>
             </View>
@@ -2514,12 +2507,15 @@ function OrderItem({
                   </TouchableOpacity>
                 )}
 
-                <TouchableOpacity onPress={() => ChangeSecondStep()}>
-                  <Image
-                    source={require('../../../../../assets/Check.png')}
-                    style={{height: 30, width: 30, resizeMode: 'contain'}}
-                  />
-                </TouchableOpacity>
+                {item?.received_paid_status == '' && (
+                  <TouchableOpacity
+                    onPress={() => UpdateOrderTracking('received_paid')}>
+                    <Image
+                      source={require('../../../../../assets/Check.png')}
+                      style={{height: 30, width: 30, resizeMode: 'contain'}}
+                    />
+                  </TouchableOpacity>
+                )}
               </View>
             </View>
           )}
@@ -2609,18 +2605,90 @@ function OrderItem({
                     marginTop: 20,
                     justifyContent: 'space-between',
                   }}>
-                  <Image
-                    source={require('../../../../../assets/bi_camera.png')}
-                    style={{height: 30, width: 30, resizeMode: 'contain'}}
-                  />
-                  <Image
-                    source={require('../../../../../assets/bi_camera.png')}
-                    style={{height: 30, width: 30, resizeMode: 'contain'}}
-                  />
-                  <Image
-                    source={require('../../../../../assets/bi_camera.png')}
-                    style={{height: 30, width: 30, resizeMode: 'contain'}}
-                  />
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (item?.received_paid_image_1 != '') {
+                        navigation.navigate('ImageZoom', {
+                          image: item?.received_paid_image_1,
+                        });
+                      }
+                    }}>
+                    <Image
+                      source={
+                        item?.received_paid_image_1 == ''
+                          ? uri == ''
+                            ? require('../../../../../assets/bi_camera.png')
+                            : {uri: uri.uri}
+                          : {uri: item?.received_paid_image_1}
+                      }
+                      style={{
+                        height: 30,
+                        width: 30,
+                        resizeMode: 'cover',
+                        borderRadius: 3,
+                        backgroundColor:
+                          item?.received_paid_image_1 == ''
+                            ? theme.colors.Black
+                            : theme.colors.Tabbg + '33',
+                      }}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (item?.received_paid_image_2 != '') {
+                        navigation.navigate('ImageZoom', {
+                          image: item?.received_paid_image_1,
+                        });
+                      }
+                    }}>
+                    <Image
+                      source={
+                        item?.received_paid_image_2 == ''
+                          ? uri == ''
+                            ? require('../../../../../assets/bi_camera.png')
+                            : {uri: uri.uri}
+                          : {uri: item?.received_paid_image_2}
+                      }
+                      style={{
+                        height: 30,
+                        width: 30,
+                        resizeMode: 'cover',
+                        borderRadius: 3,
+                        backgroundColor:
+                          item?.received_paid_image_2 == ''
+                            ? theme.colors.Black
+                            : theme.colors.Tabbg + '33',
+                      }}
+                    />
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (item?.received_paid_image_3 != '') {
+                        navigation.navigate('ImageZoom', {
+                          image: item?.received_paid_image_1,
+                        });
+                      }
+                    }}>
+                    <Image
+                      source={
+                        item?.received_paid_image_3 == ''
+                          ? uri == ''
+                            ? require('../../../../../assets/bi_camera.png')
+                            : {uri: uri.uri}
+                          : {uri: item?.received_paid_image_3}
+                      }
+                      style={{
+                        height: 30,
+                        width: 30,
+                        resizeMode: 'cover',
+                        borderRadius: 3,
+                        backgroundColor:
+                          item?.received_paid_image_3 == ''
+                            ? theme.colors.Black
+                            : theme.colors.Tabbg + '33',
+                      }}
+                    />
+                  </TouchableOpacity>
                   <Image
                     source={require('../../../../../assets/video.png')}
                     style={{height: 30, width: 30, resizeMode: 'contain'}}

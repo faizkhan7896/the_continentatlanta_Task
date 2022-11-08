@@ -2,6 +2,7 @@ import {useRoute} from '@react-navigation/native';
 import moment from 'moment';
 import {
   default as React,
+  useCallback,
   useEffect,
   useRef,
   useState,
@@ -33,6 +34,9 @@ import {theme} from '../../../../utils/theme';
 import {ShowToast} from '../../../../utils/ToastFunction';
 // import Sound from 'react-native-sound';
 import {createThumbnail} from 'react-native-create-thumbnail';
+import Button from '../../../../components/Button';
+import {launchImageLibrary} from 'react-native-image-picker';
+import DocumentPicker, {types} from 'react-native-document-picker';
 
 const Sound = require('react-native-sound');
 
@@ -71,10 +75,15 @@ export default function Orders({navigation}) {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [isPending, startTransition] = useTransition();
-  // console.log('item?.video_1', thumb);
+  const [modalThree, setModalThree] = useState(false);
+  const [currentID, setCurrentID] = useState(0);
+  const [uri, setUri] = useState('');
+  const [data, setData] = useState([]);
+
+  // console.log('item?.video_1', data);
   // const [time, setTime] = useState(1000);
   // const timerRef = useRef(time);
-  // alert(JSON.stringify(delay));
+  // alert(JSON.stringify(data?.received_paid_image_1));
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -95,6 +104,45 @@ export default function Orders({navigation}) {
       // alert('Second');
     };
   });
+  async function GetProduct(silent = false) {
+    try {
+      if (!silent) {
+        setLoading(true);
+      }
+      const url = baseUrl + 'get_post_order?id=' + params?.id;
+      console.log(url);
+
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        setData(rslt.order_data.reverse());
+        if (!silent) {
+          setLoading(false);
+        }
+      } else {
+        // ShowToast(rslt.message || 'Unknown error', 'error');
+        if (!silent) {
+          setLoading(false);
+        }
+      }
+    } catch (e) {
+      // alert('An error occured.');
+      ShowToast('An error occured.', 'error');
+      if (!silent) {
+        setLoading(false);
+      }
+
+      console.log(e);
+    }
+  }
 
   const play = () => {
     if (!params?.audio_1) {
@@ -139,6 +187,7 @@ export default function Orders({navigation}) {
         ('https://pickpic4u.com/app.pickpic4u.com/uploads/NO' &&
           generateThumbnail());
     }
+    GetProduct();
   }, []);
 
   async function AcceptOrder(id) {
@@ -237,6 +286,305 @@ export default function Orders({navigation}) {
       </View>
     );
   };
+
+  async function Add_Recieved_Image_1(uri) {
+    try {
+      const url = baseUrl + 'received_paid_update_order_image1';
+
+      const body = new FormData();
+
+      body.append('order_id', params?.id);
+      body.append('image_1', {
+        uri: uri.uri,
+        type: uri.type,
+        name: uri.fileName,
+      });
+      console.log(body);
+
+      console.log('JSON.stringify(body)', JSON.stringify(body));
+      // return;
+      const res = await fetch(url, {
+        method: 'POST',
+        body: body,
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        setCurrentID(0);
+        setUri('');
+        GetProduct(true);
+        ShowToast('Image added successfully');
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+      }
+    } catch (e) {
+      // alert('An error occured.');
+      ShowToast('An error occured.', 'error');
+
+      console.log(e);
+    }
+  }
+
+  async function Add_Recieved_Image_2(uri) {
+    try {
+      const url = baseUrl + 'received_paid_update_order_image2';
+
+      console.log(url);
+      const body = new FormData();
+
+      body.append('order_id', params?.id);
+      body.append('image_2', {
+        uri: uri.uri,
+        type: uri.type,
+        name: uri.fileName,
+      });
+      // return;
+
+      console.log('JSON.stringify(body)', JSON.stringify(body));
+      // console.log(body);
+      // return;
+      const res = await fetch(url, {
+        method: 'POST',
+        body: body,
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        setCurrentID(0);
+        setUri('');
+        GetProduct(true);
+        ShowToast('Image added successfully');
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+      }
+    } catch (e) {
+      // alert('An error occured.');
+      ShowToast('An error occured.', 'error');
+
+      console.log(e);
+    }
+  }
+
+  async function Add_Recieved_Image_3(uri) {
+    try {
+      const url = baseUrl + 'received_paid_update_order_image3';
+      console.log(url);
+
+      const body = new FormData();
+
+      body.append('order_id', params?.id);
+      body.append('image_3', {
+        uri: uri.uri,
+        type: uri.type,
+        name: uri.fileName,
+      });
+      // console.log(body);
+
+      console.log('JSON.stringify(body)', JSON.stringify(body));
+      // return;
+      const res = await fetch(url, {
+        method: 'POST',
+        body: body,
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        setCurrentID(0);
+        setUri('');
+        GetProduct(true);
+        ShowToast('Image added successfully');
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+      }
+    } catch (e) {
+      // alert('An error occured.');
+      ShowToast('An error occured.', 'error');
+
+      console.log(e);
+    }
+  }
+
+  async function Add_Recieved_Video(video) {
+    try {
+      const url = baseUrl + 'received_paid_video_1';
+      console.log(url);
+      console.log(Package_currentID);
+
+      const body = new FormData();
+
+      body.append('order_id', Package_currentID);
+      const urlComponents = video?.uri.split('/');
+      const fileNameAndExtension = urlComponents[urlComponents?.length - 1];
+      const destPath = `${RNFS?.TemporaryDirectoryPath}/${fileNameAndExtension}`;
+      await RNFS.copyFile(video?.uri, destPath);
+      // alert('file://' + destPath);
+
+      console.log('file://' + destPath);
+
+      body.append('video_1', {
+        name: 'video.mp4',
+        uri: 'file://' + destPath,
+        type: video.type,
+      });
+
+      console.log('JSON.stringify(body)', JSON.stringify(body));
+      return;
+      const res = await fetch(url, {
+        method: 'POST',
+        body: body,
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        setCurrentID(0);
+        setUri('');
+        setVideo('');
+        GetProduct(true);
+        ShowToast('Video added successfully');
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+      }
+    } catch (e) {
+      // alert('An error occured.');
+      // ShowToast('An error occured, Upload video again ', 'error');
+
+      console.log(e);
+    }
+  }
+
+  async function Add_Recieved_Audio(orderID, name, uri, type) {
+    try {
+      const url = baseUrl + 'received_paid_update_order_audio1';
+      console.log(url);
+
+      const body = new FormData();
+
+      body.append('order_id', orderID);
+      body.append('audio_1', {
+        name: name,
+        uri: uri,
+        type: type,
+      });
+
+      console.log('JSON.stringify(body)', JSON.stringify(body));
+      // return;
+      const res = await fetch(url, {
+        method: 'POST',
+        body: body,
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        ShowToast('Audio uploaded successfully');
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+      }
+    } catch (e) {
+      // alert('An error occured.');
+      // ShowToast('An error occured, Upload video again ', 'error');
+
+      console.log(e);
+    }
+  }
+
+  const pickImage = () => {
+    launchImageLibrary({quality: 1, mediaType: 'photo'}, response => {
+      if (!response.didCancel) {
+        setUri(response.assets[0]);
+        console.log('Product', uri);
+        setModalThree(false);
+        if (currentID == 1) {
+          setTimeout(() => {
+            Add_Recieved_Image_1(response.assets[0]);
+          }, 500);
+        }
+        if (currentID == 2) {
+          setTimeout(() => {
+            Add_Recieved_Image_2(response.assets[0]);
+          }, 500);
+        }
+        if (currentID == 3) {
+          setTimeout(() => {
+            Add_Recieved_Image_3(response.assets[0]);
+          }, 500);
+        }
+      }
+    });
+  };
+
+  const picCamera = () => {
+    launchCamera({quality: 1, mediaType: 'photo'}, response => {
+      if (!response.didCancel) {
+        setUri(response.assets[0]);
+        console.log('Product', uri);
+        setModalThree(false);
+        if (currentID == 1) {
+          setTimeout(() => {
+            Add_Recieved_Image_1(response.assets[0]);
+          }, 500);
+        }
+        if (currentID == 2) {
+          setTimeout(() => {
+            Add_Recieved_Image_2(response.assets[0]);
+          }, 500);
+        }
+        if (currentID == 3) {
+          setTimeout(() => {
+            Add_Recieved_Image_3(response.assets[0]);
+          }, 500);
+        }
+      }
+    });
+  };
+
+  const Add_Package_Audio = useCallback(async () => {
+    try {
+      if (data[0]?.received_paid_audio_1 == '') {
+        const response = await DocumentPicker.pick({
+          presentationStyle: 'fullScreen',
+          type: [types.audio],
+        });
+
+        // setFileResponse(response);
+        Add_Recieved_Audio(
+          data[0]?.id,
+          response[0]?.name,
+          response[0]?.uri,
+          response[0]?.type,
+        );
+        GetProduct(true);
+      } else {
+        ShowToast('An error occurred', 'error');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  }, []);
 
   return (
     <View
@@ -362,37 +710,6 @@ export default function Orders({navigation}) {
                     // flex: 1,
                     paddingHorizontal: 10,
                   }}></View>
-                {/* <TouchableOpacity
-                  // onPress={() => CancelOrder(params?.id)}
-                  activeOpacity={0.7}
-                  style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    paddingVertical: 7,
-                    flexDirection: 'row',
-                    borderRadius: 6,
-                    backgroundColor: theme.colors.red,
-                    // flex: 1,
-                    paddingHorizontal: 10,
-                  }}>
-                  {loading ? (
-                    <ActivityIndicator
-                      size={'small'}
-                      style={{paddingHorizontal: 12}}
-                      color="#fff"
-                    />
-                  ) : (
-                    <TextFormated
-                      style={{
-                        fontWeight: '700',
-                        color: theme.colors.primary,
-                        fontSize: 10,
-                        paddingVertical: 3,
-                      }}>
-                      CANCEL
-                    </TextFormated>
-                  )}
-                </TouchableOpacity> */}
               </View>
             </View>
           </TouchableOpacity>
@@ -1170,15 +1487,6 @@ export default function Orders({navigation}) {
                           />
                         </TouchableOpacity>
                       )}
-
-                      <TouchableOpacity
-                      // onPress={() => UpdateOrderTracking('package')}
-                      >
-                        <Image
-                          source={require('../../../../assets/Check.png')}
-                          style={{height: 30, width: 30, resizeMode: 'contain'}}
-                        />
-                      </TouchableOpacity>
                     </View>
                   </View>
                 )}
@@ -1268,30 +1576,140 @@ export default function Orders({navigation}) {
                           marginTop: 20,
                           justifyContent: 'space-between',
                         }}>
-                        <Image
-                          source={require('../../../../assets/bi_camera.png')}
-                          style={{height: 30, width: 30, resizeMode: 'contain'}}
-                        />
-                        <Image
-                          source={require('../../../../assets/bi_camera.png')}
-                          style={{height: 30, width: 30, resizeMode: 'contain'}}
-                        />
-                        <Image
-                          source={require('../../../../assets/bi_camera.png')}
-                          style={{height: 30, width: 30, resizeMode: 'contain'}}
-                        />
+                        <TouchableOpacity
+                          // onPress={() => Add_Recieved_Image_1()}
+                          onPress={() => {
+                            if (data[0]?.received_paid_image_1 == '') {
+                              setModalThree(true);
+                              setCurrentID(1);
+                            } else {
+                              navigation.navigate('ImageZoom', {
+                                image: data[0]?.received_paid_image_1,
+                              });
+                            }
+                          }}>
+                          <Image
+                            source={
+                              data[0]?.received_paid_image_1 == ''
+                                ? uri == ''
+                                  ? require('../../../../assets/bi_camera.png')
+                                  : {uri: uri.uri}
+                                : {uri: data[0]?.received_paid_image_1}
+                            }
+                            style={{
+                              height: 30,
+                              width: 30,
+                              resizeMode: 'cover',
+                              backgroundColor:
+                                data[0]?.received_paid_image_1 == ''
+                                  ? theme.colors.Black
+                                  : theme.colors.Tabbg + '33',
+                              borderRadius: 5,
+                            }}
+                          />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          // onPress={() => Add_Recieved_Image_2()}
+                          onPress={() => {
+                            if (data[0]?.received_paid_image_2 == '') {
+                              setModalThree(true);
+                              setCurrentID(2);
+                            } else {
+                              navigation.navigate('ImageZoom', {
+                                image: data[0]?.received_paid_image_2,
+                              });
+                            }
+                          }}>
+                          <Image
+                            source={
+                              data[0]?.received_paid_image_2 == ''
+                                ? uri == ''
+                                  ? require('../../../../assets/bi_camera.png')
+                                  : {uri: uri.uri}
+                                : {uri: data[0]?.received_paid_image_2}
+                            }
+                            style={{
+                              height: 30,
+                              width: 30,
+                              resizeMode: 'cover',
+                              backgroundColor:
+                                data[0]?.received_paid_image_2 == ''
+                                  ? theme.colors.Black
+                                  : theme.colors.Tabbg + '33',
+                              borderRadius: 5,
+                            }}
+                          />
+                        </TouchableOpacity>
+
+                        <TouchableOpacity
+                          // onPress={() => Add_Recieved_Image_3()}
+                          onPress={() => {
+                            if (data[0]?.received_paid_image_3 == '') {
+                              setModalThree(true);
+                              setCurrentID(3);
+                            } else {
+                              navigation.navigate('ImageZoom', {
+                                image: data[0]?.received_paid_image_3,
+                              });
+                            }
+                          }}>
+                          <Image
+                            source={
+                              data[0]?.received_paid_image_3 == ''
+                                ? uri == ''
+                                  ? require('../../../../assets/bi_camera.png')
+                                  : {uri: uri.uri}
+                                : {uri: data[0]?.received_paid_image_3}
+                            }
+                            style={{
+                              height: 30,
+                              width: 30,
+                              resizeMode: 'cover',
+                              backgroundColor:
+                                data[0]?.received_paid_image_3 == ''
+                                  ? theme.colors.Black
+                                  : theme.colors.Tabbg + '33',
+                              borderRadius: 5,
+                            }}
+                          />
+                        </TouchableOpacity>
                         <Image
                           source={require('../../../../assets/video.png')}
                           style={{height: 30, width: 30, resizeMode: 'contain'}}
                         />
-                        <Image
-                          source={require('../../../../assets/mic.png')}
-                          style={{height: 30, width: 30, resizeMode: 'contain'}}
-                        />
-                        <Image
-                          source={require('../../../../assets/plus_white.png')}
-                          style={{height: 30, width: 30, resizeMode: 'contain'}}
-                        />
+                        {audioloading ? (
+                          <ActivityIndicator
+                            size={'small'}
+                            style={{paddingHorizontal: 5}}
+                            color="#fff"
+                          />
+                        ) : (
+                          <TouchableOpacity
+                            onPress={() => {
+                              if (data[0]?.received_paid_audio_1 == '') {
+                                Add_Package_Audio();
+                              } else {
+                                playing ? pause() : play();
+                              }
+                            }}>
+                            <Image
+                              // source={require('../../../../../assets/mic.png')}
+                              source={
+                                data[0]?.received_paid_audio_1 == ''
+                                  ? require('../../../../assets/mic.png')
+                                  : playing
+                                  ? require('../../../../assets/pause.png')
+                                  : require('../../../../assets/play.png')
+                              }
+                              style={{
+                                height: 30,
+                                width: 30,
+                                resizeMode: 'contain',
+                              }}
+                            />
+                          </TouchableOpacity>
+                        )}
                       </View>
 
                       <View style={{alignItems: 'center', marginTop: 20}}>
@@ -1395,6 +1813,7 @@ export default function Orders({navigation}) {
           </View>
         )}
       </ScrollView>
+
       <Modal
         animationType="fade"
         visible={modalTwo}
@@ -1580,6 +1999,102 @@ export default function Orders({navigation}) {
                   </TextFormated>
                 )}
               </TouchableOpacity>
+            </View>
+          </TouchableOpacity>
+        </TouchableOpacity>
+      </Modal>
+
+      <Modal
+        animationType="slide"
+        visible={modalThree}
+        onDismiss={() => setModalThree(false)}
+        transparent
+        style={{}}>
+        <TouchableOpacity
+          onPress={() => {
+            setModalThree(false);
+            setCurrentID(0);
+          }}
+          activeOpacity={1}
+          style={{
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            backgroundColor: 'transparent',
+            backgroundColor: theme.colors.Black + '33',
+            width: Dimensions.get('window').width,
+            height: Dimensions.get('window').height,
+          }}>
+          <TouchableOpacity
+            activeOpacity={1}
+            style={{
+              backgroundColor: theme.colors.primary,
+              width: Dimensions.get('window').width,
+              height: Dimensions.get('window').width - 200,
+              // alignItems: 'center',
+              borderRadius: 20,
+              // borderWidth: 0.4,
+              // borderColor: theme.colors.Light_Gray,
+            }}>
+            <View
+              style={{
+                flex: 1,
+                justifyContent: 'center',
+                borderRadius: 20,
+                overflow: 'hidden',
+                alignItems: 'center',
+              }}>
+              <View
+                style={{
+                  marginHorizontal: 20,
+                  // borderWidth: 1,
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  width: Dimensions.get('window').width / 2,
+                }}>
+                <TouchableOpacity
+                  onPress={() => picCamera()}
+                  style={{alignItems: 'center'}}>
+                  <Image
+                    style={{height: 50, width: 50, resizeMode: 'contain'}}
+                    source={require('../../../../assets/Open_Camera.png')}
+                  />
+                  <TextFormated
+                    style={{
+                      fontSize: 16,
+                      fontWeight: '600',
+                      paddingVertical: 8,
+                    }}>
+                    Camera
+                  </TextFormated>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => pickImage()}
+                  style={{alignItems: 'center'}}>
+                  <Image
+                    style={{height: 50, width: 50, resizeMode: 'contain'}}
+                    source={require('../../../../assets/gallery.png')}
+                  />
+                  <TextFormated
+                    style={{
+                      fontSize: 16,
+                      fontWeight: '600',
+                      paddingVertical: 8,
+                    }}>
+                    Liabrary
+                  </TextFormated>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <View style={{marginHorizontal: 20, marginBottom: 15}}>
+              <Button
+                onPress={() => {
+                  setCurrentID(0);
+                  setModalThree(false);
+                }}
+                ButtonText={'CANCEL'}
+                paddingVertical={15}
+              />
             </View>
           </TouchableOpacity>
         </TouchableOpacity>

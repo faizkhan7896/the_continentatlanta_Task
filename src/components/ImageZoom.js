@@ -8,7 +8,7 @@ import Header from './Header';
 
 export default function Image_Zoom({navigation}) {
   const params = useRoute();
-  // alert(JSON.stringify(params.params.image));
+  // alert(JSON.stringify(params));
 
   return (
     <View
@@ -53,8 +53,9 @@ export default function Image_Zoom({navigation}) {
               resizeMode: 'stretch',
               // borderWidth: 1,
               borderColor: theme.colors.primary,
+              backgroundColor: theme.colors.Tabbg + '33',
             }}
-            source={{uri: params?.params?.image || 'https://picsum.photos/500'}}
+            source={{uri: params?.params?.image}}
           />
           {/* ))} */}
         </ImageZoom>
