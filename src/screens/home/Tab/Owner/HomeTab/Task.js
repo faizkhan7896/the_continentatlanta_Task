@@ -7,7 +7,6 @@ import React, {
   useTransition,
 } from 'react';
 import {
-  ActivityIndicator,
   Alert,
   Dimensions,
   FlatList,
@@ -35,8 +34,10 @@ import {theme} from '../../../../../utils/theme';
 import {ShowToast} from '../../../../../utils/ToastFunction';
 var RNFS = require('react-native-fs');
 import DocumentPicker, {types} from 'react-native-document-picker';
-import {createThumbnail} from 'react-native-create-thumbnail';
+import {ActivityIndicator} from 'react-native-paper';
 const Sound = require('react-native-sound');
+import RNLocation from 'react-native-location';
+import Geolocation from '@react-native-community/geolocation';
 
 export default function History({navigation, setGet_followed_event}) {
   const dimensions = useWindowDimensions();
@@ -51,15 +52,13 @@ export default function History({navigation, setGet_followed_event}) {
   const [Package_currentID, setPackage_CurrentID] = useState();
   const [orderID, setOrderID] = useState(0);
   const [video, setVideo] = useState('');
-  // alert(JSON.stringify(video.uri));
   const videoRef = useRef(null);
   const [thumb, setThumb] = useState();
-
-  // AddPackage_Video
-  // AddPackage_Audio
-
   const [productstatus, setproductstatus] = useState([]);
-  // alert(JSON.stringify(productstatus));
+  const [location, setLocation] = useState('');
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
+  // alert(JSON.stringify(latitude));
 
   async function GetProduct(silent = false) {
     try {
@@ -100,8 +99,43 @@ export default function History({navigation, setGet_followed_event}) {
       console.log(e);
     }
   }
+
+  const currentLocation = async () => {
+    await RNLocation.requestPermission({
+      ios: 'whenInUse',
+      android: {
+        detail: 'coarse',
+      },
+    });
+    Geolocation.getCurrentPosition(async info => {
+      setLongitude(info.coords.longitude);
+      setLatitude(info.coords.latitude);
+
+      // ShowToast(JSON.stringify(info.coords));
+      const url =
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=' +
+        info.coords.latitude +
+        ',' +
+        info.coords.longitude +
+        '&key=AIzaSyCj_8-SZsoxYxZwN_Wi_7hU8kDSeQx_YVQ';
+      try {
+        // setLoading(true);
+        const res = await fetch(url);
+        // console.log(res);
+
+        const json = await res.json();
+        // console.log(json);
+        setLocation(json.results[0]?.formatted_address);
+      } catch (e) {
+        // setLoading(false);
+        ShowToast(e.toString());
+      }
+    }, console.warn);
+  };
+
   useEffect(() => {
     GetProduct();
+    currentLocation();
   }, []);
 
   async function UpdateOrder(id, type, ParentID) {
@@ -175,8 +209,6 @@ export default function History({navigation, setGet_followed_event}) {
       console.log(e);
     }
   }
-  // alert(JSON.stringify(auth.id));
-  // alert(JSON.stringify(currentID));
 
   async function AddImage_1(uri) {
     try {
@@ -410,6 +442,9 @@ export default function History({navigation, setGet_followed_event}) {
       const body = new FormData();
 
       body.append('order_id', orderID);
+      body.append('package_address', location);
+      body.append('package_lat', latitude);
+      body.append('package_lon', longitude);
       body.append('image_1', {
         uri: uri.uri,
         type: uri.type,
@@ -454,6 +489,9 @@ export default function History({navigation, setGet_followed_event}) {
       const body = new FormData();
 
       body.append('order_id', orderID);
+      body.append('package_address', location);
+      body.append('package_lat', latitude);
+      body.append('package_lon', longitude);
       body.append('image_2', {
         uri: uri.uri,
         type: uri.type,
@@ -499,6 +537,9 @@ export default function History({navigation, setGet_followed_event}) {
       const body = new FormData();
 
       body.append('order_id', orderID);
+      body.append('package_address', location);
+      body.append('package_lat', latitude);
+      body.append('package_lon', longitude);
       body.append('image_3', {
         uri: uri.uri,
         type: uri.type,
@@ -544,6 +585,9 @@ export default function History({navigation, setGet_followed_event}) {
       const body = new FormData();
 
       body.append('order_id', Package_currentID);
+      body.append('package_address', location);
+      body.append('package_lat', latitude);
+      body.append('package_lon', longitude);
       const urlComponents = video?.uri.split('/');
       const fileNameAndExtension = urlComponents[urlComponents?.length - 1];
       const destPath = `${RNFS?.TemporaryDirectoryPath}/${fileNameAndExtension}`;
@@ -596,231 +640,9 @@ export default function History({navigation, setGet_followed_event}) {
       const body = new FormData();
 
       body.append('order_id', orderID);
-      body.append('audio_1', {
-        name: name,
-        uri: uri,
-        type: type,
-      });
-
-      console.log('JSON.stringify(body)', JSON.stringify(body));
-      // return;
-      const res = await fetch(url, {
-        method: 'POST',
-        body: body,
-        headers: {
-          'content-type': 'multipart/form-data',
-        },
-      });
-      console.log(res);
-      const rslt = await res.json();
-      console.log(rslt);
-
-      if (rslt.success == '1') {
-        ShowToast('Audio uploaded successfully');
-      } else {
-        ShowToast(rslt.message || 'Unknown error', 'error');
-      }
-    } catch (e) {
-      // alert('An error occured.');
-      // ShowToast('An error occured, Upload video again ', 'error');
-
-      console.log(e);
-    }
-  }
-
-  async function Add_Recieved_Image_1(uri) {
-    try {
-      const url = baseUrl + 'received_paid_image_1';
-
-      const body = new FormData();
-
-      body.append('order_id', orderID);
-      body.append('image_1', {
-        uri: uri.uri,
-        type: uri.type,
-        name: uri.fileName,
-      });
-      console.log(body);
-
-      console.log('JSON.stringify(body)', JSON.stringify(body));
-      // return;
-      const res = await fetch(url, {
-        method: 'POST',
-        body: body,
-        headers: {
-          'content-type': 'multipart/form-data',
-        },
-      });
-      console.log(res);
-      const rslt = await res.json();
-      console.log(rslt);
-
-      if (rslt.success == '1') {
-        setCurrentID(0);
-        setUri('');
-        GetProduct(true);
-        ShowToast('Image added successfully');
-      } else {
-        ShowToast(rslt.message || 'Unknown error', 'error');
-      }
-    } catch (e) {
-      // alert('An error occured.');
-      ShowToast('An error occured.', 'error');
-
-      console.log(e);
-    }
-  }
-
-  async function Add_Recieved_Image_2(uri) {
-    try {
-      const url = baseUrl + 'received_paid_image_2';
-
-      console.log(url);
-      const body = new FormData();
-
-      body.append('order_id', orderID);
-      body.append('image_2', {
-        uri: uri.uri,
-        type: uri.type,
-        name: uri.fileName,
-      });
-      // return;
-
-      console.log('JSON.stringify(body)', JSON.stringify(body));
-      // console.log(body);
-      // return;
-      const res = await fetch(url, {
-        method: 'POST',
-        body: body,
-        headers: {
-          'content-type': 'multipart/form-data',
-        },
-      });
-      console.log(res);
-      const rslt = await res.json();
-      console.log(rslt);
-
-      if (rslt.success == '1') {
-        setCurrentID(0);
-        setUri('');
-        GetProduct(true);
-        ShowToast('Image added successfully');
-      } else {
-        ShowToast(rslt.message || 'Unknown error', 'error');
-      }
-    } catch (e) {
-      // alert('An error occured.');
-      ShowToast('An error occured.', 'error');
-
-      console.log(e);
-    }
-  }
-
-  async function Add_Recieved_Image_3(uri) {
-    try {
-      const url = baseUrl + 'received_paid_image_3';
-      console.log(url);
-
-      const body = new FormData();
-
-      body.append('order_id', orderID);
-      body.append('image_3', {
-        uri: uri.uri,
-        type: uri.type,
-        name: uri.fileName,
-      });
-      // console.log(body);
-
-      console.log('JSON.stringify(body)', JSON.stringify(body));
-      // return;
-      const res = await fetch(url, {
-        method: 'POST',
-        body: body,
-        headers: {
-          'content-type': 'multipart/form-data',
-        },
-      });
-      console.log(res);
-      const rslt = await res.json();
-      console.log(rslt);
-
-      if (rslt.success == '1') {
-        setCurrentID(0);
-        setUri('');
-        GetProduct(true);
-        ShowToast('Image added successfully');
-      } else {
-        ShowToast(rslt.message || 'Unknown error', 'error');
-      }
-    } catch (e) {
-      // alert('An error occured.');
-      ShowToast('An error occured.', 'error');
-
-      console.log(e);
-    }
-  }
-
-  async function Add_Recieved_Video(video) {
-    try {
-      const url = baseUrl + 'received_paid_video_1';
-      console.log(url);
-      console.log(Package_currentID);
-
-      const body = new FormData();
-
-      body.append('order_id', Package_currentID);
-      const urlComponents = video?.uri.split('/');
-      const fileNameAndExtension = urlComponents[urlComponents?.length - 1];
-      const destPath = `${RNFS?.TemporaryDirectoryPath}/${fileNameAndExtension}`;
-      await RNFS.copyFile(video?.uri, destPath);
-      // alert('file://' + destPath);
-
-      console.log('file://' + destPath);
-
-      body.append('video_1', {
-        name: 'video.mp4',
-        uri: 'file://' + destPath,
-        type: video.type,
-      });
-
-      console.log('JSON.stringify(body)', JSON.stringify(body));
-      return;
-      const res = await fetch(url, {
-        method: 'POST',
-        body: body,
-        headers: {
-          'content-type': 'multipart/form-data',
-        },
-      });
-      console.log(res);
-      const rslt = await res.json();
-      console.log(rslt);
-
-      if (rslt.success == '1') {
-        setCurrentID(0);
-        setUri('');
-        setVideo('');
-        GetProduct(true);
-        ShowToast('Video added successfully');
-      } else {
-        ShowToast(rslt.message || 'Unknown error', 'error');
-      }
-    } catch (e) {
-      // alert('An error occured.');
-      // ShowToast('An error occured, Upload video again ', 'error');
-
-      console.log(e);
-    }
-  }
-
-  async function Add_Recieved_Audio(orderID, name, uri, type) {
-    try {
-      const url = baseUrl + 'received_paid_video_1';
-      console.log(url);
-
-      const body = new FormData();
-
-      body.append('order_id', orderID);
+      body.append('package_address', location);
+      body.append('package_lat', latitude);
+      body.append('package_lon', longitude);
       body.append('audio_1', {
         name: name,
         uri: uri,
@@ -928,14 +750,6 @@ export default function History({navigation, setGet_followed_event}) {
       }
     });
   };
-  // const pickRecievedVideo = () => {
-  //   launchImageLibrary({quality: 1, mediaType: 'video'}, response => {
-  //     if (!response.didCancel) {
-  //       setVideo(response.assets[0]);
-  //       AddPackage_Video(response.assets[0]);
-  //     }
-  //   });
-  // };
 
   const onBuffer = e => {
     console.log('buffering ....', e);
@@ -1152,43 +966,20 @@ function OrderItem({
   const [fileResponse, setFileResponse] = useState([]);
   const [thumb, setThumb] = useState([]);
   const [playing, setPlaying] = useState(false);
+  const [playing_2, setPlaying_2] = useState(false);
+  const [playing_3, setPlaying_3] = useState(false);
   const [audioloading, setAudioloading] = useState(false);
+  const [audioloading_2, setAudioloading_2] = useState(false);
+  const [audioloading_3, setAudioloading_3] = useState(false);
   const soundPlaying = useRef();
+  const soundPlaying_2 = useRef();
+  const soundPlaying_3 = useRef();
   const [delay, setDelay] = useState(+'600');
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [isPending, startTransition] = useTransition();
   // console.log('item?.video_1', thumb);
-  // const [time, setTime] = useState(1000);
-  // const timerRef = useRef(time);
   // alert(JSON.stringify(delay));
-
-  const ChangeFirstStep = () =>
-    Alert.alert(
-      'Complete this step',
-      'Are you sure you want to complete this step?',
-      [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {text: 'OK', onPress: () => UpdateOrderTracking('package')},
-      ],
-    );
-  const ChangeSecondStep = () =>
-    Alert.alert(
-      'Complete this step',
-      'Are you sure you want to complete this step?',
-      [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {text: 'OK', onPress: () => UpdateOrderTracking('received_paid')},
-      ],
-    );
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -1262,6 +1053,62 @@ function OrderItem({
   const pause = () => {
     soundPlaying.current.pause();
     setPlaying(false);
+  };
+
+  const play_2 = () => {
+    if (!item?.package_audio_1) {
+      return;
+    }
+    setAudioloading_2(true);
+
+    soundPlaying_2.current = new Sound(
+      {
+        uri: item?.package_audio_1,
+      },
+      error => {
+        if (error)
+          ShowToast(
+            'failed to load the sound ' + item?.package_audio_1,
+            'error',
+          );
+        console.log(error, item?.package_audio_1);
+        setAudioloading_2(false);
+        setPlaying_2(true);
+        soundPlaying_2.current.play(() => setPlaying_2(false));
+      },
+    );
+  };
+  const pause_2 = () => {
+    soundPlaying_2.current.pause();
+    setPlaying_2(false);
+  };
+
+  const play_3 = () => {
+    if (!item?.received_paid_audio_1) {
+      return;
+    }
+    setAudioloading_3(true);
+
+    soundPlaying_3.current = new Sound(
+      {
+        uri: item?.received_paid_audio_1,
+      },
+      error => {
+        if (error)
+          ShowToast(
+            'failed to load the sound ' + item?.received_paid_audio_1,
+            'error',
+          );
+        console.log(error, item?.received_paid_audio_1);
+        setAudioloading_3(false);
+        setPlaying_3(true);
+        soundPlaying_3.current.play(() => setPlaying_3(false));
+      },
+    );
+  };
+  const pause_3 = () => {
+    soundPlaying_3.current.pause();
+    setPlaying_3(false);
   };
 
   const handleDocumentSelection = useCallback(async () => {
@@ -1984,9 +1831,7 @@ function OrderItem({
                       source={
                         item?.image_1 ==
                         'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                          ? uri == ''
-                            ? require('../../../../../assets/bi_camera.png')
-                            : {uri: uri.uri}
+                          ? require('../../../../../assets/bi_camera.png')
                           : {uri: item?.image_1}
                       }
                       style={{
@@ -2022,9 +1867,7 @@ function OrderItem({
                       source={
                         item?.image_2 ==
                         'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                          ? uri == ''
-                            ? require('../../../../../assets/bi_camera.png')
-                            : {uri: uri.uri}
+                          ? require('../../../../../assets/bi_camera.png')
                           : {uri: item?.image_2}
                       }
                       style={{
@@ -2060,9 +1903,7 @@ function OrderItem({
                       source={
                         item?.image_3 ==
                         'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                          ? uri == ''
-                            ? require('../../../../../assets/bi_camera.png')
-                            : {uri: uri.uri}
+                          ? require('../../../../../assets/bi_camera.png')
                           : {uri: item?.image_3}
                       }
                       style={{
@@ -2256,15 +2097,28 @@ function OrderItem({
                       ? 'Details will add its time'
                       : item?.package_time}
                   </TextFormatted>
-                  <Image
-                    source={require('../../../../../assets/gps.png')}
-                    style={{
-                      height: 60,
-                      width: 90,
-                      resizeMode: 'contain',
-                      // marginRight: 20,
-                    }}
-                  />
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (item?.package_lat == '' && item?.package_lon == '') {
+                        ShowToast('Location not available', 'error');
+                        return;
+                      } else {
+                        navigation.navigate('MapScreen', {
+                          lat: item?.package_lat,
+                          log: item?.package_lon,
+                        });
+                      }
+                    }}>
+                    <Image
+                      source={require('../../../../../assets/gps.png')}
+                      style={{
+                        height: 60,
+                        width: 90,
+                        resizeMode: 'contain',
+                        // marginRight: 20,
+                      }}
+                    />
+                  </TouchableOpacity>
                 </View>
                 <View style={{alignItems: 'center'}}>
                   <Image
@@ -2277,18 +2131,20 @@ function OrderItem({
                       // marginHorizontal: 20,
                     }}
                   />
-                  <TextFormatted
-                    style={{
-                      fontWeight: '700',
-                      color: theme.colors.primary,
-                    }}>
-                    {minutes < 10 ? '0' + minutes : minutes}:
-                    {seconds < 10
-                      ? '0' + (delay == 0 ? '0' : seconds)
-                      : delay == 0
-                      ? '00'
-                      : seconds}
-                  </TextFormatted>
+                  {item?.received_paid_status == '' && (
+                    <TextFormatted
+                      style={{
+                        fontWeight: '700',
+                        color: theme.colors.primary,
+                      }}>
+                      {minutes < 10 ? '0' + minutes : minutes}:
+                      {seconds < 10
+                        ? '0' + (delay == 0 ? '0' : seconds)
+                        : delay == 0
+                        ? '00'
+                        : seconds}
+                    </TextFormatted>
+                  )}
                 </View>
               </View>
 
@@ -2327,9 +2183,7 @@ function OrderItem({
                     // source={{uri: uri.uri}}
                     source={
                       item?.package_image_1 == ''
-                        ? uri == ''
-                          ? require('../../../../../assets/bi_camera.png')
-                          : {uri: uri.uri}
+                        ? require('../../../../../assets/bi_camera.png')
                         : {uri: item?.package_image_1}
                     }
                     style={{
@@ -2367,9 +2221,7 @@ function OrderItem({
                   <Image
                     source={
                       item?.package_image_2 == ''
-                        ? uri == ''
-                          ? require('../../../../../assets/bi_camera.png')
-                          : {uri: uri.uri}
+                        ? require('../../../../../assets/bi_camera.png')
                         : {uri: item?.package_image_2}
                     }
                     style={{
@@ -2407,9 +2259,7 @@ function OrderItem({
                   <Image
                     source={
                       item?.package_image_3 == ''
-                        ? uri == ''
-                          ? require('../../../../../assets/bi_camera.png')
-                          : {uri: uri.uri}
+                        ? require('../../../../../assets/bi_camera.png')
                         : {uri: item?.package_image_3}
                     }
                     style={{
@@ -2478,7 +2328,7 @@ function OrderItem({
                   )}
                 </TouchableOpacity>
 
-                {audioloading ? (
+                {audioloading_2 ? (
                   <ActivityIndicator
                     size={'small'}
                     style={{paddingHorizontal: 5}}
@@ -2490,7 +2340,7 @@ function OrderItem({
                       if (item?.package_audio_1 == '') {
                         Add_Package_Audio();
                       } else {
-                        playing ? pause() : play();
+                        playing_2 ? pause_2() : play_2();
                       }
                     }}>
                     <Image
@@ -2498,7 +2348,7 @@ function OrderItem({
                       source={
                         item?.package_audio_1 == ''
                           ? require('../../../../../assets/mic.png')
-                          : playing
+                          : playing_2
                           ? require('../../../../../assets/pause.png')
                           : require('../../../../../assets/play.png')
                       }
@@ -2572,17 +2422,35 @@ function OrderItem({
                         fontWeight: '700',
                         color: theme.colors.primary,
                       }}>
-                      04:30 PM 11/04/2022
+                      {item?.received_and_paid_time == 'NO'
+                        ? 'Details will add its time'
+                        : item?.received_and_paid_time}
                     </TextFormatted>
-                    <Image
-                      source={require('../../../../../assets/gps.png')}
-                      style={{
-                        height: 60,
-                        width: 90,
-                        resizeMode: 'contain',
-                        marginRight: 20,
-                      }}
-                    />
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (
+                          item?.received_paid_lat == '' &&
+                          item?.received_paid_lon == ''
+                        ) {
+                          ShowToast('Location not available', 'error');
+                          return;
+                        } else {
+                          navigation.navigate('MapScreen', {
+                            lat: item?.received_paid_lat,
+                            log: item?.received_paid_lon,
+                          });
+                        }
+                      }}>
+                      <Image
+                        source={require('../../../../../assets/gps.png')}
+                        style={{
+                          height: 60,
+                          width: 90,
+                          resizeMode: 'contain',
+                          marginRight: 20,
+                        }}
+                      />
+                    </TouchableOpacity>
                   </View>
                   <Image
                     source={require('../../../../../assets/clock.png')}
@@ -2616,9 +2484,7 @@ function OrderItem({
                     <Image
                       source={
                         item?.received_paid_image_1 == ''
-                          ? uri == ''
-                            ? require('../../../../../assets/bi_camera.png')
-                            : {uri: uri.uri}
+                          ? require('../../../../../assets/bi_camera.png')
                           : {uri: item?.received_paid_image_1}
                       }
                       style={{
@@ -2633,6 +2499,7 @@ function OrderItem({
                       }}
                     />
                   </TouchableOpacity>
+
                   <TouchableOpacity
                     onPress={() => {
                       if (item?.received_paid_image_2 != '') {
@@ -2644,9 +2511,7 @@ function OrderItem({
                     <Image
                       source={
                         item?.received_paid_image_2 == ''
-                          ? uri == ''
-                            ? require('../../../../../assets/bi_camera.png')
-                            : {uri: uri.uri}
+                          ? require('../../../../../assets/bi_camera.png')
                           : {uri: item?.received_paid_image_2}
                       }
                       style={{
@@ -2661,6 +2526,7 @@ function OrderItem({
                       }}
                     />
                   </TouchableOpacity>
+
                   <TouchableOpacity
                     onPress={() => {
                       if (item?.received_paid_image_3 != '') {
@@ -2672,9 +2538,7 @@ function OrderItem({
                     <Image
                       source={
                         item?.received_paid_image_3 == ''
-                          ? uri == ''
-                            ? require('../../../../../assets/bi_camera.png')
-                            : {uri: uri.uri}
+                          ? require('../../../../../assets/bi_camera.png')
                           : {uri: item?.received_paid_image_3}
                       }
                       style={{
@@ -2689,18 +2553,39 @@ function OrderItem({
                       }}
                     />
                   </TouchableOpacity>
+
                   <Image
                     source={require('../../../../../assets/video.png')}
                     style={{height: 30, width: 30, resizeMode: 'contain'}}
                   />
-                  <Image
-                    source={require('../../../../../assets/mic.png')}
-                    style={{height: 30, width: 30, resizeMode: 'contain'}}
-                  />
-                  <Image
-                    source={require('../../../../../assets/plus_white.png')}
-                    style={{height: 30, width: 30, resizeMode: 'contain'}}
-                  />
+                  {audioloading_3 ? (
+                    <ActivityIndicator
+                      size={'small'}
+                      style={{paddingHorizontal: 5}}
+                      color="#fff"
+                    />
+                  ) : (
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (item?.received_paid_audio_1 == '') {
+                          Add_Package_Audio();
+                        } else {
+                          playing_3 ? pause_3() : play_3();
+                        }
+                      }}>
+                      <Image
+                        // source={require('../../../../../assets/mic.png')}
+                        source={
+                          item?.received_paid_audio_1 == ''
+                            ? require('../../../../../assets/mic.png')
+                            : playing_3
+                            ? require('../../../../../assets/pause.png')
+                            : require('../../../../../assets/play.png')
+                        }
+                        style={{height: 30, width: 30, resizeMode: 'contain'}}
+                      />
+                    </TouchableOpacity>
+                  )}
                 </View>
 
                 <View style={{alignItems: 'center', marginTop: 20}}>

@@ -41,6 +41,7 @@ export default function TabScreen({navigation}) {
             PICK STATUS
           </Text>
         </TouchableOpacity>
+        <View style={{width: 20}} />
         <TouchableOpacity
           onPress={() => setCurrentPage(2)}
           style={[
@@ -58,7 +59,7 @@ export default function TabScreen({navigation}) {
             SHOWCASE
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => setCurrentPage(3)}
           style={[
             styles.container,
@@ -74,7 +75,7 @@ export default function TabScreen({navigation}) {
             }}>
             MAP
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       {currentPage == 1 ? (
         <History navigation={navigation} />
@@ -102,5 +103,6 @@ const styles = StyleSheet.create({
     // borderWidth: 1,
     paddingVertical: 16,
     // borderRadius: 8,
+    flex: 1,
   },
 });

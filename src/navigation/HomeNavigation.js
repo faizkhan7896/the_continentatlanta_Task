@@ -12,6 +12,7 @@ import OrderConfirm from '../screens/home/Tab/User/OrderConfirm';
 import AddProduct from '../screens/home/Tab/Owner/AddProduct';
 import ImageZoom from '../components/ImageZoom';
 import FullVideo from '../components/FullVideo';
+import MapScreen from '../components/MapScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -32,6 +33,7 @@ function App() {
       <Stack.Screen name="AddProduct" component={AddProduct} />
       <Stack.Screen name="ImageZoom" component={ImageZoom} />
       <Stack.Screen name="FullVideo" component={FullVideo} />
+      <Stack.Screen name="MapScreen" component={MapScreen} />
     </Stack.Navigator>
   );
 }

@@ -9,7 +9,6 @@ import {
   useTransition,
 } from 'react';
 import {
-  ActivityIndicator,
   Dimensions,
   FlatList,
   Image,
@@ -37,7 +36,9 @@ import {createThumbnail} from 'react-native-create-thumbnail';
 import Button from '../../../../components/Button';
 import {launchImageLibrary} from 'react-native-image-picker';
 import DocumentPicker, {types} from 'react-native-document-picker';
-
+import {ActivityIndicator} from 'react-native-paper';
+import RNLocation from 'react-native-location';
+import Geolocation from '@react-native-community/geolocation';
 const Sound = require('react-native-sound');
 
 const data = [
@@ -67,9 +68,15 @@ export default function Orders({navigation}) {
   const [visible, setVisible] = useState(false);
   const [Step3, setStep3] = useState(false);
   const [playing, setPlaying] = useState(false);
+  const [playing_2, setPlaying_2] = useState(false);
+  const [playing_3, setPlaying_3] = useState(false);
   const [audioloading, setAudioloading] = useState(false);
+  const [audioloading_2, setAudioloading_2] = useState(false);
+  const [audioloading_3, setAudioloading_3] = useState(false);
   const [thumb, setThumb] = useState();
   const soundPlaying = useRef();
+  const soundPlaying_2 = useRef();
+  const soundPlaying_3 = useRef();
   const videoRef = useRef(null);
   const [delay, setDelay] = useState(+'600');
   const [minutes, setMinutes] = useState(0);
@@ -79,13 +86,42 @@ export default function Orders({navigation}) {
   const [currentID, setCurrentID] = useState(0);
   const [uri, setUri] = useState('');
   const [data, setData] = useState([]);
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
+  const [location, setLocation] = useState('');
 
-  // console.log('item?.video_1', data);
-  // const [time, setTime] = useState(1000);
-  // const timerRef = useRef(time);
-  // alert(JSON.stringify(data?.received_paid_image_1));
+  // console.log(location);
+  // alert(JSON.stringify(location));
+
+  const currentLocation = async () => {
+    await RNLocation.requestPermission({
+      ios: 'whenInUse',
+      android: {
+        detail: 'coarse',
+      },
+    });
+    Geolocation.getCurrentPosition(async info => {
+      setLongitude(info.coords.longitude);
+      setLatitude(info.coords.latitude);
+      const url =
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=' +
+        info.coords.latitude +
+        ',' +
+        info.coords.longitude +
+        '&key=AIzaSyCj_8-SZsoxYxZwN_Wi_7hU8kDSeQx_YVQ';
+      try {
+        const res = await fetch(url);
+
+        const json = await res.json();
+        setLocation(json.results[0]?.formatted_address);
+      } catch (e) {
+        ShowToast(e.toString());
+      }
+    }, console.warn);
+  };
 
   useEffect(() => {
+    currentLocation();
     const timer = setInterval(() => {
       startTransition(() => {
         setDelay(delay - 1);
@@ -101,7 +137,6 @@ export default function Orders({navigation}) {
 
     return () => {
       clearInterval(timer);
-      // alert('Second');
     };
   });
   async function GetProduct(silent = false) {
@@ -167,6 +202,62 @@ export default function Orders({navigation}) {
   const pause = () => {
     soundPlaying.current.pause();
     setPlaying(false);
+  };
+
+  const play_2 = () => {
+    if (!params?.package_audio_1) {
+      return;
+    }
+    setAudioloading_2(true);
+
+    soundPlaying_2.current = new Sound(
+      {
+        uri: params?.package_audio_1,
+      },
+      error => {
+        if (error)
+          ShowToast(
+            'failed to load the sound ' + params?.package_audio_1,
+            'error',
+          );
+        console.log(error, params?.package_audio_1);
+        setAudioloading_2(false);
+        setPlaying_2(true);
+        soundPlaying_2.current.play(() => setPlaying_2(false));
+      },
+    );
+  };
+  const pause_2 = () => {
+    soundPlaying_2.current.pause();
+    setPlaying_2(false);
+  };
+
+  const play_3 = () => {
+    if (!data[0]?.received_paid_audio_1) {
+      return;
+    }
+    setAudioloading_3(true);
+
+    soundPlaying_3.current = new Sound(
+      {
+        uri: data[0]?.received_paid_audio_1,
+      },
+      error => {
+        if (error)
+          ShowToast(
+            'failed to load the sound ' + data[0]?.received_paid_audio_1,
+            'error',
+          );
+        console.log(error, data[0]?.received_paid_audio_1);
+        setAudioloading_3(false);
+        setPlaying_3(true);
+        soundPlaying_3.current.play(() => setPlaying_3(false));
+      },
+    );
+  };
+  const pause_3 = () => {
+    soundPlaying_3.current.pause();
+    setPlaying_3(false);
   };
 
   async function generateThumbnail() {
@@ -294,6 +385,9 @@ export default function Orders({navigation}) {
       const body = new FormData();
 
       body.append('order_id', params?.id);
+      body.append('received_paid_lat', latitude);
+      body.append('received_paid_lon', longitude);
+      body.append('received_paid_address', location);
       body.append('image_1', {
         uri: uri.uri,
         type: uri.type,
@@ -338,6 +432,9 @@ export default function Orders({navigation}) {
       const body = new FormData();
 
       body.append('order_id', params?.id);
+      body.append('received_paid_lat', latitude);
+      body.append('received_paid_lon', longitude);
+      body.append('received_paid_address', location);
       body.append('image_2', {
         uri: uri.uri,
         type: uri.type,
@@ -383,6 +480,9 @@ export default function Orders({navigation}) {
       const body = new FormData();
 
       body.append('order_id', params?.id);
+      body.append('received_paid_lat', latitude);
+      body.append('received_paid_lon', longitude);
+      body.append('received_paid_address', location);
       body.append('image_3', {
         uri: uri.uri,
         type: uri.type,
@@ -428,6 +528,9 @@ export default function Orders({navigation}) {
       const body = new FormData();
 
       body.append('order_id', Package_currentID);
+      body.append('received_paid_lat', latitude);
+      body.append('received_paid_lon', longitude);
+      body.append('received_paid_address', location);
       const urlComponents = video?.uri.split('/');
       const fileNameAndExtension = urlComponents[urlComponents?.length - 1];
       const destPath = `${RNFS?.TemporaryDirectoryPath}/${fileNameAndExtension}`;
@@ -480,6 +583,9 @@ export default function Orders({navigation}) {
       const body = new FormData();
 
       body.append('order_id', orderID);
+      body.append('received_paid_lat', latitude);
+      body.append('received_paid_lon', longitude);
+      body.append('received_paid_address', location);
       body.append('audio_1', {
         name: name,
         uri: uri,
@@ -1267,15 +1373,31 @@ export default function Orders({navigation}) {
                           }}>
                           {params?.package_time}
                         </TextFormatted>
-                        <Image
-                          source={require('../../../../assets/gps.png')}
-                          style={{
-                            height: 60,
-                            width: 90,
-                            resizeMode: 'contain',
-                            // marginRight: 20,
-                          }}
-                        />
+                        <TouchableOpacity
+                          onPress={() => {
+                            if (
+                              data[0]?.package_lat == '' &&
+                              data[0]?.package_lon == ''
+                            ) {
+                              ShowToast('Location not available', 'error');
+                              return;
+                            } else {
+                              navigation.navigate('MapScreen', {
+                                lat: data[0]?.package_lat,
+                                log: data[0]?.package_lon,
+                              });
+                            }
+                          }}>
+                          <Image
+                            source={require('../../../../assets/gps.png')}
+                            style={{
+                              height: 60,
+                              width: 90,
+                              resizeMode: 'contain',
+                              // marginRight: 20,
+                            }}
+                          />
+                        </TouchableOpacity>
                       </View>
                       <View style={{alignItems: 'center'}}>
                         <Image
@@ -1288,18 +1410,20 @@ export default function Orders({navigation}) {
                             // marginHorizontal: 20,
                           }}
                         />
-                        <TextFormatted
-                          style={{
-                            fontWeight: '700',
-                            color: theme.colors.primary,
-                          }}>
-                          {minutes < 10 ? '0' + minutes : minutes}:
-                          {seconds < 10
-                            ? '0' + (delay == 0 ? '0' : seconds)
-                            : delay == 0
-                            ? '00'
-                            : seconds}
-                        </TextFormatted>
+                        {params?.received_paid_status == '' && (
+                          <TextFormatted
+                            style={{
+                              fontWeight: '700',
+                              color: theme.colors.primary,
+                            }}>
+                            {minutes < 10 ? '0' + minutes : minutes}:
+                            {seconds < 10
+                              ? '0' + (delay == 0 ? '0' : seconds)
+                              : delay == 0
+                              ? '00'
+                              : seconds}
+                          </TextFormatted>
+                        )}
                       </View>
                     </View>
 
@@ -1457,7 +1581,7 @@ export default function Orders({navigation}) {
                         )}
                       </TouchableOpacity>
 
-                      {audioloading ? (
+                      {audioloading_2 ? (
                         <ActivityIndicator
                           size={'small'}
                           style={{paddingHorizontal: 5}}
@@ -1467,7 +1591,7 @@ export default function Orders({navigation}) {
                         <TouchableOpacity
                           onPress={() => {
                             if (params?.package_audio_1 != '') {
-                              playing ? pause() : play();
+                              playing_2 ? pause_2() : play_2();
                             }
                           }}>
                           <Image
@@ -1475,7 +1599,7 @@ export default function Orders({navigation}) {
                             source={
                               params?.package_audio_1 == ''
                                 ? require('../../../../assets/mic.png')
-                                : playing
+                                : playing_2
                                 ? require('../../../../assets/pause.png')
                                 : require('../../../../assets/play.png')
                             }
@@ -1543,17 +1667,35 @@ export default function Orders({navigation}) {
                               fontWeight: '700',
                               color: theme.colors.primary,
                             }}>
-                            04:30 PM 11/04/2022
+                            {data[0]?.received_and_paid_time == 'NO'
+                              ? 'Details will add its time'
+                              : data[0]?.received_and_paid_time}
                           </TextFormatted>
-                          <Image
-                            source={require('../../../../assets/gps.png')}
-                            style={{
-                              height: 60,
-                              width: 90,
-                              resizeMode: 'contain',
-                              marginRight: 20,
-                            }}
-                          />
+                          <TouchableOpacity
+                            onPress={() => {
+                              if (
+                                data[0]?.received_paid_lat == '' &&
+                                data[0]?.received_paid_lon == ''
+                              ) {
+                                ShowToast('Location not available', 'error');
+                                return;
+                              } else {
+                                navigation.navigate('MapScreen', {
+                                  lat: data[0]?.received_paid_lat,
+                                  log: data[0]?.received_paid_lon,
+                                });
+                              }
+                            }}>
+                            <Image
+                              source={require('../../../../assets/gps.png')}
+                              style={{
+                                height: 60,
+                                width: 90,
+                                resizeMode: 'contain',
+                                marginRight: 20,
+                              }}
+                            />
+                          </TouchableOpacity>
                         </View>
                         <Image
                           source={require('../../../../assets/clock.png')}
@@ -1591,9 +1733,7 @@ export default function Orders({navigation}) {
                           <Image
                             source={
                               data[0]?.received_paid_image_1 == ''
-                                ? uri == ''
-                                  ? require('../../../../assets/bi_camera.png')
-                                  : {uri: uri.uri}
+                                ? require('../../../../assets/bi_camera.png')
                                 : {uri: data[0]?.received_paid_image_1}
                             }
                             style={{
@@ -1624,9 +1764,7 @@ export default function Orders({navigation}) {
                           <Image
                             source={
                               data[0]?.received_paid_image_2 == ''
-                                ? uri == ''
-                                  ? require('../../../../assets/bi_camera.png')
-                                  : {uri: uri.uri}
+                                ? require('../../../../assets/bi_camera.png')
                                 : {uri: data[0]?.received_paid_image_2}
                             }
                             style={{
@@ -1657,9 +1795,7 @@ export default function Orders({navigation}) {
                           <Image
                             source={
                               data[0]?.received_paid_image_3 == ''
-                                ? uri == ''
-                                  ? require('../../../../assets/bi_camera.png')
-                                  : {uri: uri.uri}
+                                ? require('../../../../assets/bi_camera.png')
                                 : {uri: data[0]?.received_paid_image_3}
                             }
                             style={{
@@ -1678,7 +1814,7 @@ export default function Orders({navigation}) {
                           source={require('../../../../assets/video.png')}
                           style={{height: 30, width: 30, resizeMode: 'contain'}}
                         />
-                        {audioloading ? (
+                        {audioloading_3 ? (
                           <ActivityIndicator
                             size={'small'}
                             style={{paddingHorizontal: 5}}
@@ -1690,7 +1826,7 @@ export default function Orders({navigation}) {
                               if (data[0]?.received_paid_audio_1 == '') {
                                 Add_Package_Audio();
                               } else {
-                                playing ? pause() : play();
+                                playing_3 ? pause_3() : play_3();
                               }
                             }}>
                             <Image
@@ -1698,7 +1834,7 @@ export default function Orders({navigation}) {
                               source={
                                 data[0]?.received_paid_audio_1 == ''
                                   ? require('../../../../assets/mic.png')
-                                  : playing
+                                  : playing_3
                                   ? require('../../../../assets/pause.png')
                                   : require('../../../../assets/play.png')
                               }

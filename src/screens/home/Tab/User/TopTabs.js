@@ -80,7 +80,7 @@ export default function TabScreen({navigation}) {
             Owner
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => {
             setCurrentPage(3);
             store.dispatch({
@@ -105,7 +105,7 @@ export default function TabScreen({navigation}) {
             }}>
             Driver
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
       {currentPage == 1 ? (
         <User navigation={navigation} />
@@ -126,11 +126,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: theme.colors.HomeBg,
     paddingVertical: 15,
+    paddingHorizontal: 15,
   },
   container: {
     alignItems: 'center',
     justifyContent: 'center',
     // borderWidth: 1,
     borderBottomWidth: 4,
+    flex: 1,
   },
 });
