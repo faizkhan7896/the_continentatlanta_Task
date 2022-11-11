@@ -869,7 +869,7 @@ export default function Orders({navigation}) {
                         }}
                         imageStyle={{
                           borderRadius: 10,
-                          resizeMode: 'stretch',
+                          resizeMode: 'contain',
                           width:
                             (1 * 80) /
                             (parseFloat(v.image_coordinates?.position[2]) -
@@ -1864,17 +1864,23 @@ export default function Orders({navigation}) {
                             ¥ {params?.total_price}
                           </TextFormatted>
                         </TextFormatted>
-                        <Image
-                          source={require('../../../../assets/qr.png')}
-                          style={{
-                            height: 110,
-                            width: 110,
-                            resizeMode: 'contain',
-                            marginTop: 10,
-                          }}
-                        />
+                        <TouchableOpacity
+                          onPress={() => navigation.navigate('Payment')}
+                          activeOpacity={0.7}>
+                          <Image
+                            source={require('../../../../assets/qr.png')}
+                            style={{
+                              height: 110,
+                              width: 110,
+                              resizeMode: 'contain',
+                              marginTop: 10,
+                            }}
+                          />
+                        </TouchableOpacity>
                       </View>
                       <TouchableOpacity
+                        onPress={() => navigation.navigate('Payment')}
+                        activeOpacity={0.7}
                         style={{
                           backgroundColor: theme.colors.Tabbg,
                           alignSelf: 'center',
@@ -1907,7 +1913,7 @@ export default function Orders({navigation}) {
                           }}
                         />
                       </View>
-                      <TouchableOpacity
+                      {/* <View
                         style={{
                           backgroundColor: theme.colors.Tabbg,
                           alignSelf: 'center',
@@ -1920,7 +1926,7 @@ export default function Orders({navigation}) {
                           style={{fontSize: 16, fontWeight: '700'}}>
                           Pay By Code
                         </TextFormatted>
-                      </TouchableOpacity>
+                      </View> */}
                       <View style={{height: 30}} />
                       <SolidButton
                         borderRadius={50}

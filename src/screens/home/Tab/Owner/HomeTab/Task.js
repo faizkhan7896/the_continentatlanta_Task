@@ -1548,7 +1548,7 @@ function OrderItem({
                       }}
                       imageStyle={{
                         borderRadius: 10,
-                        resizeMode: 'stretch',
+                        resizeMode: 'contain',
                         width:
                           (1 * 80) /
                           (parseFloat(v.image_coordinates?.position[2]) -

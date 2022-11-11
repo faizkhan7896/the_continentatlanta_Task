@@ -3432,6 +3432,11 @@
   "resolved" "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-4.0.0.tgz"
   "version" "4.0.0"
 
+"escape-string-regexp@2.0.0":
+  "integrity" "sha512-UpzcLCXolUWcNu5HtVMHYdXJjArjsF9C0aNnquZYY4uW/Vu0miy5YoWvbV345HauVvcAUnpRuhMMcqTcGOY2+w=="
+  "resolved" "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-2.0.0.tgz"
+  "version" "2.0.0"
+
 "escodegen-wallaby@^1.6.7":
   "integrity" "sha512-JnSD7n8g/OvP5EEXNXdtE8w4uyyDwztci2TyjXW6QrO5kL+lKHBYsKIes1pf4kV6uDTertqmcZmzLYIiS47JJA=="
   "resolved" "https://registry.npmjs.org/escodegen-wallaby/-/escodegen-wallaby-1.6.35.tgz"
@@ -4736,7 +4741,7 @@
   "resolved" "https://registry.npmjs.org/interpret/-/interpret-1.4.0.tgz"
   "version" "1.4.0"
 
-"invariant@*", "invariant@^2.2.4":
+"invariant@*", "invariant@^2.2.4", "invariant@2.2.4":
   "integrity" "sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA=="
   "resolved" "https://registry.npmjs.org/invariant/-/invariant-2.2.4.tgz"
   "version" "2.2.4"
@@ -7681,6 +7686,14 @@
     "keymirror" "^0.1.1"
     "prop-types" "^15.7.2"
     "shaka-player" "^2.5.9"
+
+"react-native-webview@^11.23.1":
+  "integrity" "sha512-bmqsdg4RYOUYD37R9XTrQALm7eD62KbLNPRfgvpLGd1SjaurvAjjsLrLN4mt6yOtKOMKeZvlcAl3x6De6cCQsA=="
+  "resolved" "https://registry.npmjs.org/react-native-webview/-/react-native-webview-11.23.1.tgz"
+  "version" "11.23.1"
+  dependencies:
+    "escape-string-regexp" "2.0.0"
+    "invariant" "2.2.4"
 
 "react-native-windows@*", "react-native-windows@0.41.0-rc.1":
   "integrity" "sha512-Jstgrs2fP3rgdrlWCzxUjZJQNTnQyVmx4ilYPpkUyR8pYHwEJ9YXMb5Q8jyspQJyJzsLLZtYsaYeVlztT84tng=="

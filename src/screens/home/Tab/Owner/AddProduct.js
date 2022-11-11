@@ -816,7 +816,7 @@ export default function LogOut({navigation}) {
                     }}
                     imageStyle={{
                       borderRadius: 10,
-                      resizeMode: 'stretch',
+                      resizeMode: 'contain',
                       width:
                         ((dimensionsss.width - 30) * 80) / (item[2] - item[0]),
                       height:

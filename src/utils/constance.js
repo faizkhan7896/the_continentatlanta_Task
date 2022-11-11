@@ -1,4 +1,6 @@
-export const baseUrl = 'https://pickpic4u.com/app.pickpic4u.com/index.php/api/';
+// export const baseUrl = 'https://pickpic4u.com/app.pickpic4u.com/index.php/api/';
+export const baseUrl = 'https://pickpic4u.com/api/';
+
 // export const baseUrl = 'https://priceapp.co.za/_NEWPROJECT/api/';
 // export const baseUrl = 'https://app.pickpic4u.com/api/';
 
