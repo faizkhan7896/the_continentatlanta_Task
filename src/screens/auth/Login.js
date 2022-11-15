@@ -166,27 +166,42 @@ export default function Login({navigation}) {
             alignSelf: 'center',
             marginTop: 20,
           }}>
-          <Image
-            style={styles.socialbutton}
-            source={require('../../assets/Google_Button.png')}
-          />
+          <TouchableOpacity
+            onPress={() => {
+              ShowToast('This feature will come in future update');
+            }}>
+            <Image
+              style={styles.socialbutton}
+              source={require('../../assets/Google_Button.png')}
+            />
+          </TouchableOpacity>
           {/* <View style={{borderEndWidth: 30}} /> */}
-          <Image
-            style={styles.socialbutton}
-            source={require('../../assets/Apple_Button.png')}
-          />
-          {/* <View style={{borderEndWidth: 30}} /> */}
-          <Image
-            style={styles.socialbutton}
-            source={require('../../assets/Facebook_Button.png')}
-          />
+          <TouchableOpacity
+            onPress={() => {
+              ShowToast('This feature will come in future update');
+            }}>
+            <Image
+              style={styles.socialbutton}
+              source={require('../../assets/Apple_Button.png')}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              ShowToast('This feature will come in future update');
+            }}>
+            {/* <View style={{borderEndWidth: 30}} /> */}
+            <Image
+              style={styles.socialbutton}
+              source={require('../../assets/Facebook_Button.png')}
+            />
+          </TouchableOpacity>
         </View>
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
-            marginTop: 20,
+            marginVertical: 20,
           }}>
           <TextFormated
             style={{

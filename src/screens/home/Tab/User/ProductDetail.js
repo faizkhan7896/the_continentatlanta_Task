@@ -68,6 +68,31 @@ export default function LogOut({navigation}) {
   // alert(JSON.stringify(params.item.avaibility_atstor));
   // console.log('selectedProduct', selectedProduct);
 
+  async function LikeUnlike(id) {
+    try {
+      const url = baseUrl + 'like_post?id=' + id + '&user_id=' + auth.id;
+      console.log(url);
+
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {'Cache-Control': 'no-cache'},
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        navigation.goBack();
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+      }
+    } catch (e) {
+      // alert('An error occured.');
+      ShowToast('An error occured.', 'error');
+      console.log(e);
+    }
+  }
+
   async function getProduct_Like(type) {
     try {
       const url =
@@ -238,7 +263,9 @@ export default function LogOut({navigation}) {
               }}>
               <TouchableOpacity
                 activeOpacity={0.7}
-                onPress={() => {}}
+                onPress={() => {
+                  LikeUnlike(params?.item?.id);
+                }}
                 style={{
                   alignItems: 'center',
                   justifyContent: 'center',
@@ -672,7 +699,7 @@ export default function LogOut({navigation}) {
 
               {/* {params.item.ask_status == 'YES' && <View style={{width: 10}} />} */}
               <View style={{width: 10}} />
-              <TouchableOpacity
+              {/* <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => {
                   setSelected(2);
@@ -709,10 +736,48 @@ export default function LogOut({navigation}) {
                   }}>
                   ASK
                 </TextFormated>
+              </TouchableOpacity> */}
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() => {
+                  setSelected(3);
+                  scrollRef.current.scrollTo({
+                    x: 0, // Required
+                    y: 0, // Required
+                    animated: true,
+                  });
+                }}
+                style={{
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  paddingVertical: 15,
+                  flexDirection: 'row',
+                  borderRadius: 6,
+                  backgroundColor:
+                    selected == 3 ? theme.colors.yellow : theme.colors.C4C4C4,
+                  flex: 1,
+                  shadowColor: '#000',
+                  shadowOffset: {
+                    width: 0,
+                    height: 2,
+                  },
+                  shadowOpacity: 0.25,
+                  shadowRadius: 3.84,
+
+                  elevation: 5,
+                }}>
+                <TextFormated
+                  style={{
+                    fontWeight: '700',
+                    color: theme.colors.primary,
+                    fontSize: 16,
+                  }}>
+                  ORDER {params.item.like}
+                </TextFormated>
               </TouchableOpacity>
             </View>
 
-            <View
+            {/* <View
               style={{
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -758,7 +823,6 @@ export default function LogOut({navigation}) {
                 </TextFormated>
               </TouchableOpacity>
 
-              {/* {params.item.ask_status == 'YES' && <View style={{width: 10}} />} */}
               <View style={{width: 10}} />
 
               <TouchableOpacity
@@ -799,7 +863,7 @@ export default function LogOut({navigation}) {
                   RENT
                 </TextFormated>
               </TouchableOpacity>
-            </View>
+            </View> */}
 
             <FlatList
               data={
@@ -829,7 +893,7 @@ export default function LogOut({navigation}) {
                         borderRadius: 100,
                         marginRight: 10,
                       }}
-                      source={{uri: 'https://picsum.photos/500'}}
+                      source={require('../../../../assets/userimg.png')}
                     />
                     <View>
                       <TextFormated style={{fontSize: 16, fontWeight: '700'}}>

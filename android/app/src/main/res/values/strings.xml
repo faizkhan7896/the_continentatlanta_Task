@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">PikPic</string>
+	<string name="app_name">
+		TapTack
+	</string>
 </resources>

@@ -80,8 +80,18 @@ export default function Login({navigation}) {
               width: 40,
               resizeMode: 'contain',
               borderRadius: 50,
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+
+              elevation: 5,
+              backgroundColor: theme.colors.primary,
             }}
-            source={{uri: 'https://picsum.photos/500'}}
+            source={require('../../../../assets/userimg.png')}
           />
         </TouchableOpacity>
       </View>

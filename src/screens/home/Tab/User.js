@@ -38,7 +38,7 @@ export default function TabScreen({navigation}) {
               fontWeight: currentPage == 1 ? 'bold' : '500',
               color: theme.colors.primary,
             }}>
-            PICK STATUS
+            STATUS
           </Text>
         </TouchableOpacity>
         <View style={{width: 20}} />

@@ -13,13 +13,15 @@ import {
   Image,
   ImageBackground,
   Modal,
+  PermissionsAndroid,
+  Platform,
   StyleSheet,
   Text,
   TouchableOpacity,
   useWindowDimensions,
   View,
 } from 'react-native';
-import {launchImageLibrary} from 'react-native-image-picker';
+import {launchImageLibrary, launchCamera} from 'react-native-image-picker';
 import Video from 'react-native-video';
 import {useSelector} from 'react-redux';
 import Button from '../../../../../components/Button';
@@ -38,6 +40,7 @@ import {ActivityIndicator} from 'react-native-paper';
 const Sound = require('react-native-sound');
 import RNLocation from 'react-native-location';
 import Geolocation from '@react-native-community/geolocation';
+import ImagePicker from 'react-native-image-picker';
 
 export default function History({navigation, setGet_followed_event}) {
   const dimensions = useWindowDimensions();
@@ -65,7 +68,7 @@ export default function History({navigation, setGet_followed_event}) {
       if (!silent) {
         setLoading(true);
       }
-      const url = baseUrl + 'get_post_order?user_id=' + auth.id;
+      const url = baseUrl + 'get_post_order_for_owner?owner_user_id=' + auth.id;
       console.log(url);
 
       const res = await fetch(url, {
@@ -682,55 +685,57 @@ export default function History({navigation, setGet_followed_event}) {
         console.log('Product', uri);
         setModalThree(false);
         if (currentID == 1) {
-          setTimeout(() => {
-            AddImage_1(response.assets[0]);
-          }, 500);
+          AddImage_1(response?.assets[0]);
         }
         if (currentID == 2) {
-          setTimeout(() => {
-            AddImage_2(response.assets[0]);
-          }, 500);
+          AddImage_2(response?.assets[0]);
         }
         if (currentID == 3) {
-          setTimeout(() => {
-            AddImage_3(response.assets[0]);
-          }, 500);
+          AddImage_3(response?.assets[0]);
         }
         if (Package_currentID == 1) {
-          setTimeout(() => {
-            AddPackage_Image_1(response.assets[0]);
-          }, 500);
+          AddPackage_Image_1(response?.assets[0]);
         }
         if (Package_currentID == 2) {
-          setTimeout(() => {
-            AddPackage_Image_2(response.assets[0]);
-          }, 500);
+          AddPackage_Image_2(response?.assets[0]);
         }
         if (Package_currentID == 3) {
-          setTimeout(() => {
-            AddPackage_Image_3(response.assets[0]);
-          }, 500);
+          AddPackage_Image_3(response?.assets[0]);
         }
       }
     });
   };
 
   const picCamera = () => {
-    launchCamera({quality: 1, mediaType: 'photo'}, response => {
-      if (!response.didCancel) {
-        setUri(response.assets[0]);
-        setModalThree(false);
-        if (currentID == 1) {
-          AddImage_1();
+    launchCamera(
+      {quality: 1, mediaType: 'photo', cameraType: 'front'},
+      response => {
+        if (!response?.didCancel) {
+          // setUri(response?.assets[0]);
+          console.log(response?.assets[0]);
+          // console.log(response);
+          setModalThree(false);
+          if (currentID == 1) {
+            AddImage_1(response?.assets[0]);
+          }
+          if (currentID == 2) {
+            AddImage_2(response?.assets[0]);
+          }
+          if (currentID == 3) {
+            AddImage_3(response?.assets[0]);
+          }
+          if (Package_currentID == 1) {
+            AddPackage_Image_1(response?.assets[0]);
+          }
+          if (Package_currentID == 2) {
+            AddPackage_Image_2(response?.assets[0]);
+          }
+          if (Package_currentID == 3) {
+            AddPackage_Image_3(response?.assets[0]);
+          }
         }
-        if (currentID == 2) {
-          AddImage_2();
-        }
-        if (currentID == 3) {
-          AddImage_3();
-        }
-      }
-    });
+      },
+    );
   };
 
   const pickVideo = () => {
@@ -744,9 +749,9 @@ export default function History({navigation, setGet_followed_event}) {
 
   const pickPackageVideo = () => {
     launchImageLibrary({quality: 1, mediaType: 'video'}, response => {
-      if (!response.didCancel) {
-        setVideo(response.assets[0]);
-        AddPackage_Video(response.assets[0]);
+      if (!response?.didCancel) {
+        setVideo(response?.assets[0]);
+        AddPackage_Video(response?.assets[0]);
       }
     });
   };
@@ -758,6 +763,35 @@ export default function History({navigation, setGet_followed_event}) {
   const onError = e => {
     // console.log('error raised', e);
     // alert('error raised ....', e);
+  };
+
+  const requestCameraVideoPermission = async () => {
+    if (Platform.OS === 'ios') {
+      pickPackageVideo();
+      return;
+    }
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'Truventorm Camera Permission',
+          message:
+            'Truventorm needs access to your camera ' +
+            'to set profile picture.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('You can use the camera');
+        pickPackageVideo();
+      } else {
+        console.log('Camera permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
   };
 
   return (
@@ -799,8 +833,10 @@ export default function History({navigation, setGet_followed_event}) {
             AddPackage_Image_2={AddPackage_Image_2}
             AddPackage_Image_3={AddPackage_Image_3}
             AddPackage_Audio={AddPackage_Audio}
-            pickPackageVideo={pickPackageVideo}
+            pickPackageVideo={requestCameraVideoPermission}
+            picCamera={picCamera}
             navigation={navigation}
+            auth={auth}
           />
         )}
       />
@@ -957,6 +993,8 @@ function OrderItem({
   setPackage_CurrentID,
   AddPackage_Audio,
   pickPackageVideo,
+  auth,
+  picCamera,
 }) {
   const dimensions = useWindowDimensions();
 
@@ -979,7 +1017,7 @@ function OrderItem({
   const [seconds, setSeconds] = useState(0);
   const [isPending, startTransition] = useTransition();
   // console.log('item?.video_1', thumb);
-  // alert(JSON.stringify(delay));
+  // alert(JSON.stringify(auth.id));
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -1113,9 +1151,7 @@ function OrderItem({
 
   const handleDocumentSelection = useCallback(async () => {
     try {
-      if (
-        item?.audio_1 == 'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-      ) {
+      if (item?.audio_1 == 'https://pickpic4u.com/uploads/NO') {
         const response = await DocumentPicker.pick({
           presentationStyle: 'fullScreen',
           type: [types.audio],
@@ -1196,6 +1232,44 @@ function OrderItem({
       </View>
     );
   };
+
+  // const picCamera = () => {
+  //   launchCamera({quality: 0.8}, response => {
+  //     if (!response.didCancel) {
+  //       // setPhoto(response.assets[0]);
+  //     }
+  //   });
+  // };
+
+  const requestCameraPermission = async () => {
+    if (Platform.OS === 'ios') {
+      picCamera();
+      return;
+    }
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.CAMERA,
+        {
+          title: 'Truventorm Camera Permission',
+          message:
+            'Truventorm needs access to your camera ' +
+            'to set profile picture.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('You can use the camera');
+        picCamera();
+      } else {
+        console.log('Camera permission denied');
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
   return (
     <View
       style={{
@@ -1438,7 +1512,9 @@ function OrderItem({
 
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={() => {}}
+          onPress={() => {
+            ShowToast('This feature will come in future update');
+          }}
           style={{
             alignItems: 'center',
             justifyContent: 'center',
@@ -1473,7 +1549,9 @@ function OrderItem({
 
         <TouchableOpacity
           activeOpacity={0.7}
-          onPress={() => {}}
+          onPress={() => {
+            ShowToast('This feature will come in future update');
+          }}
           style={{
             alignItems: 'center',
             justifyContent: 'center',
@@ -1705,10 +1783,7 @@ function OrderItem({
                 source={require('../../../../../assets/ScrollDown.png')}
                 backgroundColor={theme.colors.ScrollDown}
                 onPress={() => {
-                  if (
-                    item?.video_1 !=
-                    'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                  ) {
+                  if (item?.video_1 != 'https://pickpic4u.com/uploads/NO') {
                     setStep3(!Step3);
                     item?.video_1;
                   } else {
@@ -1813,11 +1888,8 @@ function OrderItem({
                   }}>
                   <TouchableOpacity
                     onPress={() => {
-                      if (
-                        item?.image_1 ==
-                        'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                      ) {
-                        setModalThree(true);
+                      if (item?.image_1 == 'https://pickpic4u.com/uploads/NO') {
+                        requestCameraPermission();
                         setCurrentID(1);
                         setOrderID(item?.id);
                       } else {
@@ -1825,12 +1897,12 @@ function OrderItem({
                           image: item?.image_1,
                         });
                       }
+                      // requestCameraPermission();
                     }}>
                     <Image
                       // source={{uri: uri.uri}}
                       source={
-                        item?.image_1 ==
-                        'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                        item?.image_1 == 'https://pickpic4u.com/uploads/NO'
                           ? require('../../../../../assets/bi_camera.png')
                           : {uri: item?.image_1}
                       }
@@ -1840,8 +1912,7 @@ function OrderItem({
                         resizeMode: 'cover',
                         borderRadius: 3,
                         backgroundColor:
-                          item?.image_1 ==
-                          'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                          item?.image_1 == 'https://pickpic4u.com/uploads/NO'
                             ? theme.colors.Black
                             : theme.colors.Tabbg + '33',
                       }}
@@ -1850,11 +1921,8 @@ function OrderItem({
 
                   <TouchableOpacity
                     onPress={() => {
-                      if (
-                        item?.image_2 ==
-                        'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                      ) {
-                        setModalThree(true);
+                      if (item?.image_2 == 'https://pickpic4u.com/uploads/NO') {
+                        requestCameraPermission();
                         setCurrentID(2);
                         setOrderID(item?.id);
                       } else {
@@ -1865,8 +1933,7 @@ function OrderItem({
                     }}>
                     <Image
                       source={
-                        item?.image_2 ==
-                        'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                        item?.image_2 == 'https://pickpic4u.com/uploads/NO'
                           ? require('../../../../../assets/bi_camera.png')
                           : {uri: item?.image_2}
                       }
@@ -1876,8 +1943,7 @@ function OrderItem({
                         resizeMode: 'cover',
                         borderRadius: 3,
                         backgroundColor:
-                          item?.image_2 ==
-                          'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                          item?.image_2 == 'https://pickpic4u.com/uploads/NO'
                             ? theme.colors.Black
                             : theme.colors.Tabbg + '33',
                       }}
@@ -1886,11 +1952,9 @@ function OrderItem({
 
                   <TouchableOpacity
                     onPress={() => {
-                      if (
-                        item?.image_3 ==
-                        'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                      ) {
-                        setModalThree(true);
+                      if (item?.image_3 == 'https://pickpic4u.com/uploads/NO') {
+                        // setModalThree(true);
+                        requestCameraPermission();
                         setCurrentID(3);
                         setOrderID(item?.id);
                       } else {
@@ -1901,8 +1965,7 @@ function OrderItem({
                     }}>
                     <Image
                       source={
-                        item?.image_3 ==
-                        'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                        item?.image_3 == 'https://pickpic4u.com/uploads/NO'
                           ? require('../../../../../assets/bi_camera.png')
                           : {uri: item?.image_3}
                       }
@@ -1912,8 +1975,7 @@ function OrderItem({
                         resizeMode: 'cover',
                         borderRadius: 3,
                         backgroundColor:
-                          item?.image_3 ==
-                          'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                          item?.image_3 == 'https://pickpic4u.com/uploads/NO'
                             ? theme.colors.Black
                             : theme.colors.Tabbg + '33',
                       }}
@@ -1922,10 +1984,7 @@ function OrderItem({
 
                   <TouchableOpacity
                     onPress={() => {
-                      if (
-                        item?.video_1 ==
-                        'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
-                      ) {
+                      if (item?.video_1 == 'https://pickpic4u.com/uploads/NO') {
                         pickVideo();
                         setOrderID(item?.id);
                         AddVideo();
@@ -1935,8 +1994,7 @@ function OrderItem({
                         });
                       }
                     }}>
-                    {item?.video_1 ==
-                    'https://pickpic4u.com/app.pickpic4u.com/uploads/NO' ? (
+                    {item?.video_1 == 'https://pickpic4u.com/uploads/NO' ? (
                       <Image
                         source={require('../../../../../assets/video.png')}
                         style={{
@@ -1944,8 +2002,7 @@ function OrderItem({
                           width: 30,
                           resizeMode: 'contain',
                           backgroundColor:
-                            item?.video_1 ==
-                            'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                            item?.video_1 == 'https://pickpic4u.com/uploads/NO'
                               ? theme.colors.Black
                               : theme.colors.Tabbg + '33',
                         }}
@@ -1956,8 +2013,7 @@ function OrderItem({
                           alignItems: 'center',
                           justifyContent: 'center',
                           backgroundColor:
-                            item?.video_1 ==
-                            'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                            item?.video_1 == 'https://pickpic4u.com/uploads/NO'
                               ? theme.colors.Black
                               : theme.colors.Tabbg + '33',
                           height: 30,
@@ -1967,8 +2023,7 @@ function OrderItem({
                         <Video
                           paused={true}
                           source={
-                            item?.video_1 ==
-                            'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                            item?.video_1 == 'https://pickpic4u.com/uploads/NO'
                               ? {uri: video?.uri}
                               : {uri: item?.video_1}
                           }
@@ -1999,8 +2054,7 @@ function OrderItem({
                     <TouchableOpacity
                       onPress={() => {
                         if (
-                          item?.audio_1 ==
-                          'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                          item?.audio_1 == 'https://pickpic4u.com/uploads/NO'
                         ) {
                           handleDocumentSelection();
                         } else {
@@ -2010,8 +2064,7 @@ function OrderItem({
                       <Image
                         // source={require('../../../../../assets/mic.png')}
                         source={
-                          item?.audio_1 ==
-                          'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                          item?.audio_1 == 'https://pickpic4u.com/uploads/NO'
                             ? require('../../../../../assets/mic.png')
                             : playing
                             ? require('../../../../../assets/pause.png')
@@ -2085,12 +2138,13 @@ function OrderItem({
                 <View
                   style={{
                     alignItems: 'center',
-                    width: dimensions.width / 2.5,
-                    marginRight: dimensions.width / 8,
+                    // width: dimensions.width / 2.5,
+                    // marginRight: dimensions.width / 8,
                   }}>
                   <TextFormatted
                     style={{
                       fontWeight: '700',
+                      width: dimensions.width / 2.2,
                       color: theme.colors.primary,
                     }}>
                     {item?.package_time == 'NO'
@@ -2112,8 +2166,8 @@ function OrderItem({
                     <Image
                       source={require('../../../../../assets/gps.png')}
                       style={{
-                        height: 60,
-                        width: 90,
+                        height: 40,
+                        width: 60,
                         resizeMode: 'contain',
                         // marginRight: 20,
                       }}
@@ -2159,7 +2213,9 @@ function OrderItem({
                 <TouchableOpacity
                   onPress={() => {
                     if (item?.package_image_1 == '') {
-                      setModalThree(true);
+                      // setModalThree(true);
+                      requestCameraPermission();
+
                       setPackage_CurrentID(1);
                       setOrderID(item?.id);
                     } else {
@@ -2198,7 +2254,9 @@ function OrderItem({
                 <TouchableOpacity
                   onPress={() => {
                     if (item?.package_image_2 == '') {
-                      setModalThree(true);
+                      // setModalThree(true);
+                      requestCameraPermission();
+
                       setPackage_CurrentID(2);
                       setOrderID(item?.id);
                     } else {
@@ -2236,7 +2294,9 @@ function OrderItem({
                 <TouchableOpacity
                   onPress={() => {
                     if (item?.package_image_3 == '') {
-                      setModalThree(true);
+                      // setModalThree(true);
+                      requestCameraPermission();
+
                       setPackage_CurrentID(3);
                       setOrderID(item?.id);
                     } else {
@@ -2298,7 +2358,7 @@ function OrderItem({
                         justifyContent: 'center',
                         backgroundColor:
                           item?.package_video_1 == '' ||
-                          'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                          'https://pickpic4u.com/uploads/NO'
                             ? theme.colors.Black
                             : theme.colors.Tabbg,
                         height: 30,
@@ -2309,7 +2369,7 @@ function OrderItem({
                         paused={true}
                         source={
                           item?.package_video_1 == '' ||
-                          'https://pickpic4u.com/app.pickpic4u.com/uploads/NO'
+                          'https://pickpic4u.com/uploads/NO'
                             ? {uri: video?.uri}
                             : {uri: item?.package_video_1}
                         }
@@ -2614,7 +2674,7 @@ function OrderItem({
                     }}
                   />
                 </View>
-                <TouchableOpacity
+                {/* <View
                   style={{
                     backgroundColor: theme.colors.Tabbg,
                     alignSelf: 'center',
@@ -2626,7 +2686,7 @@ function OrderItem({
                   <TextFormatted style={{fontSize: 16, fontWeight: '700'}}>
                     Pay By Code
                   </TextFormatted>
-                </TouchableOpacity>
+                </View> */}
                 <View
                   style={{
                     backgroundColor: theme.colors.C4C4C4,
@@ -2646,7 +2706,7 @@ function OrderItem({
                     }}
                   />
                 </View>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   style={{
                     backgroundColor: theme.colors.Tabbg,
                     alignSelf: 'center',
@@ -2658,28 +2718,34 @@ function OrderItem({
                   <TextFormatted style={{fontSize: 16, fontWeight: '700'}}>
                     Pay By Code
                   </TextFormatted>
-                </TouchableOpacity>
-                <View style={{height: 30}} />
-                <SolidButton
-                  borderRadius={50}
-                  text={'Payment Completed'}
-                  backgroundColor={theme.colors.green}
-                  marginHorizontal={40}
-                />
+                </TouchableOpacity> */}
+                {item?.payment_status == 'DONE' && (
+                  <View style={{height: 30}} />
+                )}
+                {item?.payment_status == 'DONE' && (
+                  <SolidButton
+                    borderRadius={50}
+                    text={'Payment Completed'}
+                    backgroundColor={theme.colors.green}
+                    marginHorizontal={40}
+                  />
+                )}
                 <View style={{height: 30}} />
               </View>
 
-              <View
-                style={{
-                  marginTop: 20,
-                  marginBottom: 50,
-                }}>
-                <SolidButton
-                  borderRadius={50}
-                  text={'Order Completed'}
-                  backgroundColor={theme.colors.green}
-                />
-              </View>
+              {item?.payment_status == 'DONE' && (
+                <View
+                  style={{
+                    marginTop: 20,
+                    marginBottom: 50,
+                  }}>
+                  <SolidButton
+                    borderRadius={50}
+                    text={'Order Completed'}
+                    backgroundColor={theme.colors.green}
+                  />
+                </View>
+              )}
             </View>
           )}
         </View>

@@ -1367,7 +1367,7 @@ export default function LogOut({navigation}) {
                     fontWeight: '600',
                     paddingVertical: 20,
                   }}>
-                  Pick Style
+                  Style
                 </TextFormated>
                 <FlatList
                   data={Availablity}

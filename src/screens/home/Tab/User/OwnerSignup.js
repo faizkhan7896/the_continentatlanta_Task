@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
 import WebView from 'react-native-webview';
+import {useSelector} from 'react-redux';
 import Statusbar from '../../../../components/Statusbar';
 import TextFormatted from '../../../../components/TextFormated';
 import {theme} from '../../../../utils/theme';
@@ -26,49 +27,54 @@ export default function Payments({navigation}) {
   const [navState, setnavState] = useState({});
   const wvRef = useRef();
   const {params} = useRoute();
+  const auth = useSelector(state => state.auth);
 
   const [response, setResponsee] = useState('');
 
   // alert(JSON.stringify(params.url));
   console.log(response?.title);
 
-  useEffect(() => {
-    setTimeout(() => {
-      if (!splash_loading) {
-        setsplash_loading(true);
-      }
-    }, 12000);
-    backhandler = BackHandler.addEventListener('hardwareBackPress', () => {
-      console.log('this.wvRef', wvRef.current);
-      if (navState.canGoBack && wvRef.current) {
-        // console.log(wvRef)
-        wvRef.current.goBack();
-        return true;
-      }
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //     if (!splash_loading) {
+  //       setsplash_loading(true);
+  //     }
+  //   }, 12000);
+  //   backhandler = BackHandler.addEventListener('hardwareBackPress', () => {
+  //     console.log('this.wvRef', wvRef.current);
+  //     if (navState.canGoBack && wvRef.current) {
+  //       // console.log(wvRef)
+  //       wvRef.current.goBack();
+  //       return true;
+  //     }
 
-      // alert
-      return false;
-    });
-  }, []);
+  //     // alert
+  //     return false;
+  //   });
+  // }, []);
 
-  useEffect(() => {
-    backhandler.remove();
-  }, []);
+  // useEffect(() => {
+  //   backhandler.remove();
+  // }, []);
 
   const onNavigationStateChange = navState => {
     console.log(navState);
     // setResponsee(navState);
     setTimeout(() => {
-      if (navState?.title == 'https://pickpic4u.com/web/view/payment-success') {
-        navigation.goBack();
+      if (
+        navState?.title ==
+        'https://pickpic4u.com/web/view/create-account?user_id=' +
+          auth?.id +
+          '&api_key=hdbjdbgjfdgbjbfddjkdbvkdsfbfjbnksdhisnksjvbjdsbvjvbk'
+      ) {
         navigation.goBack();
       }
     }, 4000);
-    setTimeout(() => {
-      if (navState?.title == 'https://pickpic4u.com/web/view/payment-cancel') {
-        navigation.goBack();
-      }
-    }, 4000);
+    // setTimeout(() => {
+    //   if (navState?.title == 'https://pickpic4u.com/web/view/payment-cancel') {
+    //     navigation.goBack();
+    //   }
+    // }, 4000);
   };
 
   function DefaultScreen() {
@@ -151,7 +157,7 @@ export default function Payments({navigation}) {
       ) : (
         <WebView
           source={{
-            uri: params.url,
+            uri: 'https://pickpic4u.com/web/view/activate-account',
           }}
           onNavigationStateChange={onNavigationStateChange}
           javaScriptEnabled

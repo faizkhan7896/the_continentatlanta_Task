@@ -580,7 +580,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.technorizen.reactnative.PikPic;
+				PRODUCT_BUNDLE_IDENTIFIER = com.technorizen.reactnative.TapTack;
 				PRODUCT_NAME = PikPic;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -609,7 +609,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.technorizen.reactnative.PikPic;
+				PRODUCT_BUNDLE_IDENTIFIER = com.technorizen.reactnative.TapTack;
 				PRODUCT_NAME = PikPic;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;

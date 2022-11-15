@@ -40,7 +40,15 @@ export default function Login({navigation}) {
 
   async function SignUp() {
     if (!email) {
-      ShowToast('Please enter your email', 'error');
+      ShowToast('Please enter your email.', 'error');
+      return;
+    } else if (
+      email.match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      )
+    ) {
+    } else {
+      ShowToast('Invalid email address.', 'error');
       return;
     }
     if (!password) {
@@ -304,27 +312,42 @@ export default function Login({navigation}) {
             alignSelf: 'center',
             marginTop: 20,
           }}>
-          <Image
-            style={styles.socialbutton}
-            source={require('../../assets/Google_Button.png')}
-          />
+          <TouchableOpacity
+            onPress={() => {
+              ShowToast('This feature will come in future update');
+            }}>
+            <Image
+              style={styles.socialbutton}
+              source={require('../../assets/Google_Button.png')}
+            />
+          </TouchableOpacity>
           {/* <View style={{borderEndWidth: 30}} /> */}
-          <Image
-            style={styles.socialbutton}
-            source={require('../../assets/Apple_Button.png')}
-          />
+          <TouchableOpacity
+            onPress={() => {
+              ShowToast('This feature will come in future update');
+            }}>
+            <Image
+              style={styles.socialbutton}
+              source={require('../../assets/Apple_Button.png')}
+            />
+          </TouchableOpacity>
           {/* <View style={{borderEndWidth: 30}} /> */}
-          <Image
-            style={styles.socialbutton}
-            source={require('../../assets/Facebook_Button.png')}
-          />
+          <TouchableOpacity
+            onPress={() => {
+              ShowToast('This feature will come in future update');
+            }}>
+            <Image
+              style={styles.socialbutton}
+              source={require('../../assets/Facebook_Button.png')}
+            />
+          </TouchableOpacity>
         </View>
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'center',
-            marginTop: 20,
+            marginVertical: 20,
           }}>
           <TextFormated
             style={{

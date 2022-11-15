@@ -11,6 +11,7 @@ import AddCard from '../screens/home/Tab/User/AddCard';
 import OrderConfirm from '../screens/home/Tab/User/OrderConfirm';
 import AddProduct from '../screens/home/Tab/Owner/AddProduct';
 import Payment from '../screens/home/Tab/User/Payment';
+import OwnerSignup from '../screens/home/Tab/User/OwnerSignup';
 import ImageZoom from '../components/ImageZoom';
 import FullVideo from '../components/FullVideo';
 import MapScreen from '../components/MapScreen';
@@ -36,6 +37,7 @@ function App() {
       <Stack.Screen name="FullVideo" component={FullVideo} />
       <Stack.Screen name="MapScreen" component={MapScreen} />
       <Stack.Screen name="Payment" component={Payment} />
+      <Stack.Screen name="OwnerSignup" component={OwnerSignup} />
     </Stack.Navigator>
   );
 }

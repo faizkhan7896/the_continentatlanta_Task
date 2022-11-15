@@ -54,7 +54,7 @@ function App() {
         component={Home}
         options={{drawerItemStyle: {height: 0}}}
       />
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name="Favourite"
         component={Favourite}
         options={{
@@ -69,8 +69,8 @@ function App() {
             />
           ),
         }}
-      />
-      <Drawer.Screen
+      /> */}
+      {/* <Drawer.Screen
         name="Orders"
         component={Orders}
         options={{
@@ -85,7 +85,7 @@ function App() {
             />
           ),
         }}
-      />
+      /> */}
       <Drawer.Screen
         name="About"
         component={About}
@@ -118,7 +118,7 @@ function App() {
           ),
         }}
       />
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name="Settings"
         component={Settings}
         options={{
@@ -133,8 +133,8 @@ function App() {
             />
           ),
         }}
-      />
-      <Drawer.Screen
+      /> */}
+      {/* <Drawer.Screen
         name="SubCart"
         component={SubCart}
         options={{
@@ -149,7 +149,7 @@ function App() {
             />
           ),
         }}
-      />
+      /> */}
       <Drawer.Screen
         name="LogOut"
         component={LogOut}

@@ -27,7 +27,9 @@ export default function History({navigation, setGet_followed_event}) {
   const [askStatus, setAskStatus] = useState(true);
   const [rentStatus, setRentStatus] = useState(true);
   const [productstatus, setProductstatus] = useState(false);
-  // alert(JSON.stringify(productstatus));
+
+  const [profileData, setProfileData] = useState('');
+  // alert(JSON.stringify(profileData.signup_status));
 
   // const ask = askStatus == false ? 'NO' : 'YES';
   // const rent = rentStatus == false ? 'NO' : 'YES';
@@ -238,6 +240,36 @@ export default function History({navigation, setGet_followed_event}) {
       console.log(e);
     }
   }
+  async function GetProfile() {
+    try {
+      const url = baseUrl + 'get_profile?user_id=' + auth.id;
+
+      console.log(url);
+      // return;
+
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {'Cache-Control': 'no-cache'},
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        setProfileData(rslt.user_data);
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+      }
+    } catch (e) {
+      // alert('An error occured.');
+      ShowToast('An error occured.', 'error');
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    GetProfile();
+  }, []);
 
   return (
     <View style={{flex: 1}}>
@@ -607,6 +639,9 @@ export default function History({navigation, setGet_followed_event}) {
               <View style={{width: 10}} />
 
               <TouchableOpacity
+                onPress={() => {
+                  ShowToast('This feature will come in future update');
+                }}
                 activeOpacity={0.7}
                 // onPress={() => {
                 //   if (item.avaibility_tackout == '') {
@@ -664,6 +699,9 @@ export default function History({navigation, setGet_followed_event}) {
               <View style={{width: 10}} />
 
               <TouchableOpacity
+                onPress={() => {
+                  ShowToast('This feature will come in future update');
+                }}
                 activeOpacity={0.7}
                 // onPress={() => {
                 //   if (item.avaibility_delivery == '') {
@@ -723,7 +761,13 @@ export default function History({navigation, setGet_followed_event}) {
       />
 
       <TouchableOpacity
-        onPress={() => navigation.navigate('AddProduct')}
+        onPress={() => {
+          if (profileData?.signup_status == 'Owner Account Not Activated') {
+            navigation.navigate('OwnerSignup');
+            return;
+          }
+          navigation.navigate('AddProduct');
+        }}
         style={{
           paddingVertical: 15,
           paddingHorizontal: 15,
