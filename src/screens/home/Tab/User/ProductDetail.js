@@ -62,15 +62,18 @@ export default function LogOut({navigation}) {
 
   const [selectedProduct, setSelectedProduct] = useState([]);
   const [ProductIndex, setProductIndex] = useState([]);
+  const [data, setData] = useState();
+  const [prices, setPrices] = useState([]);
 
   const scrollRef = useRef();
-  // alert(JSON.stringify(ProductIndex));
-  // alert(JSON.stringify(params.item.avaibility_atstor));
+  // alert(JSON.stringify(selectedProduct.length));
+
+  // alert(JSON.stringify(data?.id));
   // console.log('selectedProduct', selectedProduct);
 
-  async function LikeUnlike(id) {
+  async function GetSinglePost() {
     try {
-      const url = baseUrl + 'like_post?id=' + id + '&user_id=' + auth.id;
+      const url = baseUrl + 'get_post_product?id=' + params?.item?.id;
       console.log(url);
 
       const res = await fetch(url, {
@@ -82,8 +85,12 @@ export default function LogOut({navigation}) {
       console.log(rslt);
 
       if (rslt.success == '1') {
-        navigation.goBack();
+        // navigation.goBack();
+        setData(rslt.post_data[0]);
+        // getProduct_Like('like');
       } else {
+        setData(rslt.post_data[0]);
+        // getProduct_Like('like');
         ShowToast(rslt.message || 'Unknown error', 'error');
       }
     } catch (e) {
@@ -98,7 +105,7 @@ export default function LogOut({navigation}) {
       const url =
         baseUrl +
         'get_user_list_by_product_id_like_order_ask_rent?post_id=' +
-        params.item.id +
+        data?.id +
         '&type=' +
         type;
 
@@ -131,6 +138,37 @@ export default function LogOut({navigation}) {
       }
     } catch (e) {
       // alert('An error occured.');
+      // ShowToast('An error occured.', 'error');
+      console.log(e);
+    }
+  }
+
+  async function LikeUnlike(id) {
+    try {
+      const url = baseUrl + 'like_post?id=' + id + '&user_id=' + auth.id;
+      console.log(url);
+
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {'Cache-Control': 'no-cache'},
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        // navigation.goBack();
+        setAllLikes([]);
+        setData(rslt.post_data[0]);
+        getProduct_Like('like');
+      } else {
+        setData(rslt.post_data[0]);
+        getProduct_Like('like');
+
+        // ShowToast(rslt.message || 'Unknown error', 'error');
+      }
+    } catch (e) {
+      // alert('An error occured.');
       ShowToast('An error occured.', 'error');
       console.log(e);
     }
@@ -141,22 +179,27 @@ export default function LogOut({navigation}) {
     getProduct_Like('ask');
     getProduct_Like('order');
     getProduct_Like('rent');
+    GetSinglePost();
   }, []);
 
   async function CreateOrder() {
-    // if (extradetailentered == false) {
-    //   ShowToast('Please add product in your cart.', 'error');
-    //   return;
-    // }
+    if (selectedProduct.length == 0) {
+      ShowToast('Please add product in your cart.', 'error');
+      return;
+    }
+    if (selected_2 == '') {
+      ShowToast('Please add product availability', 'error');
+      return;
+    }
     try {
       setLoading(true);
       const url = baseUrl + 'create_post_order';
 
       const body = new FormData();
       body.append('user_id', auth.id);
-      body.append('post_id', params.item.id);
+      body.append('post_id', data?.id);
       body.append('extra_details', details);
-      body.append('availability', selected);
+      body.append('availability', selected_2);
       body.append('image_coordinates', selectedProduct);
       body.append('selected_position_index', ProductIndex.join(','));
 
@@ -200,7 +243,7 @@ export default function LogOut({navigation}) {
             <Header navigation={navigation} Headertext={'Details'} />
             <View>
               <ImageBackground
-                source={{uri: params.item.image}}
+                source={{uri: data?.image}}
                 style={{
                   width: dimensions.width - 30,
                   height: dimensions.height / 3,
@@ -209,7 +252,7 @@ export default function LogOut({navigation}) {
                 }}
                 imageStyle={{resizeMode: 'cover'}}>
                 {!!visible &&
-                  params?.item?.post_position?.map((item, i) => (
+                  data?.post_position?.map((item, i) => (
                     <TouchableOpacity
                       onPress={() => {
                         // setSelectedProduct(item);
@@ -222,6 +265,7 @@ export default function LogOut({navigation}) {
                             item?.position[3],
                           ],
                         ]);
+                        setPrices(v => [...v, item?.price]);
                         setProductIndex(I => [...I, i]);
                         // setModal(true);
                       }}
@@ -264,7 +308,7 @@ export default function LogOut({navigation}) {
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => {
-                  LikeUnlike(params?.item?.id);
+                  LikeUnlike(data?.id);
                 }}
                 style={{
                   alignItems: 'center',
@@ -290,13 +334,13 @@ export default function LogOut({navigation}) {
                     color: theme.colors.primary,
                     fontSize: 16,
                   }}>
-                  LIKE {params.item.like}
+                  LIKE {data?.like}
                 </TextFormated>
               </TouchableOpacity>
 
-              {params.item.ask_status == 'YES' && <View style={{width: 10}} />}
+              {data?.ask_status == 'YES' && <View style={{width: 10}} />}
 
-              {params.item.ask_status == 'YES' && (
+              {data?.ask_status == 'YES' && (
                 <TouchableOpacity
                   activeOpacity={0.7}
                   onPress={() => setModal(true)}
@@ -328,7 +372,9 @@ export default function LogOut({navigation}) {
                   </TextFormated>
                 </TouchableOpacity>
               )}
+
               <View style={{width: 10}} />
+
               <TouchableOpacity
                 activeOpacity={0.7}
                 onPress={() => {
@@ -359,11 +405,13 @@ export default function LogOut({navigation}) {
                     color: theme.colors.primary,
                     fontSize: 16,
                   }}>
-                  ORDER {params.item.order}
+                  ORDER {data?.order}
                 </TextFormated>
               </TouchableOpacity>
-              {params.item.rent_status == 'YES' && <View style={{width: 10}} />}
-              {params.item.rent_status == 'YES' && (
+
+              {data?.rent_status == 'YES' && <View style={{width: 10}} />}
+
+              {data?.rent_status == 'YES' && (
                 <TouchableOpacity
                   activeOpacity={0.7}
                   onPress={() => setModal(true)}
@@ -426,22 +474,25 @@ export default function LogOut({navigation}) {
                     marginHorizontal: 15,
                   }}
                 />
-                {extradetailentered == true && (
-                  <TextFormated
-                    style={{
-                      fontSize: 16,
-                      marginTop: 5,
-                      fontWeight: '600',
-                      color: 'black',
-                    }}>
-                    {/* ${params?.item.price} */}${details}
-                  </TextFormated>
-                )}
+                {/* {extradetailentered == true && ( */}
+                {/* {prices.map((v, i) => ( */}
+                <TextFormated
+                  style={{
+                    fontSize: 16,
+                    marginTop: 5,
+                    fontWeight: '600',
+                    color: 'black',
+                  }}>
+                  {/* {(count = count + parseInt(v))} */}¥
+                  {prices.reduce((a, b) => a + (parseInt(b) || 0), 0)}
+                </TextFormated>
+                {/* ))} */}
+                {/* )} */}
               </View>
 
               {/* {!!extradetailentered && ( */}
               <FlatList
-                // data={params?.item?.post_position}
+                // data={data?.post_position}
                 data={selectedProduct}
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{marginVertical: 0}}
@@ -449,15 +500,42 @@ export default function LogOut({navigation}) {
                 renderItem={({item, index}) => (
                   <View style={{alignItems: 'center', marginHorizontal: 10}}>
                     <ImageBackground
-                      source={{uri: params?.item?.image}}
+                      source={{uri: data?.image}}
                       style={{
                         width: 80,
                         borderWidth: 1,
-                        height: 80,
+                        height: 90,
                         borderRadius: 10,
                         overflow: 'hidden',
+                        alignSelf: 'center',
                       }}
                       imageStyle={{
+                        borderRadius: 10,
+                        // marginHorizontal: 15,
+                        resizeMode: 'stretch',
+                        //   resizeMode: 'contain',
+                        width:
+                          (1 * 80) /
+                          (parseFloat(item[2]) - parseFloat(item[0])),
+                        height:
+                          (1 * 90) /
+                          (parseFloat(item[3]) - parseFloat(item[1])),
+                        borderWidth: 1,
+                        top:
+                          -(
+                            (dimensionsss.height /
+                              15 /
+                              (parseFloat(item[3]) - parseFloat(item[1]))) *
+                            parseFloat(item[1])
+                          ) / 1,
+                        left:
+                          -(
+                            ((1 * 80) /
+                              (parseFloat(item[2]) - parseFloat(item[0]))) *
+                            parseFloat(item[0])
+                          ) / 1,
+                      }}>
+                      {/* imageStyle={{
                         borderRadius: 10,
                         resizeMode: 'contain',
                         //   resizeMode: 'contain',
@@ -481,12 +559,19 @@ export default function LogOut({navigation}) {
                               (parseFloat(item[2]) - parseFloat(item[0]))) *
                             parseFloat(item[0])
                           ) / 1,
-                      }}>
-                      {/* {alert(JSON.stringify(item))} */}
+                      }}> */}
                       <View style={{position: 'absolute', right: 7, top: 5}}>
                         <TouchableOpacity
                           onPress={() => {
-                            setExtradetailentered(false);
+                            // setExtradetailentered(false);
+                            setSelectedProduct(v => [
+                              ...v.slice(0, index),
+                              ...v.slice(index + 1),
+                            ]);
+                            setPrices(v => [
+                              ...v.slice(0, index),
+                              ...v.slice(index + 1),
+                            ]);
                           }}>
                           <Image
                             source={require('../../../../assets/Close.png')}
@@ -500,17 +585,15 @@ export default function LogOut({navigation}) {
                       </View>
                     </ImageBackground>
 
-                    {extradetailentered == true && (
-                      <TextFormated
-                        style={{
-                          fontSize: 16,
-                          marginTop: 5,
-                          fontWeight: '600',
-                          color: 'black',
-                        }}>
-                        {/* ${params?.item.price} */}${details || '0'}
-                      </TextFormated>
-                    )}
+                    <TextFormated
+                      style={{
+                        fontSize: 16,
+                        marginTop: 5,
+                        fontWeight: '600',
+                        color: 'black',
+                      }}>
+                      ¥{prices[index]}
+                    </TextFormated>
                   </View>
                 )}
               />
@@ -524,14 +607,14 @@ export default function LogOut({navigation}) {
                 alignItems: 'center',
                 // justifyContent: 'space-between',
               }}>
-              {params?.item?.avaibility_atstor == 'AT STORE' && (
+              {data?.avaibility_atstor == 'AT STORE' && (
                 <TouchableOpacity
                   onPress={() => {
-                    setSelected_2(params?.item?.avaibility_atstor);
+                    setSelected_2(data?.avaibility_atstor);
                   }}
                   style={{
                     backgroundColor:
-                      selected_2 == params?.item?.avaibility_atstor
+                      selected_2 == data?.avaibility_atstor
                         ? theme.colors.yellow
                         : theme.colors.SelectAvailablity,
                     shadowColor: '#000',
@@ -558,19 +641,19 @@ export default function LogOut({navigation}) {
                       color: theme.colors.primary,
                       fontSize: 10,
                     }}>
-                    {params?.item?.avaibility_atstor}
+                    {data?.avaibility_atstor}
                   </TextFormated>
                 </TouchableOpacity>
               )}
 
-              {params?.item?.avaibility_delivery == 'DELIVERY' && (
+              {data?.avaibility_delivery == 'DELIVERY' && (
                 <TouchableOpacity
                   onPress={() => {
-                    setSelected_2(params?.item?.avaibility_delivery);
+                    setSelected_2(data?.avaibility_delivery);
                   }}
                   style={{
                     backgroundColor:
-                      selected_2 == params?.item?.avaibility_delivery
+                      selected_2 == data?.avaibility_delivery
                         ? theme.colors.yellow
                         : theme.colors.SelectAvailablity,
                     shadowColor: '#000',
@@ -597,18 +680,18 @@ export default function LogOut({navigation}) {
                       color: theme.colors.primary,
                       fontSize: 10,
                     }}>
-                    {params?.item?.avaibility_delivery}
+                    {data?.avaibility_delivery}
                   </TextFormated>
                 </TouchableOpacity>
               )}
-              {params?.item?.avaibility_tackout == 'TAKE OUT' && (
+              {data?.avaibility_tackout == 'TAKE OUT' && (
                 <TouchableOpacity
                   onPress={() => {
-                    setSelected_2(params?.item?.avaibility_tackout);
+                    setSelected_2(data?.avaibility_tackout);
                   }}
                   style={{
                     backgroundColor:
-                      selected_2 == params?.item?.avaibility_tackout
+                      selected_2 == data?.avaibility_tackout
                         ? theme.colors.yellow
                         : theme.colors.SelectAvailablity,
                     shadowColor: '#000',
@@ -635,7 +718,7 @@ export default function LogOut({navigation}) {
                       color: theme.colors.primary,
                       fontSize: 10,
                     }}>
-                    {params?.item?.avaibility_tackout}
+                    {data?.avaibility_tackout}
                   </TextFormated>
                 </TouchableOpacity>
               )}
@@ -645,7 +728,7 @@ export default function LogOut({navigation}) {
               text="SUBMIT"
               backgroundColor={theme.colors.green}
               onPress={() => {
-                // alert(JSON.stringify(params?.item?.post_position[0].position));
+                // alert(JSON.stringify(data?.post_position[0].position));
                 CreateOrder();
               }}
               loading={loading}
@@ -693,11 +776,11 @@ export default function LogOut({navigation}) {
                     color: theme.colors.primary,
                     fontSize: 16,
                   }}>
-                  LIKE {params.item.like}
+                  LIKE {data?.like}
                 </TextFormated>
               </TouchableOpacity>
 
-              {/* {params.item.ask_status == 'YES' && <View style={{width: 10}} />} */}
+              {/* {data?.ask_status == 'YES' && <View style={{width: 10}} />} */}
               <View style={{width: 10}} />
               {/* <TouchableOpacity
                 activeOpacity={0.7}
@@ -772,7 +855,7 @@ export default function LogOut({navigation}) {
                     color: theme.colors.primary,
                     fontSize: 16,
                   }}>
-                  ORDER {params.item.like}
+                  ORDER {data?.order}
                 </TextFormated>
               </TouchableOpacity>
             </View>
@@ -819,7 +902,7 @@ export default function LogOut({navigation}) {
                     color: theme.colors.primary,
                     fontSize: 16,
                   }}>
-                  ORDER {params.item.like}
+                  ORDER {data?.like}
                 </TextFormated>
               </TouchableOpacity>
 
@@ -866,15 +949,7 @@ export default function LogOut({navigation}) {
             </View> */}
 
             <FlatList
-              data={
-                selected == 1
-                  ? allLikes
-                  : selected == 2
-                  ? allAsk
-                  : selected == 3
-                  ? allOrder
-                  : allRent
-              }
+              data={selected == 1 ? allLikes : allOrder}
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{marginTop: 30}}
               scrollEnabled={false}
@@ -897,10 +972,11 @@ export default function LogOut({navigation}) {
                     />
                     <View>
                       <TextFormated style={{fontSize: 16, fontWeight: '700'}}>
-                        {item?.name}
+                        {item?.user_name}
                       </TextFormated>
                       <TextFormated style={{fontSize: 12, fontWeight: '500'}}>
-                        {moment(item?.date_create).startOf('hour').fromNow()}
+                        {/* {moment(item?.like_date_time).startOf('hour').fromNow()} */}
+                        {item?.ago}
                       </TextFormated>
                     </View>
                   </View>

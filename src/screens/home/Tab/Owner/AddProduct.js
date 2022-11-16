@@ -703,7 +703,7 @@ export default function LogOut({navigation}) {
                     fontWeight: '600',
                     color: 'black',
                   }}>
-                  ${allPrices.reduce((a, b) => a + (parseInt(b) || 0), 0)}
+                  ¥{allPrices.reduce((a, b) => a + (parseInt(b) || 0), 0)}
                 </TextFormated> */}
               </View>
             ))}
@@ -792,7 +792,7 @@ export default function LogOut({navigation}) {
                     fontWeight: '600',
                     color: 'black',
                   }}>
-                  ${allPrices.reduce((a, b) => a + (parseInt(b) || 0), 0)}
+                  ¥{allPrices.reduce((a, b) => a + (parseInt(b) || 0), 0)}
                 </TextFormated>
               )}
             </View>
@@ -808,19 +808,19 @@ export default function LogOut({navigation}) {
                   <ImageBackground
                     source={{uri: uri?.uri}}
                     style={{
-                      width: 80,
+                      width: 90,
                       borderWidth: 1,
-                      height: 60,
+                      height: 90,
                       borderRadius: 10,
                       overflow: 'hidden',
                     }}
                     imageStyle={{
                       borderRadius: 10,
-                      resizeMode: 'contain',
+                      resizeMode: 'stretch',
                       width:
-                        ((dimensionsss.width - 30) * 80) / (item[2] - item[0]),
+                        ((dimensionsss.width - 30) * 90) / (item[2] - item[0]),
                       height:
-                        ((dimensionsss.height / 3.5) * 60) /
+                        ((dimensionsss.height / 3.5) * 90) /
                         (item[3] - item[1]),
                       borderWidth: 1,
                       top:
@@ -883,7 +883,7 @@ export default function LogOut({navigation}) {
                         fontWeight: '600',
                         color: 'black',
                       }}>
-                      ${allPrices[index]}
+                      ¥{allPrices[index]}
                     </TextFormated>
                   )}
                 </View>

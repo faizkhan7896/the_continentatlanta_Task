@@ -2,8 +2,10 @@ import React, {useEffect, useRef, useState} from 'react';
 import {
   Dimensions,
   FlatList,
+  Image,
   ImageBackground,
   StyleSheet,
+  Text,
   TouchableOpacity,
   useWindowDimensions,
   View,
@@ -101,10 +103,33 @@ export default function ShowCase({navigation, setGet_followed_event}) {
       <FlatList
         data={data}
         ListEmptyComponent={
-          <View style={{alignItems: 'center', marginTop: 20}}>
-            <TextFormated style={{fontSize: 16, fontWeight: '600'}}>
+          <View
+            style={{
+              // alignItems: 'center',
+              flex: 1,
+              backgroundColor: '#fff',
+              justifyContent: 'center',
+            }}>
+            <Image
+              source={require('../../../../../assets/DataNotFound.png')}
+              style={{
+                height: dimensions.width / 2,
+                width: dimensions.width / 2,
+                resizeMode: 'contain',
+                alignSelf: 'center',
+                // borderWidth: 1,
+              }}
+            />
+            <Text
+              style={{
+                fontSize: 24,
+                fontWeight: '700',
+                color: theme.colors.Black,
+                marginVertical: 15,
+                textAlign: 'center',
+              }}>
               Data Not Found
-            </TextFormated>
+            </Text>
           </View>
         }
         numColumns={2}

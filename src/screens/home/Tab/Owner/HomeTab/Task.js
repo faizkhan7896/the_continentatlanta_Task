@@ -801,10 +801,33 @@ export default function History({navigation, setGet_followed_event}) {
       <FlatList
         data={data}
         ListEmptyComponent={
-          <View style={{alignItems: 'center', marginTop: 20}}>
-            <TextFormated style={{fontSize: 16, fontWeight: '600'}}>
+          <View
+            style={{
+              // alignItems: 'center',
+              flex: 1,
+              backgroundColor: '#fff',
+              justifyContent: 'center',
+            }}>
+            <Image
+              source={require('../../../../../assets/DataNotFound.png')}
+              style={{
+                height: dimensions.width / 2,
+                width: dimensions.width / 2,
+                resizeMode: 'contain',
+                alignSelf: 'center',
+                // borderWidth: 1,
+              }}
+            />
+            <Text
+              style={{
+                fontSize: 24,
+                fontWeight: '700',
+                color: theme.colors.Black,
+                marginVertical: 15,
+                textAlign: 'center',
+              }}>
               Data Not Found
-            </TextFormated>
+            </Text>
           </View>
         }
         showsVerticalScrollIndicator={false}
@@ -1626,7 +1649,7 @@ function OrderItem({
                       }}
                       imageStyle={{
                         borderRadius: 10,
-                        resizeMode: 'contain',
+                        resizeMode: 'stretch',
                         width:
                           (1 * 80) /
                           (parseFloat(v.image_coordinates?.position[2]) -
@@ -1758,7 +1781,7 @@ function OrderItem({
               </View>
             ))}
           </View>
-          <SubItem text="Total" amount={'$' + item?.total_price} />
+          <SubItem text="Total" amount={'¥' + item?.total_price} />
 
           {item?.status == 'PENDING' && (
             <View style={{marginTop: 20}}>

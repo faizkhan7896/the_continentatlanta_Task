@@ -355,7 +355,7 @@ export default function AddProduct({navigation}) {
                   fontWeight: '700',
                   color: theme.colors.primary,
                 }}>
-                $36.00
+                ¥36.00
               </TextFormatted>
             </TextFormatted>
             <Image

@@ -281,6 +281,36 @@ export default function History({navigation, setGet_followed_event}) {
         rightOpenValue={-85}
         // onRightAction={() => alert()}
         stopLeftSwipe
+        ListEmptyComponent={
+          <View
+            style={{
+              // alignItems: 'center',
+              flex: 1,
+              backgroundColor: '#fff',
+              justifyContent: 'center',
+            }}>
+            <Image
+              source={require('../../../../../assets/DataNotFound.png')}
+              style={{
+                height: dimensions.width / 2,
+                width: dimensions.width / 2,
+                resizeMode: 'contain',
+                alignSelf: 'center',
+                // borderWidth: 1,
+              }}
+            />
+            <Text
+              style={{
+                fontSize: 24,
+                fontWeight: '700',
+                color: theme.colors.Black,
+                marginVertical: 15,
+                textAlign: 'center',
+              }}>
+              Data Not Found
+            </Text>
+          </View>
+        }
         renderHiddenItem={(data, rowMap) => (
           <TouchableOpacity
             onPress={() => DeleteProduct(data.item.id)}
@@ -762,10 +792,10 @@ export default function History({navigation, setGet_followed_event}) {
 
       <TouchableOpacity
         onPress={() => {
-          if (profileData?.signup_status == 'Owner Account Not Activated') {
-            navigation.navigate('OwnerSignup');
-            return;
-          }
+          // if (profileData?.signup_status == 'Owner Account Not Activated') {
+          //   navigation.navigate('OwnerSignup');
+          //   return;
+          // }
           navigation.navigate('AddProduct');
         }}
         style={{

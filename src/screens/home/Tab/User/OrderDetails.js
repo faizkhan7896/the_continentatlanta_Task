@@ -1088,7 +1088,7 @@ export default function Orders({navigation}) {
                   </View>
                 </View>
               ))}
-              <SubItem text="Total" amount={'$' + params?.total_price} />
+              <SubItem text="Total" amount={'¥' + params?.total_price} />
 
               <View
                 style={{
