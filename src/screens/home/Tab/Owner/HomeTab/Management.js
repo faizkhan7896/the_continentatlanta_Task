@@ -478,6 +478,8 @@ export default function History({navigation, setGet_followed_event}) {
                   <TouchableOpacity
                     activeOpacity={0.7}
                     onPress={() => {
+                      ShowToast('This feature will come in future update');
+                      return;
                       if (item.ask_status == 'NO') {
                         StatusUpdate(
                           item.id,
@@ -555,6 +557,8 @@ export default function History({navigation, setGet_followed_event}) {
                   <TouchableOpacity
                     activeOpacity={0.7}
                     onPress={() => {
+                      ShowToast('This feature will come in future update');
+                      return;
                       if (item.rent_status == 'NO') {
                         StatusUpdate(
                           item.id,
@@ -662,7 +666,8 @@ export default function History({navigation, setGet_followed_event}) {
                     fontWeight: '500',
                     color: theme.colors.Black,
                   }}>
-                  At Store
+                  {/* ONLY FRONTEND ME AT STORE KO CHANGE KARKE HAND TO HAND KIYA HE BAAKI PURE APP ME AT STORE KE HI CHECKS LAGE HUE HE   */}
+                  Hand To Hand
                 </TextFormated>
               </TouchableOpacity>
 

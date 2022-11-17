@@ -27,6 +27,7 @@ import {ShowToast} from '../../../../utils/ToastFunction';
 const Availablity = [
   {
     id: '1',
+    DisplayName: 'HAND TO HAND',
     title: 'AT STORE',
     time: 'Minutes',
   },
@@ -641,7 +642,8 @@ export default function LogOut({navigation}) {
                       color: theme.colors.primary,
                       fontSize: 10,
                     }}>
-                    {data?.avaibility_atstor}
+                    {/* {data?.avaibility_atstor} */}
+                    HAND TO HAND
                   </TextFormated>
                 </TouchableOpacity>
               )}
@@ -745,6 +747,7 @@ export default function LogOut({navigation}) {
                 activeOpacity={0.7}
                 onPress={() => {
                   setSelected(1);
+                  getProduct_Like('like');
                   scrollRef.current.scrollTo({
                     x: 0, // Required
                     y: 0, // Required
@@ -824,6 +827,7 @@ export default function LogOut({navigation}) {
                 activeOpacity={0.7}
                 onPress={() => {
                   setSelected(3);
+                  getProduct_Like('order');
                   scrollRef.current.scrollTo({
                     x: 0, // Required
                     y: 0, // Required
@@ -833,6 +837,7 @@ export default function LogOut({navigation}) {
                 style={{
                   alignItems: 'center',
                   justifyContent: 'center',
+
                   paddingVertical: 15,
                   flexDirection: 'row',
                   borderRadius: 6,

@@ -22,7 +22,7 @@ export default function AddProduct({navigation}) {
         backgroundColor={theme.colors.Black}
       />
       <Header
-        Headertext="Order at Store"
+        Headertext="Order Take Out"
         navigation={navigation}
         backgroundColor={theme.colors.Black}
         color={theme.colors.primary}

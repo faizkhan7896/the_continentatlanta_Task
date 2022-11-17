@@ -18,7 +18,8 @@ export default function AddProduct({navigation}) {
         backgroundColor={theme.colors.Black}
       />
       <Header
-        Headertext="Order at Store"
+        //  {/* ONLY FRONTEND ME AT STORE KO CHANGE KARKE HAND TO HAND KIYA HE BAAKI PURE APP ME AT STORE KE HI CHECKS LAGE HUE HE   */}
+        Headertext="Order Hand To Hand"
         navigation={navigation}
         backgroundColor={theme.colors.Black}
         color={theme.colors.primary}

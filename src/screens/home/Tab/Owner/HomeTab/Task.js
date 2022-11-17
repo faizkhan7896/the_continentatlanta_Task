@@ -1395,7 +1395,7 @@ function OrderItem({
               alignItems: 'center',
               marginVertical: 15,
             }}>
-            <TouchableOpacity
+            <View
               activeOpacity={0.7}
               onPress={() => {}}
               style={{
@@ -1415,11 +1415,11 @@ function OrderItem({
                 }}>
                 LIKE {item.post?.like || '0'}
               </TextFormated>
-            </TouchableOpacity>
+            </View>
 
             <View style={{width: 7}} />
 
-            <TouchableOpacity
+            <View
               activeOpacity={0.7}
               onPress={() => {}}
               style={{
@@ -1439,11 +1439,11 @@ function OrderItem({
                 }}>
                 ASK {item.post?.ask || '0'}
               </TextFormated>
-            </TouchableOpacity>
+            </View>
 
             <View style={{width: 7}} />
 
-            <TouchableOpacity
+            <View
               activeOpacity={0.7}
               onPress={() => {}}
               style={{
@@ -1463,11 +1463,11 @@ function OrderItem({
                 }}>
                 ORDER {item.post?.order || '0'}
               </TextFormated>
-            </TouchableOpacity>
+            </View>
 
             <View style={{width: 7}} />
 
-            <TouchableOpacity
+            <View
               activeOpacity={0.7}
               onPress={() => {}}
               style={{
@@ -1487,7 +1487,7 @@ function OrderItem({
                 }}>
                 RENT {item.post?.rent || '0'}
               </TextFormated>
-            </TouchableOpacity>
+            </View>
           </View>
         </View>
       </View>
@@ -1527,7 +1527,7 @@ function OrderItem({
               fontWeight: '500',
               color: theme.colors.Black,
             }}>
-            At Store
+            Hand To Hand
           </TextFormated>
         </TouchableOpacity>
 
@@ -1537,6 +1537,7 @@ function OrderItem({
           activeOpacity={0.7}
           onPress={() => {
             ShowToast('This feature will come in future update');
+            return;
           }}
           style={{
             alignItems: 'center',
@@ -1574,6 +1575,7 @@ function OrderItem({
           activeOpacity={0.7}
           onPress={() => {
             ShowToast('This feature will come in future update');
+            return;
           }}
           style={{
             alignItems: 'center',

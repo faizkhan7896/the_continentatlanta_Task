@@ -113,6 +113,7 @@ export default function History({navigation}) {
         }
         renderItem={({item, index}) => (
           <TouchableOpacity
+            activeOpacity={0.7}
             onPress={() => navigation.navigate('OrderDetails', item)}
             style={{
               borderRadius: 12,
@@ -205,7 +206,7 @@ export default function History({navigation}) {
                   alignItems: 'center',
                   marginVertical: 15,
                 }}>
-                <TouchableOpacity
+                <View
                   activeOpacity={0.7}
                   onPress={() => {}}
                   style={{
@@ -225,9 +226,9 @@ export default function History({navigation}) {
                     }}>
                     LIKE {item.post.like || '0'}
                   </TextFormated>
-                </TouchableOpacity>
+                </View>
                 <View style={{width: 7}} />
-                <TouchableOpacity
+                <View
                   activeOpacity={0.7}
                   onPress={() => {}}
                   style={{
@@ -250,9 +251,9 @@ export default function History({navigation}) {
                     }}>
                     ASK {item.post.ask || '0'}
                   </TextFormated>
-                </TouchableOpacity>
+                </View>
                 <View style={{width: 7}} />
-                <TouchableOpacity
+                <View
                   activeOpacity={0.7}
                   onPress={() => {}}
                   style={{
@@ -272,9 +273,9 @@ export default function History({navigation}) {
                     }}>
                     ORDER {item.post.ask || '0'}
                   </TextFormated>
-                </TouchableOpacity>
+                </View>
                 <View style={{width: 7}} />
-                <TouchableOpacity
+                <View
                   activeOpacity={0.7}
                   onPress={() => {}}
                   style={{
@@ -297,7 +298,7 @@ export default function History({navigation}) {
                     }}>
                     RENT {item.post.ask || '0'}
                   </TextFormated>
-                </TouchableOpacity>
+                </View>
               </View>
             </View>
           </TouchableOpacity>

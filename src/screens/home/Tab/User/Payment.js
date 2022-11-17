@@ -30,7 +30,7 @@ export default function Payments({navigation}) {
   const [response, setResponsee] = useState('');
 
   // alert(JSON.stringify(params.url));
-  console.log(response?.title);
+  console.log(params.url);
 
   useEffect(() => {
     setTimeout(() => {

@@ -33,6 +33,7 @@ import {
 const Availablity = [
   {
     id: '1',
+    DisplayName: 'HAND TO HAND',
     title: 'AT STORE',
     time: 'Minutes',
   },
@@ -389,7 +390,7 @@ export default function LogOut({navigation}) {
   const [time, setTime] = useState('');
   const [timePeriod, setTimePeriod] = useState('');
   // alert(JSON.stringify(all_Rent_Prices));
-  // alert(JSON.stringify(Rentprice));
+  // alert(JSON.stringify(selected.length));
   console.log('Product', Product);
 
   const [start, setStart] = useState();
@@ -442,7 +443,7 @@ export default function LogOut({navigation}) {
       body.append('user_id', auth.id);
       body.append('avaibility_atstor', selected[0]);
       body.append('tackout', '');
-      body.append('avaibility_test', 'TAKE OUT');
+      body.append('avaibility_test', '');
       body.append('avaibility_delivery', '');
       body.append('price', allPrices.join(','));
       body.append('rent_price', all_Rent_Prices.join(','));
@@ -661,9 +662,10 @@ export default function LogOut({navigation}) {
                     source={{uri: cropImg != '' ? cropImg : uri.uri}}
                     style={{
                       width: dimensionsss.width - 30,
-                      height: dimensionsss.height / 3,
+                      height: dimensionsss.height / 2.5,
                       alignSelf: 'center',
                       backgroundColor: theme.colors.Tabbg,
+                      // transform: [{rotate: '90deg'}],
                     }}
                     imageStyle={{resizeMode: 'cover'}}>
                     {start != undefined && (
@@ -713,7 +715,7 @@ export default function LogOut({navigation}) {
             style={{
               flexDirection: 'row',
               alignItems: 'center',
-              marginTop: 30,
+              marginTop: dimensionsss.width / 4,
               marginHorizontal: 15,
             }}>
             <TouchableOpacity
@@ -808,19 +810,19 @@ export default function LogOut({navigation}) {
                   <ImageBackground
                     source={{uri: uri?.uri}}
                     style={{
-                      width: 90,
+                      minWidth: 100,
                       borderWidth: 1,
-                      height: 90,
+                      minHeight: 120,
                       borderRadius: 10,
                       overflow: 'hidden',
                     }}
                     imageStyle={{
                       borderRadius: 10,
                       resizeMode: 'stretch',
-                      width:
+                      minWidth:
                         ((dimensionsss.width - 30) * 90) / (item[2] - item[0]),
-                      height:
-                        ((dimensionsss.height / 3.5) * 90) /
+                      minHeight:
+                        ((dimensionsss.height / 3.5) * 150) /
                         (item[3] - item[1]),
                       borderWidth: 1,
                       top:
@@ -934,7 +936,8 @@ export default function LogOut({navigation}) {
                       color: theme.colors.primary,
                       fontSize: 10,
                     }}>
-                    {item.title}
+                    {/* ONLY FRONTEND ME AT STORE KO CHANGE KARKE HAND TO HAND KIYA HE BAAKI PURE APP ME AT STORE KE HI CHECKS LAGE HUE HE   */}
+                    {item.DisplayName}
                   </TextFormated>
                 </TouchableOpacity>
               )}
@@ -946,6 +949,10 @@ export default function LogOut({navigation}) {
             onPress={() => {
               if (uri == '') {
                 ShowToast('Please select image', 'error');
+                return;
+              }
+              if (selected.length == 0) {
+                ShowToast('Please add product availability', 'error');
                 return;
               }
               AddProduct();
@@ -968,7 +975,7 @@ export default function LogOut({navigation}) {
 
               elevation: 5,
               marginHorizontal: 15,
-              marginTop: 20,
+              marginVertical: 20,
             }}>
             {/* {loading ? (
               <ActivityIndicator
@@ -1400,6 +1407,7 @@ export default function LogOut({navigation}) {
                         marginRight: 15,
                         alignItems: 'center',
                         justifyContent: 'center',
+
                         paddingVertical: 12,
                         flexDirection: 'row',
                         borderRadius: 5,
@@ -1411,7 +1419,7 @@ export default function LogOut({navigation}) {
                           color: theme.colors.primary,
                           fontSize: 10,
                         }}>
-                        {item.title}
+                        {item.DisplayName}
                       </TextFormated>
                     </TouchableOpacity>
                   )}
