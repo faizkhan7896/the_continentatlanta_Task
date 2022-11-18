@@ -1,10 +1,11 @@
 import moment from 'moment';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   Dimensions,
   FlatList,
   Image,
   ImageBackground,
+  RefreshControl,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -29,6 +30,13 @@ export default function History({navigation, setGet_followed_event}) {
   const [productstatus, setProductstatus] = useState(false);
 
   const [profileData, setProfileData] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
+  // alert(JSON.stringify(latitude));
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    GetProduct(true);
+  }, []);
   // alert(JSON.stringify(profileData.signup_status));
 
   // const ask = askStatus == false ? 'NO' : 'YES';
@@ -58,11 +66,13 @@ export default function History({navigation, setGet_followed_event}) {
         if (!silent) {
           setLoading(false);
         }
+        setRefreshing(false);
       } else {
         // ShowToast(rslt.message || 'Unknown error', 'error');
         if (!silent) {
           setLoading(false);
         }
+        setRefreshing(false);
       }
     } catch (e) {
       // alert('An error occured.');
@@ -70,6 +80,7 @@ export default function History({navigation, setGet_followed_event}) {
       if (!silent) {
         setLoading(false);
       }
+      setRefreshing(false);
 
       console.log(e);
     }
@@ -279,6 +290,15 @@ export default function History({navigation, setGet_followed_event}) {
         data={data}
         leftOpenValue={75}
         rightOpenValue={-85}
+        refreshControl={
+          <RefreshControl
+            size={'small'}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={theme.colors.yellow}
+            colors={theme.colors.yellow}
+          />
+        }
         // onRightAction={() => alert()}
         stopLeftSwipe
         ListEmptyComponent={
@@ -314,7 +334,6 @@ export default function History({navigation, setGet_followed_event}) {
         renderHiddenItem={(data, rowMap) => (
           <TouchableOpacity
             onPress={() => DeleteProduct(data.item.id)}
-            activeOpacity={0.7}
             style={{
               backgroundColor: 'red',
               position: 'absolute',
@@ -476,7 +495,6 @@ export default function History({navigation, setGet_followed_event}) {
                   <View style={{width: 7}} />
 
                   <TouchableOpacity
-                    activeOpacity={0.7}
                     onPress={() => {
                       ShowToast('This feature will come in future update');
                       return;
@@ -531,7 +549,6 @@ export default function History({navigation, setGet_followed_event}) {
                   <View style={{width: 7}} />
 
                   <TouchableOpacity
-                    activeOpacity={0.7}
                     onPress={() => {}}
                     style={{
                       alignItems: 'center',
@@ -555,7 +572,6 @@ export default function History({navigation, setGet_followed_event}) {
                   <View style={{width: 7}} />
 
                   <TouchableOpacity
-                    activeOpacity={0.7}
                     onPress={() => {
                       ShowToast('This feature will come in future update');
                       return;
@@ -616,7 +632,6 @@ export default function History({navigation, setGet_followed_event}) {
                 marginTop: 15,
               }}>
               <TouchableOpacity
-                activeOpacity={0.7}
                 onPress={() => {
                   if (item.avaibility_atstor == '') {
                     AvailablityUpdate(
@@ -677,7 +692,6 @@ export default function History({navigation, setGet_followed_event}) {
                 onPress={() => {
                   ShowToast('This feature will come in future update');
                 }}
-                activeOpacity={0.7}
                 // onPress={() => {
                 //   if (item.avaibility_tackout == '') {
                 //     AvailablityUpdate(
@@ -737,7 +751,6 @@ export default function History({navigation, setGet_followed_event}) {
                 onPress={() => {
                   ShowToast('This feature will come in future update');
                 }}
-                activeOpacity={0.7}
                 // onPress={() => {
                 //   if (item.avaibility_delivery == '') {
                 //     AvailablityUpdate(

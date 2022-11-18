@@ -1,10 +1,11 @@
 import moment from 'moment';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   Dimensions,
   FlatList,
   Image,
   ImageBackground,
+  RefreshControl,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -24,6 +25,7 @@ export default function History({navigation}) {
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   async function GetProduct(silent = false) {
     try {
@@ -45,11 +47,13 @@ export default function History({navigation}) {
         if (!silent) {
           setLoading(false);
         }
+        setRefreshing(false);
       } else {
         // ShowToast(rslt.message || 'Unknown error', 'error');
         if (!silent) {
           setLoading(false);
         }
+        setRefreshing(false);
       }
     } catch (e) {
       // alert('An error occured.');
@@ -57,10 +61,15 @@ export default function History({navigation}) {
       if (!silent) {
         setLoading(false);
       }
+      setRefreshing(false);
 
       console.log(e);
     }
   }
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    GetProduct(true);
+  }, []);
 
   useEffect(() => {
     GetProduct();
@@ -80,6 +89,15 @@ export default function History({navigation}) {
       <FlatList
         data={data}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            size={'small'}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={theme.colors.yellow}
+            colors={theme.colors.yellow}
+          />
+        }
         contentContainerStyle={{marginVertical: 15}}
         ListEmptyComponent={
           <View
@@ -113,7 +131,6 @@ export default function History({navigation}) {
         }
         renderItem={({item, index}) => (
           <TouchableOpacity
-            activeOpacity={0.7}
             onPress={() => navigation.navigate('OrderDetails', item)}
             style={{
               borderRadius: 12,
@@ -164,7 +181,6 @@ export default function History({navigation}) {
                   <View style={{width: 20}} />
 
                   <TouchableOpacity
-                    activeOpacity={0.7}
                     onPress={() => {}}
                     style={{
                       alignItems: 'center',
@@ -207,7 +223,6 @@ export default function History({navigation}) {
                   marginVertical: 15,
                 }}>
                 <View
-                  activeOpacity={0.7}
                   onPress={() => {}}
                   style={{
                     alignItems: 'center',
@@ -229,7 +244,6 @@ export default function History({navigation}) {
                 </View>
                 <View style={{width: 7}} />
                 <View
-                  activeOpacity={0.7}
                   onPress={() => {}}
                   style={{
                     alignItems: 'center',
@@ -254,7 +268,6 @@ export default function History({navigation}) {
                 </View>
                 <View style={{width: 7}} />
                 <View
-                  activeOpacity={0.7}
                   onPress={() => {}}
                   style={{
                     alignItems: 'center',
@@ -276,7 +289,6 @@ export default function History({navigation}) {
                 </View>
                 <View style={{width: 7}} />
                 <View
-                  activeOpacity={0.7}
                   onPress={() => {}}
                   style={{
                     alignItems: 'center',

@@ -28,12 +28,12 @@ export const theme = {
     Pluscontainer: '#F8F8FA',
     SelectAvailablity: '#34519B',
     ScrollDown: '#043848',
+    C4C4C4: '#c4c4c4',
 
     Chat_container: '#2E8AF6',
     inputBG: '#F7F8F8',
     Placeholder: '#ADA4A5',
     inActive: '#DBDBDB',
-    C4C4C4: '#c4c4c4',
     searchbar: '#3234361A',
     Button: '#F3E13A',
     heading_Text: '#670000',

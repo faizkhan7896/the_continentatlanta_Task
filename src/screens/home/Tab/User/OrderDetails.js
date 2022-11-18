@@ -94,8 +94,8 @@ export default function Orders({navigation}) {
   const [location, setLocation] = useState('');
   const [video, setVideo] = useState('');
 
-  // console.log(location);
-  // alert(JSON.stringify(location));
+  // console.log('data', data);
+  // alert(JSON.stringify(data[0]?.sub_orders));
 
   const currentLocation = async () => {
     await RNLocation.requestPermission({
@@ -549,7 +549,7 @@ export default function Orders({navigation}) {
       });
 
       console.log('JSON.stringify(body)', JSON.stringify(body));
-      return;
+      // return;
       const res = await fetch(url, {
         method: 'POST',
         body: body,
@@ -756,6 +756,41 @@ export default function Orders({navigation}) {
     }
   };
 
+  async function UpdateSubOrder(order_id, status) {
+    try {
+      setLoading(true);
+      const url =
+        baseUrl +
+        'accept_cancel_status_sub_orders?order_id=' +
+        order_id +
+        '&status=CANCEL';
+      console.log('accept_cancel_status_sub_orders', url);
+      // return;
+
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {'Cache-Control': 'no-cache'},
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        setLoading(false);
+        GetProduct(true);
+        // UpdateOrder(ParentID, 'ACCEPT');
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+        setLoading(false);
+      }
+    } catch (e) {
+      setLoading(false);
+      ShowToast('An error occured.', 'error');
+
+      console.log(e);
+    }
+  }
+
   const onBuffer = e => {
     console.log('buffering ....', e);
     // alert('buttering ....', e);
@@ -803,7 +838,7 @@ export default function Orders({navigation}) {
                 overflow: 'hidden',
               }}>
               <ImageBackground
-                source={{uri: params?.post?.image}}
+                source={{uri: data[0]?.post?.image}}
                 style={{
                   width: dimensions.width / 3.5,
                   backgroundColor: theme.colors.Tabbg + '33',
@@ -832,7 +867,7 @@ export default function Orders({navigation}) {
                     fontWeight: '600',
                     color: theme.colors.primary,
                   }}>
-                  {params?.id}
+                  {data[0]?.id}
                 </Text>
                 <View
                   style={{
@@ -840,7 +875,6 @@ export default function Orders({navigation}) {
                     marginTop: 10,
                   }}>
                   <TouchableOpacity
-                    activeOpacity={0.7}
                     onPress={() => {}}
                     style={{
                       alignItems: 'center',
@@ -849,9 +883,9 @@ export default function Orders({navigation}) {
                       flexDirection: 'row',
                       borderRadius: 6,
                       backgroundColor:
-                        params?.status == 'PENDING'
+                        data[0]?.status == 'PENDING'
                           ? theme.colors.yellow
-                          : params?.status == 'ACCEPT'
+                          : data[0]?.status == 'ACCEPT'
                           ? theme.colors.green
                           : theme.colors.red,
                       paddingHorizontal: 10,
@@ -862,7 +896,7 @@ export default function Orders({navigation}) {
                         color: theme.colors.primary,
                         fontSize: 10,
                       }}>
-                      {params?.status}
+                      {data[0]?.status}
                     </TextFormated>
                   </TouchableOpacity>
                 </View>
@@ -873,7 +907,7 @@ export default function Orders({navigation}) {
                     fontSize: 12,
                     marginTop: 10,
                   }}>
-                  {moment(params?.post?.date_time).format('lll')}
+                  {moment(data[0]?.post?.date_time).format('lll')}
                 </Text>
               </View>
               <View
@@ -899,7 +933,7 @@ export default function Orders({navigation}) {
               source={require('../../../../assets/ScrollDown.png')}
               backgroundColor={theme.colors.ScrollDown}
               onPress={() => {
-                // if (params?.status != 'PENDING') {
+                // if (data[0]?.status != 'PENDING') {
                 //   setStep3(!Step3);
                 // } else {
                 setVisible(!visible);
@@ -911,16 +945,19 @@ export default function Orders({navigation}) {
         </View>
         {visible == true && (
           <View style={{marginHorizontal: 15}}>
-            {/* {params?.status == 'PENDING' && ( */}
+            {/* {data[0]?.status == 'PENDING' && ( */}
             <View>
-              {params?.sub_orders?.map((v, i) => (
+              {data[0]?.sub_orders?.map((v, i) => (
                 <View>
                   <View
                     style={{
                       borderRadius: 12,
-                      backgroundColor: theme.colors.primary,
+                      backgroundColor:
+                        v.status == 'CANCEL'
+                          ? theme.colors.C4C4C4
+                          : theme.colors.primary,
                       // marginHorizontal: 13,
-                      marginTop: 15,
+                      // marginTop: 15,
                       flexDirection: 'row',
                       borderWidth: 1,
                       borderColor: theme.colors.green,
@@ -934,7 +971,7 @@ export default function Orders({navigation}) {
                         overflow: 'hidden',
                       }}>
                       <ImageBackground
-                        source={{uri: params?.post?.image}}
+                        source={{uri: data[0]?.post?.image}}
                         style={{
                           width: dimensions.width / 3.5,
                           height: dimensions.width / 3.5,
@@ -942,7 +979,7 @@ export default function Orders({navigation}) {
                         }}
                         imageStyle={{
                           borderRadius: 10,
-                          resizeMode: 'contain',
+                          resizeMode: 'stretch',
                           width:
                             (1 * 80) /
                             (parseFloat(v.image_coordinates?.position[2]) -
@@ -1086,9 +1123,28 @@ export default function Orders({navigation}) {
                       </View>
                     </View>
                   </View>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      marginTop: 7,
+                      marginBottom: 15,
+                    }}>
+                    <View style={{flex: 1}} />
+                    <SolidButton
+                      text="Cancel"
+                      backgroundColor={theme.colors.red}
+                      onPress={() => {
+                        UpdateSubOrder(v.id);
+                      }}
+                      marginHorizontal={1}
+                      fontSize={10}
+                      paddingHorizontal={10}
+                      paddingVertical={10}
+                    />
+                  </View>
                 </View>
               ))}
-              <SubItem text="Total" amount={'¥' + params?.total_price} />
+              <SubItem text="Total" amount={'¥' + data[0]?.total_price} />
 
               <View
                 style={{
@@ -1096,15 +1152,15 @@ export default function Orders({navigation}) {
                   flexDirection: 'row',
                   alignItems: 'center',
                 }}>
-                {params?.status == 'PENDING' && (
+                {data[0]?.status == 'PENDING' && (
                   <View style={{flexDirection: 'row'}}>
                     <View style={{flex: 1}}>
                       <SolidButton
                         text="Cancel all"
                         backgroundColor={theme.colors.red}
                         onPress={() => {
-                          // alert(JSON.stringify(params?.item?.post_position[0].position));
-                          CancelOrder(params?.id);
+                          // alert(JSON.stringify(data[0]?.item?.post_position[0].position));
+                          CancelOrder(data[0]?.id);
                         }}
                         marginHorizontal={1}
                         loading={loading}
@@ -1116,8 +1172,8 @@ export default function Orders({navigation}) {
                         text="SUBMIT"
                         backgroundColor={theme.colors.green}
                         onPress={() => {
-                          // alert(JSON.stringify(params?.item?.post_position[0].position));
-                          AcceptOrder(params?.id);
+                          // alert(JSON.stringify(data[0]?.item?.post_position[0].position));
+                          AcceptOrder(data[0]?.id);
                         }}
                         marginHorizontal={1}
                         loading={Accept_loading}
@@ -1129,7 +1185,7 @@ export default function Orders({navigation}) {
             </View>
 
             <View style={{height: 20}} />
-            {params?.status == 'ACCEPT' && (
+            {data[0]?.status == 'ACCEPT' && (
               <View
                 style={{
                   flex: 1,
@@ -1148,11 +1204,11 @@ export default function Orders({navigation}) {
                     marginHorizontal: 20,
                   }}>
                   <TextFormatted style={{fontSize: 18, fontWeight: '700'}}>
-                    Pick Code: {params?.order_otp}
+                    Pick Code: {data[0]?.order_otp}
                   </TextFormatted>
                 </View>
 
-                {params?.contains_status == 'contains' && (
+                {data[0]?.contains_status == 'contains' && (
                   <View>
                     <View
                       style={{
@@ -1189,7 +1245,7 @@ export default function Orders({navigation}) {
                           marginTop: 10,
                         }}>
                         <Image
-                          source={{uri: params?.post?.image}}
+                          source={{uri: data[0]?.post?.image}}
                           style={{
                             height: 60,
                             width: 60,
@@ -1206,9 +1262,9 @@ export default function Orders({navigation}) {
                             fontWeight: '700',
                             color: theme.colors.primary,
                           }}>
-                          {params?.contains_time == 'NO'
+                          {data[0]?.contains_time == 'NO'
                             ? 'Details will add its time'
-                            : params?.contains_time}
+                            : data[0]?.contains_time}
                         </TextFormatted>
                       </View>
 
@@ -1223,21 +1279,21 @@ export default function Orders({navigation}) {
                         <TouchableOpacity
                           onPress={() => {
                             if (
-                              params?.image_1 !=
+                              data[0]?.image_1 !=
                               'https://pickpic4u.com/uploads/NO'
                             ) {
                               navigation.navigate('ImageZoom', {
-                                image: params?.image_1,
+                                image: data[0]?.image_1,
                               });
                             }
                           }}>
                           <Image
                             // source={{uri: uri.uri}}
                             source={
-                              params?.image_1 ==
+                              data[0]?.image_1 ==
                               'https://pickpic4u.com/uploads/NO'
                                 ? require('../../../../assets/bi_camera.png')
-                                : {uri: params?.image_1}
+                                : {uri: data[0]?.image_1}
                             }
                             style={{
                               height: 30,
@@ -1245,7 +1301,7 @@ export default function Orders({navigation}) {
                               resizeMode: 'cover',
                               borderRadius: 3,
                               backgroundColor:
-                                params?.image_1 ==
+                                data[0]?.image_1 ==
                                 'https://pickpic4u.com/uploads/NO'
                                   ? theme.colors.Black
                                   : theme.colors.Tabbg + '33',
@@ -1256,20 +1312,20 @@ export default function Orders({navigation}) {
                         <TouchableOpacity
                           onPress={() => {
                             if (
-                              params?.image_2 !=
+                              data[0]?.image_2 !=
                               'https://pickpic4u.com/uploads/NO'
                             ) {
                               navigation.navigate('ImageZoom', {
-                                image: params?.image_2,
+                                image: data[0]?.image_2,
                               });
                             }
                           }}>
                           <Image
                             source={
-                              params?.image_2 ==
+                              data[0]?.image_2 ==
                               'https://pickpic4u.com/uploads/NO'
                                 ? require('../../../../assets/bi_camera.png')
-                                : {uri: params?.image_2}
+                                : {uri: data[0]?.image_2}
                             }
                             style={{
                               height: 30,
@@ -1277,7 +1333,7 @@ export default function Orders({navigation}) {
                               resizeMode: 'cover',
                               borderRadius: 3,
                               backgroundColor:
-                                params?.image_2 ==
+                                data[0]?.image_2 ==
                                 'https://pickpic4u.com/uploads/NO'
                                   ? theme.colors.Black
                                   : theme.colors.Tabbg + '33',
@@ -1288,20 +1344,20 @@ export default function Orders({navigation}) {
                         <TouchableOpacity
                           onPress={() => {
                             if (
-                              params?.image_3 !=
+                              data[0]?.image_3 !=
                               'https://pickpic4u.com/uploads/NO'
                             ) {
                               navigation.navigate('ImageZoom', {
-                                image: params?.image_3,
+                                image: data[0]?.image_3,
                               });
                             }
                           }}>
                           <Image
                             source={
-                              params?.image_3 ==
+                              data[0]?.image_3 ==
                               'https://pickpic4u.com/uploads/NO'
                                 ? require('../../../../assets/bi_camera.png')
-                                : {uri: params?.image_3}
+                                : {uri: data[0]?.image_3}
                             }
                             style={{
                               height: 30,
@@ -1309,7 +1365,7 @@ export default function Orders({navigation}) {
                               resizeMode: 'cover',
                               borderRadius: 3,
                               backgroundColor:
-                                params?.image_3 ==
+                                data[0]?.image_3 ==
                                 'https://pickpic4u.com/uploads/NO'
                                   ? theme.colors.Black
                                   : theme.colors.Tabbg + '33',
@@ -1320,11 +1376,11 @@ export default function Orders({navigation}) {
                         <TouchableOpacity
                           onPress={() => {
                             if (
-                              params?.video_1 !=
+                              data[0]?.video_1 !=
                               'https://pickpic4u.com/uploads/NO'
                             ) {
                               navigation.navigate('FullVideo', {
-                                uri: params?.video_1,
+                                uri: data[0]?.video_1,
                               });
                             }
                           }}
@@ -1332,7 +1388,7 @@ export default function Orders({navigation}) {
                             alignItems: 'center',
                             justifyContent: 'center',
                             backgroundColor:
-                              params?.video_1 ==
+                              data[0]?.video_1 ==
                               'https://pickpic4u.com/uploads/NO'
                                 ? theme.colors.Black
                                 : theme.colors.Tabbg + '33',
@@ -1342,7 +1398,7 @@ export default function Orders({navigation}) {
                           }}>
                           <Image
                             source={
-                              params?.video_1 ==
+                              data[0]?.video_1 ==
                               'https://pickpic4u.com/uploads/NO'
                                 ? require('../../../../assets/video.png')
                                 : {uri: thumb}
@@ -1369,7 +1425,7 @@ export default function Orders({navigation}) {
                             }}>
                             <Image
                               source={
-                                params?.audio_1 ==
+                                data[0]?.audio_1 ==
                                 'https://pickpic4u.com/uploads/NO'
                                   ? require('../../../../assets/mic.png')
                                   : playing
@@ -1389,7 +1445,7 @@ export default function Orders({navigation}) {
                     </View>
                   </View>
                 )}
-                {params?.package_status == 'package' && (
+                {data[0]?.package_status == 'package' && (
                   <View
                     style={{
                       borderWidth: 1,
@@ -1425,7 +1481,7 @@ export default function Orders({navigation}) {
                         marginTop: 10,
                       }}>
                       <Image
-                        source={{uri: params?.post?.image}}
+                        source={{uri: data[0]?.post?.image}}
                         style={{
                           height: 60,
                           width: 60,
@@ -1450,10 +1506,10 @@ export default function Orders({navigation}) {
                             color: theme.colors.primary,
                             // backgroundColor: theme.colors.yellow,
                           }}>
-                          {/* {params?.package_time} */}
-                          {params?.package_time == 'NO'
+                          {/* {data[0]?.package_time} */}
+                          {data[0]?.package_time == 'NO'
                             ? 'Details will add its time'
-                            : params?.package_time}
+                            : data[0]?.package_time}
                         </TextFormatted>
                         <TouchableOpacity
                           onPress={() => {
@@ -2043,7 +2099,7 @@ export default function Orders({navigation}) {
                         //     });
                         //   }
                         // }}
-                        // activeOpacity={0.7}
+                        //
                         >
                           <Image
                             source={require('../../../../assets/qr.png')}
@@ -2073,7 +2129,6 @@ export default function Orders({navigation}) {
                             ShowToast('Payment Completed');
                           }
                         }}
-                        activeOpacity={0.7}
                         style={{
                           backgroundColor: theme.colors.Tabbg,
                           alignSelf: 'center',
@@ -2212,7 +2267,6 @@ export default function Orders({navigation}) {
                   }}>
                   {params.post.avaibility_atstor == 'AT STORE' && (
                     <TouchableOpacity
-                      activeOpacity={0.7}
                       onPress={() => setSelected(params.post.avaibility_atstor)}
                       style={{
                         // width: Dimensions.get('window').width / 6.9,
@@ -2238,7 +2292,6 @@ export default function Orders({navigation}) {
                   )}
                   {params.post.avaibility_tackout == 'TAKE OUT' && (
                     <TouchableOpacity
-                      activeOpacity={0.7}
                       onPress={() =>
                         setSelected(params.post.avaibility_tackout)
                       }
@@ -2267,7 +2320,6 @@ export default function Orders({navigation}) {
 
                   {params.post.avaibility_delivery == 'DELIVERY' && (
                     <TouchableOpacity
-                      activeOpacity={0.7}
                       onPress={() =>
                         setSelected(params.post.avaibility_delivery)
                       }
@@ -2304,7 +2356,6 @@ export default function Orders({navigation}) {
                 marginBottom: 20,
               }}>
               <TouchableOpacity
-                activeOpacity={0.7}
                 onPress={() => {
                   // AddProduct();
                   setModalTwo(false);

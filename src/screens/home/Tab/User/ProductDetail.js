@@ -307,7 +307,6 @@ export default function LogOut({navigation}) {
                 marginHorizontal: 15,
               }}>
               <TouchableOpacity
-                activeOpacity={0.7}
                 onPress={() => {
                   LikeUnlike(data?.id);
                 }}
@@ -343,7 +342,6 @@ export default function LogOut({navigation}) {
 
               {data?.ask_status == 'YES' && (
                 <TouchableOpacity
-                  activeOpacity={0.7}
                   onPress={() => setModal(true)}
                   style={{
                     alignItems: 'center',
@@ -377,7 +375,6 @@ export default function LogOut({navigation}) {
               <View style={{width: 10}} />
 
               <TouchableOpacity
-                activeOpacity={0.7}
                 onPress={() => {
                   setVisible(true);
                   // setModal(true);
@@ -414,7 +411,6 @@ export default function LogOut({navigation}) {
 
               {data?.rent_status == 'YES' && (
                 <TouchableOpacity
-                  activeOpacity={0.7}
                   onPress={() => setModal(true)}
                   style={{
                     alignItems: 'center',
@@ -744,7 +740,6 @@ export default function LogOut({navigation}) {
                 marginHorizontal: 15,
               }}>
               <TouchableOpacity
-                activeOpacity={0.7}
                 onPress={() => {
                   setSelected(1);
                   getProduct_Like('like');
@@ -786,7 +781,7 @@ export default function LogOut({navigation}) {
               {/* {data?.ask_status == 'YES' && <View style={{width: 10}} />} */}
               <View style={{width: 10}} />
               {/* <TouchableOpacity
-                activeOpacity={0.7}
+                
                 onPress={() => {
                   setSelected(2);
                   scrollRef.current.scrollTo({
@@ -824,7 +819,6 @@ export default function LogOut({navigation}) {
                 </TextFormated>
               </TouchableOpacity> */}
               <TouchableOpacity
-                activeOpacity={0.7}
                 onPress={() => {
                   setSelected(3);
                   getProduct_Like('order');
@@ -873,7 +867,7 @@ export default function LogOut({navigation}) {
                 marginHorizontal: 15,
               }}>
               <TouchableOpacity
-                activeOpacity={0.7}
+                
                 onPress={() => {
                   setSelected(3);
                   scrollRef.current.scrollTo({
@@ -914,7 +908,7 @@ export default function LogOut({navigation}) {
               <View style={{width: 10}} />
 
               <TouchableOpacity
-                activeOpacity={0.7}
+                
                 onPress={() => {
                   setSelected(4);
                   scrollRef.current.scrollTo({

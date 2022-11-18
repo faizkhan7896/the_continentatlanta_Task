@@ -17,15 +17,17 @@ export default function SolidButton({
   loading,
   marginHorizontal,
   source,
+  fontSize,
+  paddingHorizontal,
+  paddingVertical,
 }) {
   return (
     <TouchableOpacity
-      activeOpacity={0.7}
       onPress={onPress}
       style={{
         alignItems: 'center',
         justifyContent: 'center',
-        paddingVertical: 15,
+        paddingVertical: paddingVertical || 15,
         flexDirection: 'row',
         borderRadius: borderRadius || 6,
         backgroundColor: backgroundColor,
@@ -52,7 +54,8 @@ export default function SolidButton({
             style={{
               fontWeight: '700',
               color: theme.colors.primary,
-              fontSize: 16,
+              fontSize: fontSize || 16,
+              paddingHorizontal: paddingHorizontal || 20,
             }}>
             {text}
           </TextFormated>

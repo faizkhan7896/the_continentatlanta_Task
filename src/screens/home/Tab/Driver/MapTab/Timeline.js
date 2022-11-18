@@ -99,7 +99,6 @@ export default function History({navigation, setGet_followed_event}) {
                   marginTop: 15,
                 }}>
                 <TouchableOpacity
-                  activeOpacity={0.7}
                   onPress={() => {}}
                   style={{
                     alignItems: 'center',
@@ -121,7 +120,6 @@ export default function History({navigation, setGet_followed_event}) {
                 </TouchableOpacity>
                 <View style={{width: 15}} />
                 <TouchableOpacity
-                  activeOpacity={0.7}
                   onPress={() => {}}
                   style={{
                     alignItems: 'center',
@@ -143,7 +141,6 @@ export default function History({navigation, setGet_followed_event}) {
                 </TouchableOpacity>
                 <View style={{width: 15}} />
                 <TouchableOpacity
-                  activeOpacity={0.7}
                   onPress={() => {}}
                   style={{
                     alignItems: 'center',
@@ -165,7 +162,6 @@ export default function History({navigation, setGet_followed_event}) {
                 </TouchableOpacity>
                 <View style={{width: 15}} />
                 <TouchableOpacity
-                  activeOpacity={0.7}
                   onPress={() => {}}
                   style={{
                     alignItems: 'center',
@@ -187,7 +183,6 @@ export default function History({navigation, setGet_followed_event}) {
                 </TouchableOpacity>
                 <View style={{width: 15}} />
                 <TouchableOpacity
-                  activeOpacity={0.7}
                   onPress={() => {}}
                   style={{
                     alignItems: 'center',

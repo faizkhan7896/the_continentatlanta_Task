@@ -719,7 +719,6 @@ export default function LogOut({navigation}) {
               marginHorizontal: 15,
             }}>
             <TouchableOpacity
-              activeOpacity={0.7}
               disabled={allPrices.length != 0 ? true : false}
               onPress={() => {
                 if (uri == '') {
@@ -945,7 +944,6 @@ export default function LogOut({navigation}) {
           </View>
 
           <TouchableOpacity
-            activeOpacity={0.7}
             onPress={() => {
               if (uri == '') {
                 ShowToast('Please select image', 'error');
@@ -1434,7 +1432,6 @@ export default function LogOut({navigation}) {
                 marginBottom: 20,
               }}>
               <TouchableOpacity
-                activeOpacity={0.7}
                 onPress={() => {
                   AddProduct();
                 }}

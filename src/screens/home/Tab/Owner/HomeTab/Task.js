@@ -15,6 +15,7 @@ import {
   Modal,
   PermissionsAndroid,
   Platform,
+  RefreshControl,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -61,7 +62,13 @@ export default function History({navigation, setGet_followed_event}) {
   const [location, setLocation] = useState('');
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
   // alert(JSON.stringify(latitude));
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    GetProduct(true);
+  }, []);
 
   async function GetProduct(silent = false) {
     try {
@@ -86,11 +93,13 @@ export default function History({navigation, setGet_followed_event}) {
         if (!silent) {
           setLoading(false);
         }
+        setRefreshing(false);
       } else {
         // ShowToast(rslt.message || 'Unknown error', 'error');
         if (!silent) {
           setLoading(false);
         }
+        setRefreshing(false);
       }
     } catch (e) {
       // alert('An error occured.');
@@ -98,6 +107,7 @@ export default function History({navigation, setGet_followed_event}) {
       if (!silent) {
         setLoading(false);
       }
+      setRefreshing(false);
 
       console.log(e);
     }
@@ -606,7 +616,7 @@ export default function History({navigation, setGet_followed_event}) {
       });
 
       console.log('JSON.stringify(body)', JSON.stringify(body));
-      return;
+      // return;
       const res = await fetch(url, {
         method: 'POST',
         body: body,
@@ -800,6 +810,15 @@ export default function History({navigation, setGet_followed_event}) {
 
       <FlatList
         data={data}
+        refreshControl={
+          <RefreshControl
+            size={'small'}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={theme.colors.yellow}
+            colors={theme.colors.yellow}
+          />
+        }
         ListEmptyComponent={
           <View
             style={{
@@ -1256,14 +1275,6 @@ function OrderItem({
     );
   };
 
-  // const picCamera = () => {
-  //   launchCamera({quality: 0.8}, response => {
-  //     if (!response.didCancel) {
-  //       // setPhoto(response.assets[0]);
-  //     }
-  //   });
-  // };
-
   const requestCameraPermission = async () => {
     if (Platform.OS === 'ios') {
       picCamera();
@@ -1396,7 +1407,6 @@ function OrderItem({
               marginVertical: 15,
             }}>
             <View
-              activeOpacity={0.7}
               onPress={() => {}}
               style={{
                 alignItems: 'center',
@@ -1420,7 +1430,6 @@ function OrderItem({
             <View style={{width: 7}} />
 
             <View
-              activeOpacity={0.7}
               onPress={() => {}}
               style={{
                 alignItems: 'center',
@@ -1444,7 +1453,6 @@ function OrderItem({
             <View style={{width: 7}} />
 
             <View
-              activeOpacity={0.7}
               onPress={() => {}}
               style={{
                 alignItems: 'center',
@@ -1468,7 +1476,6 @@ function OrderItem({
             <View style={{width: 7}} />
 
             <View
-              activeOpacity={0.7}
               onPress={() => {}}
               style={{
                 alignItems: 'center',
@@ -1499,7 +1506,6 @@ function OrderItem({
           marginTop: 15,
         }}>
         <TouchableOpacity
-          activeOpacity={0.7}
           onPress={() => {}}
           style={{
             alignItems: 'center',
@@ -1534,7 +1540,6 @@ function OrderItem({
         <View style={{width: 10}} />
 
         <TouchableOpacity
-          activeOpacity={0.7}
           onPress={() => {
             ShowToast('This feature will come in future update');
             return;
@@ -1572,7 +1577,6 @@ function OrderItem({
         <View style={{width: 10}} />
 
         <TouchableOpacity
-          activeOpacity={0.7}
           onPress={() => {
             ShowToast('This feature will come in future update');
             return;
@@ -1628,7 +1632,10 @@ function OrderItem({
                 <View
                   style={{
                     borderRadius: 12,
-                    backgroundColor: theme.colors.primary,
+                    backgroundColor:
+                      v.status == 'CANCEL'
+                        ? theme.colors.C4C4C4
+                        : theme.colors.primary,
                     // marginHorizontal: 13,
                     marginTop: 15,
                     flexDirection: 'row',
@@ -1727,8 +1734,6 @@ function OrderItem({
                         <View style={{}}>
                           <TouchableOpacity
                             onPress={() => {
-                              // UpdateOrder(v.id, 'ACCEPT', item.id);
-                              // setproductstatus(I => [...I, v?.id]);
                               setStatus(i => ({...i, [v.id]: 'ACCEPT'}));
                             }}>
                             <Image
@@ -1756,8 +1761,6 @@ function OrderItem({
                         <View style={{}}>
                           <TouchableOpacity
                             onPress={() => {
-                              // UpdateOrder(v.id, 'CANCEL', v.id)
-                              // setproductstatus(I => [...I, v?.id])
                               setStatus(i => ({...i, [v.id]: 'CANCEL'}));
                             }}>
                             <Image
@@ -1789,7 +1792,11 @@ function OrderItem({
             <View style={{marginTop: 20}}>
               <SolidButton
                 text="SUBMIT"
-                backgroundColor={theme.colors.green}
+                backgroundColor={
+                  item?.status == 'PENDING'
+                    ? theme.colors.green
+                    : theme.colors.Gray
+                }
                 onPress={() => {
                   // alert(JSON.stringify(params?.item?.post_position[0].position));
                   SubmitAvailablity(
@@ -2777,26 +2784,4 @@ function OrderItem({
       )}
     </View>
   );
-}
-
-{
-  /* STEP 3 */
-}
-
-{
-  /* <View
-          style={{
-            alignSelf: 'center',
-            borderWidth: 1,
-            paddingHorizontal: 40,
-            borderRadius: 25,
-            marginVertical: 20,
-            paddingVertical: 10,
-            borderColor: theme.colors.C4C4C4,
-            marginHorizontal: 20,
-          }}>
-          <TextFormatted style={{fontSize: 18, fontWeight: '700'}}>
-            Pick Code: 9999
-          </TextFormatted>
-        </View> */
 }

@@ -1,9 +1,10 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Dimensions,
   FlatList,
   Image,
   ImageBackground,
+  RefreshControl,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -23,6 +24,7 @@ export default function ShowCase({navigation, setGet_followed_event}) {
   const auth = useSelector(state => state.auth);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   async function LikeUnlike(id) {
     try {
@@ -68,11 +70,13 @@ export default function ShowCase({navigation, setGet_followed_event}) {
         if (!silent) {
           setLoading(false);
         }
+        setRefreshing(false);
       } else {
         ShowToast(rslt.message || 'Unknown error', 'error');
         if (!silent) {
           setLoading(false);
         }
+        setRefreshing(false);
       }
     } catch (e) {
       // alert('An error occured.');
@@ -80,10 +84,16 @@ export default function ShowCase({navigation, setGet_followed_event}) {
       if (!silent) {
         setLoading(false);
       }
+      setRefreshing(false);
 
       console.log(e);
     }
   }
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    GetProduct(true);
+  }, []);
 
   useEffect(() => {
     GetProduct();
@@ -102,6 +112,15 @@ export default function ShowCase({navigation, setGet_followed_event}) {
 
       <FlatList
         data={data}
+        refreshControl={
+          <RefreshControl
+            size={'small'}
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={theme.colors.yellow}
+            colors={theme.colors.yellow}
+          />
+        }
         ListEmptyComponent={
           <View
             style={{
@@ -183,7 +202,6 @@ export default function ShowCase({navigation, setGet_followed_event}) {
                   }}>
                   <TouchableOpacity
                     onPress={() => LikeUnlike(item.id)}
-                    activeOpacity={0.7}
                     style={{flex: 1}}>
                     <LinearGradient
                       colors={[
@@ -211,7 +229,6 @@ export default function ShowCase({navigation, setGet_followed_event}) {
                   </TouchableOpacity>
                   {item.ask_status == 'YES' && (
                     <TouchableOpacity
-                      activeOpacity={0.7}
                       onPress={() => {}}
                       style={{
                         // width: Dimensions.get('window').width / 6.9,
@@ -232,7 +249,6 @@ export default function ShowCase({navigation, setGet_followed_event}) {
                     </TouchableOpacity>
                   )}
                   <TouchableOpacity
-                    activeOpacity={0.7}
                     onPress={() => {}}
                     style={{
                       // width: Dimensions.get('window').width / 6.9,
@@ -254,7 +270,6 @@ export default function ShowCase({navigation, setGet_followed_event}) {
 
                   {item.rent_status == 'YES' && (
                     <TouchableOpacity
-                      activeOpacity={0.7}
                       onPress={() => {}}
                       style={{
                         // width: Dimensions.get('window').width / 6.9,
