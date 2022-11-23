@@ -15,7 +15,6 @@ import {
   Modal,
   PermissionsAndroid,
   Platform,
-  RefreshControl,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -42,6 +41,7 @@ const Sound = require('react-native-sound');
 import RNLocation from 'react-native-location';
 import Geolocation from '@react-native-community/geolocation';
 import ImagePicker from 'react-native-image-picker';
+import {RefreshControl} from 'react-native-web-refresh-control';
 
 export default function History({navigation, setGet_followed_event}) {
   const dimensions = useWindowDimensions();
@@ -437,6 +437,7 @@ export default function History({navigation, setGet_followed_event}) {
 
       if (rslt.success == '1') {
         ShowToast('Audio uploaded successfully');
+        GetProduct(true);
       } else {
         ShowToast(rslt.message || 'Unknown error', 'error');
       }
@@ -629,9 +630,8 @@ export default function History({navigation, setGet_followed_event}) {
       console.log(rslt);
 
       if (rslt.success == '1') {
-        setCurrentID(0);
-        setUri('');
         setVideo('');
+        setPackage_CurrentID();
         GetProduct(true);
         ShowToast('Video added successfully');
       } else {
@@ -677,6 +677,7 @@ export default function History({navigation, setGet_followed_event}) {
 
       if (rslt.success == '1') {
         ShowToast('Audio uploaded successfully');
+        GetProduct(true);
       } else {
         ShowToast(rslt.message || 'Unknown error', 'error');
       }
@@ -749,7 +750,7 @@ export default function History({navigation, setGet_followed_event}) {
   };
 
   const pickVideo = () => {
-    launchImageLibrary({quality: 1, mediaType: 'video'}, response => {
+    launchCamera({quality: 1, mediaType: 'video'}, response => {
       if (!response.didCancel) {
         setVideo(response.assets[0]);
         AddVideo(response.assets[0]);
@@ -758,7 +759,7 @@ export default function History({navigation, setGet_followed_event}) {
   };
 
   const pickPackageVideo = () => {
-    launchImageLibrary({quality: 1, mediaType: 'video'}, response => {
+    launchCamera({quality: 1, mediaType: 'video'}, response => {
       if (!response?.didCancel) {
         setVideo(response?.assets[0]);
         AddPackage_Video(response?.assets[0]);
@@ -784,10 +785,9 @@ export default function History({navigation, setGet_followed_event}) {
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.CAMERA,
         {
-          title: 'Truventorm Camera Permission',
+          title: 'Tap Tak Camera Permission',
           message:
-            'Truventorm needs access to your camera ' +
-            'to set profile picture.',
+            'Tap Tak needs access to your camera ' + 'to set profile picture.',
           buttonNeutral: 'Ask Me Later',
           buttonNegative: 'Cancel',
           buttonPositive: 'OK',
@@ -811,13 +811,7 @@ export default function History({navigation, setGet_followed_event}) {
       <FlatList
         data={data}
         refreshControl={
-          <RefreshControl
-            size={'small'}
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={theme.colors.yellow}
-            colors={theme.colors.yellow}
-          />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         ListEmptyComponent={
           <View
@@ -1637,6 +1631,7 @@ function OrderItem({
                         ? theme.colors.C4C4C4
                         : theme.colors.primary,
                     // marginHorizontal: 13,
+                    // marginHorizontal: 13,
                     marginTop: 15,
                     flexDirection: 'row',
                     borderWidth: 1,
@@ -2026,54 +2021,18 @@ function OrderItem({
                         });
                       }
                     }}>
-                    {item?.video_1 == 'https://pickpic4u.com/uploads/NO' ? (
-                      <Image
-                        source={require('../../../../../assets/video.png')}
-                        style={{
-                          height: 30,
-                          width: 30,
-                          resizeMode: 'contain',
-                          backgroundColor:
-                            item?.video_1 == 'https://pickpic4u.com/uploads/NO'
-                              ? theme.colors.Black
-                              : theme.colors.Tabbg + '33',
-                        }}
-                      />
-                    ) : (
-                      <View
-                        style={{
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          backgroundColor:
-                            item?.video_1 == 'https://pickpic4u.com/uploads/NO'
-                              ? theme.colors.Black
-                              : theme.colors.Tabbg + '33',
-                          height: 30,
-                          width: 30,
-                          borderRadius: 5,
-                        }}>
-                        <Video
-                          paused={true}
-                          source={
-                            item?.video_1 == 'https://pickpic4u.com/uploads/NO'
-                              ? {uri: video?.uri}
-                              : {uri: item?.video_1}
-                          }
-                          ref={ref => (videoRef.current = ref)}
-                          onBuffer={onBuffer}
-                          onError={onError}
-                          style={{
-                            height: 30,
-                            width: 30,
-                            borderRadius: 3,
-                          }}
-                          resizeMode="cover"
-                          // controls={true}
-                          // audioOnly={false}
-                          play
-                        />
-                      </View>
-                    )}
+                    <Image
+                      source={
+                        item?.video_1 == 'https://pickpic4u.com/uploads/NO'
+                          ? require('../../../../../assets/video.png')
+                          : require('../../../../../assets/VideoDefault.png')
+                      }
+                      style={{
+                        height: 30,
+                        width: 30,
+                        resizeMode: 'contain',
+                      }}
+                    />
                   </TouchableOpacity>
 
                   {audioloading ? (
@@ -2374,50 +2333,18 @@ function OrderItem({
                       });
                     }
                   }}>
-                  {item?.package_video_1 == '' && video == '' ? (
-                    <Image
-                      source={require('../../../../../assets/video.png')}
-                      style={{
-                        height: 30,
-                        width: 30,
-                        resizeMode: 'contain',
-                      }}
-                    />
-                  ) : (
-                    <View
-                      style={{
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor:
-                          item?.package_video_1 == '' ||
-                          'https://pickpic4u.com/uploads/NO'
-                            ? theme.colors.Black
-                            : theme.colors.Tabbg,
-                        height: 30,
-                        width: 30,
-                        borderRadius: 5,
-                      }}>
-                      <Video
-                        paused={true}
-                        source={
-                          item?.package_video_1 == '' ||
-                          'https://pickpic4u.com/uploads/NO'
-                            ? {uri: video?.uri}
-                            : {uri: item?.package_video_1}
-                        }
-                        ref={ref => (videoRef.current = ref)}
-                        onBuffer={onBuffer}
-                        onError={onError}
-                        style={{
-                          height: 30,
-                          width: 30,
-                          borderRadius: 3,
-                        }}
-                        resizeMode="cover"
-                        // play
-                      />
-                    </View>
-                  )}
+                  <Image
+                    source={
+                      item?.package_video_1 == ''
+                        ? require('../../../../../assets/video.png')
+                        : require('../../../../../assets/VideoDefault.png')
+                    }
+                    style={{
+                      height: 30,
+                      width: 30,
+                      resizeMode: 'contain',
+                    }}
+                  />
                 </TouchableOpacity>
 
                 {audioloading_2 ? (
@@ -2646,10 +2573,27 @@ function OrderItem({
                     />
                   </TouchableOpacity>
 
-                  <Image
-                    source={require('../../../../../assets/video.png')}
-                    style={{height: 30, width: 30, resizeMode: 'contain'}}
-                  />
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (item?.received_paid_video_1 != '') {
+                        navigation.navigate('FullVideo', {
+                          uri: item?.received_paid_video_1,
+                        });
+                      }
+                    }}>
+                    <Image
+                      source={
+                        item?.received_paid_video_1 == ''
+                          ? require('../../../../../assets/video.png')
+                          : require('../../../../../assets/VideoDefault.png')
+                      }
+                      style={{
+                        height: 30,
+                        width: 30,
+                        resizeMode: 'contain',
+                      }}
+                    />
+                  </TouchableOpacity>
                   {audioloading_3 ? (
                     <ActivityIndicator
                       size={'small'}
@@ -2659,9 +2603,7 @@ function OrderItem({
                   ) : (
                     <TouchableOpacity
                       onPress={() => {
-                        if (item?.received_paid_audio_1 == '') {
-                          Add_Package_Audio();
-                        } else {
+                        if (item?.received_paid_audio_1 != '') {
                           playing_3 ? pause_3() : play_3();
                         }
                       }}>
@@ -2696,7 +2638,7 @@ function OrderItem({
                       ¥ {item?.total_price}
                     </TextFormatted>
                   </TextFormatted>
-                  <Image
+                  {/* <Image
                     source={require('../../../../../assets/qr.png')}
                     style={{
                       height: 110,
@@ -2704,7 +2646,7 @@ function OrderItem({
                       resizeMode: 'contain',
                       marginTop: 10,
                     }}
-                  />
+                  /> */}
                 </View>
                 {/* <View
                   style={{
@@ -2729,12 +2671,17 @@ function OrderItem({
                 />
                 <View style={{alignItems: 'center', marginTop: 20}}>
                   <Image
-                    source={require('../../../../../assets/qr.png')}
+                    source={
+                      item?.qr_code
+                        ? {uri: item?.qr_code}
+                        : require('../../../../../assets/qr.png')
+                    }
                     style={{
                       height: 110,
                       width: 110,
                       resizeMode: 'contain',
                       marginTop: 10,
+                      borderRadius: 10,
                     }}
                   />
                 </View>
@@ -2765,7 +2712,7 @@ function OrderItem({
                 <View style={{height: 30}} />
               </View>
 
-              {item?.payment_status == 'DONE' && (
+              {/* {item?.payment_status == 'DONE' && (
                 <View
                   style={{
                     marginTop: 20,
@@ -2777,7 +2724,7 @@ function OrderItem({
                     backgroundColor={theme.colors.green}
                   />
                 </View>
-              )}
+              )} */}
             </View>
           )}
         </View>

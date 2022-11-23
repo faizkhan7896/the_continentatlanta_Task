@@ -112,15 +112,14 @@ export default function ShowCase({navigation, setGet_followed_event}) {
 
       <FlatList
         data={data}
-        refreshControl={
-          <RefreshControl
-            size={'small'}
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={theme.colors.yellow}
-            colors={theme.colors.yellow}
-          />
-        }
+        // refreshControl={
+        //   <RefreshControl
+        //     refreshing={refreshing}
+        //     onRefresh={onRefresh}
+        //     tintColor={theme?.colors?.yellow}
+        //     // colors={theme?.colors?.yellow}
+        //   />
+        // }
         ListEmptyComponent={
           <View
             style={{

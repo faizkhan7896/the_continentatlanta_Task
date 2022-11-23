@@ -290,15 +290,15 @@ export default function History({navigation, setGet_followed_event}) {
         data={data}
         leftOpenValue={75}
         rightOpenValue={-85}
-        refreshControl={
-          <RefreshControl
-            size={'small'}
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={theme.colors.yellow}
-            colors={theme.colors.yellow}
-          />
-        }
+        // refreshControl={
+        //   <RefreshControl
+        //     size={'small'}
+        //     refreshing={refreshing}
+        //     onRefresh={onRefresh}
+        //     tintColor={theme.colors.yellow}
+        //     // colors={theme?.colors?.yellow}
+        //   />
+        // }
         // onRightAction={() => alert()}
         stopLeftSwipe
         ListEmptyComponent={

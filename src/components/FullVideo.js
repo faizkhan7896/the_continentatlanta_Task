@@ -20,6 +20,7 @@ export default function Image_Zoom({navigation}) {
     // console.log('error raised', e);
     // alert('error raised ....', e);
   };
+  console.log('URI', params?.params?.uri);
 
   return (
     <View

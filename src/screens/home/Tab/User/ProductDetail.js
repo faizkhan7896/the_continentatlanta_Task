@@ -198,6 +198,7 @@ export default function LogOut({navigation}) {
 
       const body = new FormData();
       body.append('user_id', auth.id);
+      body.append('owner_id', data?.user_id);
       body.append('post_id', data?.id);
       body.append('extra_details', details);
       body.append('availability', selected_2);

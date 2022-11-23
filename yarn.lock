@@ -7687,6 +7687,11 @@
     "prop-types" "^15.7.2"
     "shaka-player" "^2.5.9"
 
+"react-native-web-refresh-control@^1.1.1":
+  "integrity" "sha512-vHCB4SEVJMrZgVo43dR+h8sg71AaybaPaIqyfzgmY9ejjRdrhbGHncPs2yAhjEzXC+OUt1cSmIpjsltLBYj9KA=="
+  "resolved" "https://registry.npmjs.org/react-native-web-refresh-control/-/react-native-web-refresh-control-1.1.1.tgz"
+  "version" "1.1.1"
+
 "react-native-webview@^11.23.1":
   "integrity" "sha512-bmqsdg4RYOUYD37R9XTrQALm7eD62KbLNPRfgvpLGd1SjaurvAjjsLrLN4mt6yOtKOMKeZvlcAl3x6De6cCQsA=="
   "resolved" "https://registry.npmjs.org/react-native-webview/-/react-native-webview-11.23.1.tgz"

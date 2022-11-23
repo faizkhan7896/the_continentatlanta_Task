@@ -43,6 +43,7 @@
     "react-native-toast-message": "^2.1.5",
     "react-native-vector-icons": "^9.2.0",
     "react-native-video": "^5.2.1",
+    "react-native-web-refresh-control": "^1.1.1",
     "react-native-webview": "^11.23.1",
     "react-redux": "^8.0.2",
     "redux": "^4.2.0",

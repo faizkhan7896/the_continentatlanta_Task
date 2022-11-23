@@ -20,10 +20,12 @@ export default function SolidButton({
   fontSize,
   paddingHorizontal,
   paddingVertical,
+  activeOpacity,
 }) {
   return (
     <TouchableOpacity
       onPress={onPress}
+      activeOpacity={activeOpacity}
       style={{
         alignItems: 'center',
         justifyContent: 'center',
