@@ -64,6 +64,7 @@ export default function History({navigation, setGet_followed_event}) {
   const [longitude, setLongitude] = useState('');
   const [refreshing, setRefreshing] = useState(false);
   // alert(JSON.stringify(latitude));
+  const [isFocused, setIsFocused] = useState(true);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -804,6 +805,13 @@ export default function History({navigation, setGet_followed_event}) {
     }
   };
 
+  useEffect(() => {
+    const int = setInterval(() => {
+      if (isFocused) GetProduct(true);
+    }, 5000);
+    return () => clearInterval(int);
+  }, [isFocused]);
+
   return (
     <View style={{flex: 1}}>
       <LoadingSpinner size={60} visible={loading} color={theme.colors.yellow} />
@@ -1056,24 +1064,32 @@ function OrderItem({
   // alert(JSON.stringify(auth.id));
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      startTransition(() => {
-        setDelay(delay - 1);
-        setMinutes(Math.floor(delay / 60));
-        setSeconds(Math.floor(delay % 60));
-      });
-    }, 1000);
+    if (item?.package_status == 'package') {
+      const timer = setInterval(() => {
+        startTransition(() => {
+          setDelay(delay - 1);
+          setMinutes(Math.floor(delay / 60));
+          setSeconds(Math.floor(delay % 60));
+        });
+      }, 1000);
 
-    if (delay === 0) {
-      clearInterval(timer);
-      // alert('first');
+      if (delay === 0) {
+        clearInterval(timer);
+        // alert('first');
+      }
+
+      return () => {
+        clearInterval(timer);
+        // alert('Second');
+      };
     }
-
-    return () => {
-      clearInterval(timer);
-      // alert('Second');
-    };
   });
+
+  // const d = new Date('2014-01-01 10:11:55');
+  // alert(d.getMinutes() + ':' + d.getSeconds()); //11:55
+  // d.setSeconds(d.getSeconds() + 10);
+  // alert(d.getMinutes() + ':0' + d.getSeconds()); //12:05
+
   async function UpdateOrderTracking(status) {
     try {
       const url =
@@ -1081,7 +1097,9 @@ function OrderItem({
         'update_proccess_status?id=' +
         item?.id +
         '&proccess_status=' +
-        status;
+        status +
+        '&package_timer=' +
+        new Date();
       console.log('update_status_post_by_owner', url);
 
       const res = await fetch(url, {

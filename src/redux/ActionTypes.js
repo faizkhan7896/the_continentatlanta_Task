@@ -6,3 +6,4 @@ export const ADDRECENTSEARCH = 'ADDRECENTSEARCH';
 export const CLEARSEARCH = 'CLEARSEARCH';
 export const SIGNOUT = 'SIGNOUT';
 export const SELECTEDTAB = 'SELECTEDTAB';
+export const ENDTIME = 'ENDTIME';

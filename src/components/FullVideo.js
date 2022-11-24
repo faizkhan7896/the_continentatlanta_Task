@@ -14,12 +14,8 @@ export default function Image_Zoom({navigation}) {
 
   const onBuffer = e => {
     console.log('buffering ....', e);
-    // alert('buttering ....', e);
   };
-  const onError = e => {
-    // console.log('error raised', e);
-    // alert('error raised ....', e);
-  };
+  const onError = e => {};
   console.log('URI', params?.params?.uri);
 
   return (

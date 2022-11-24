@@ -418,6 +418,7 @@ export default function History({navigation, setGet_followed_event}) {
   const [refreshing, setRefreshing] = useState(false);
   // alert(JSON.stringify(latitude));
   const [Accept_loading, setAccept_Loading] = useState(false);
+  const [isFocused, setIsFocused] = useState(true);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -721,6 +722,13 @@ export default function History({navigation, setGet_followed_event}) {
     }
   }
 
+  useEffect(() => {
+    const int = setInterval(() => {
+      if (isFocused) GetProduct(true);
+    }, 5000);
+    return () => clearInterval(int);
+  }, [isFocused]);
+
   return (
     <View style={{flex: 1}}>
       <LoadingSpinner size={60} visible={loading} color={theme.colors.yellow} />
@@ -931,16 +939,20 @@ function OrderItem({
   const soundPlaying = useRef();
   const soundPlaying_2 = useRef();
   const soundPlaying_3 = useRef();
-  const [delay, setDelay] = useState(+'600');
+  const [delay, setDelay] = useState(+600);
+
   const [minutes, setMinutes] = useState(0);
   const [loading, setLoading] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [isPending, startTransition] = useTransition();
-  // console.log('item?.video_1', thumb);
-  // alert(JSON.stringify(auth.id));
+  const [TimerStart, setTimerStart] = useState();
+  // console.log('item?.video_1', TimerStart);
+  // alert(JSON.stringify(item?.package_status));
 
   useEffect(() => {
+    // if (item?.package_status == 'package') {
     const timer = setInterval(() => {
+      setTimerStart(true);
       startTransition(() => {
         setDelay(delay - 1);
         setMinutes(Math.floor(delay / 60));
@@ -950,14 +962,22 @@ function OrderItem({
 
     if (delay === 0) {
       clearInterval(timer);
-      // alert('first');
+      // console.log('Completed');
+      setTimerStart(false);
     }
 
     return () => {
       clearInterval(timer);
       // alert('Second');
     };
-  });
+    // }
+  }, [delay]);
+
+  var now = '01:10:00';
+  var then = '01:00:00';
+
+  var ms = moment(now, 'HH:mm:ss').diff(moment(then, 'HH:mm:ss'));
+
   async function UpdateOrderTracking(status) {
     try {
       const url =
@@ -2418,6 +2438,15 @@ function OrderItem({
                       // marginHorizontal: 20,
                     }}
                   />
+                  {/* {item?.received_paid_status == '' && (
+                    <TextFormatted
+                      style={{
+                        fontWeight: '700',
+                        color: theme.colors.primary,
+                      }}>
+                      {ms}
+                    </TextFormatted>
+                  )} */}
                   {item?.received_paid_status == '' && (
                     <TextFormatted
                       style={{

@@ -21,7 +21,7 @@ const Stack = createNativeStackNavigator();
 function App() {
   return (
     <Stack.Navigator
-      screenOptions={{headerShown: false}}
+      screenOptions={{headerShown: false, orientation: 'portrait'}}
       initialRouteName="DrawerNavigator">
       <Stack.Screen name="DrawerNavigator" component={DrawerNavigator} />
       <Stack.Screen name="ProductDetail" component={ProductDetail} />
