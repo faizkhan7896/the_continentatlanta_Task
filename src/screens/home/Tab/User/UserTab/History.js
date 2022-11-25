@@ -431,7 +431,7 @@ export default function History({navigation, setGet_followed_event}) {
         setLoading(true);
       }
       const url = baseUrl + 'get_post_order?user_id=' + auth.id;
-      console.log(url);
+      // console.log(url);
 
       const res = await fetch(url, {
         method: 'GET',
@@ -439,9 +439,9 @@ export default function History({navigation, setGet_followed_event}) {
           'content-type': 'multipart/form-data',
         },
       });
-      console.log(res);
+      // console.log(res);
       const rslt = await res.json();
-      console.log(rslt);
+      // console.log(rslt);
 
       if (rslt.success == '1') {
         setData(rslt.order_data.reverse());
@@ -729,6 +729,15 @@ export default function History({navigation, setGet_followed_event}) {
     return () => clearInterval(int);
   }, [isFocused]);
 
+  var now = '02:00:00';
+  var then = '01:50:00';
+
+  var ms = moment(now, 'HH:mm:ss').diff(moment(then, 'HH:mm:ss'));
+  var d = moment.duration(ms);
+  var s = moment(d).minutes('hh:mm:ss');
+
+  // console.log(s);
+
   return (
     <View style={{flex: 1}}>
       <LoadingSpinner size={60} visible={loading} color={theme.colors.yellow} />
@@ -948,6 +957,7 @@ function OrderItem({
   const [TimerStart, setTimerStart] = useState();
   // console.log('item?.video_1', TimerStart);
   // alert(JSON.stringify(item?.package_status));
+  const [relode, setRelode] = useState({});
 
   useEffect(() => {
     // if (item?.package_status == 'package') {
@@ -973,10 +983,22 @@ function OrderItem({
     // }
   }, [delay]);
 
-  var now = '01:10:00';
-  var then = '01:00:00';
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setRelode({});
+    }, 1000);
 
-  var ms = moment(now, 'HH:mm:ss').diff(moment(then, 'HH:mm:ss'));
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
+  var now = new Date();
+  var then = item?.package_timer;
+
+  var ms = moment(now).diff(moment(then));
+
+  const Timer = moment.utc(ms >= 0 ? 0 : Math.abs(ms)).format('mm:ss');
 
   async function UpdateOrderTracking(status) {
     try {
@@ -2438,16 +2460,18 @@ function OrderItem({
                       // marginHorizontal: 20,
                     }}
                   />
-                  {/* {item?.received_paid_status == '' && (
+                  {item?.received_paid_status == '' && (
                     <TextFormatted
                       style={{
                         fontWeight: '700',
                         color: theme.colors.primary,
                       }}>
-                      {ms}
+                      {/* {moment(item?.package_timer).format('mm:ss') - moment(new Date()).format('mm:ss')} */}
+
+                      {Timer}
                     </TextFormatted>
-                  )} */}
-                  {item?.received_paid_status == '' && (
+                  )}
+                  {/* {item?.received_paid_status == '' && (
                     <TextFormatted
                       style={{
                         fontWeight: '700',
@@ -2460,7 +2484,7 @@ function OrderItem({
                         ? '00'
                         : seconds}
                     </TextFormatted>
-                  )}
+                  )} */}
                 </View>
               </View>
 

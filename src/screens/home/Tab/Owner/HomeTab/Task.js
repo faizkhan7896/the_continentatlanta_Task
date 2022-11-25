@@ -77,7 +77,7 @@ export default function History({navigation, setGet_followed_event}) {
         setLoading(true);
       }
       const url = baseUrl + 'get_post_order_for_owner?owner_user_id=' + auth.id;
-      console.log(url);
+      // console.log(url);
 
       const res = await fetch(url, {
         method: 'GET',
@@ -85,9 +85,9 @@ export default function History({navigation, setGet_followed_event}) {
           'content-type': 'multipart/form-data',
         },
       });
-      console.log(res);
+      // console.log(res);
       const rslt = await res.json();
-      console.log(rslt);
+      // console.log(rslt);
 
       if (rslt.success == '1') {
         setData(rslt.order_data.reverse());
@@ -1060,8 +1060,25 @@ function OrderItem({
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [isPending, startTransition] = useTransition();
-  // console.log('item?.video_1', thumb);
   // alert(JSON.stringify(auth.id));
+  const [relode, setRelode] = useState({});
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setRelode({});
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
+  var now = new Date();
+  var then = item?.package_timer;
+
+  var ms = moment(now).diff(moment(then));
+
+  const Timer = moment.utc(ms >= 0 ? 0 : Math.abs(ms)).format('mm:ss');
 
   useEffect(() => {
     if (item?.package_status == 'package') {
@@ -1097,10 +1114,40 @@ function OrderItem({
         'update_proccess_status?id=' +
         item?.id +
         '&proccess_status=' +
-        status +
-        '&package_timer=' +
-        new Date();
+        status;
+      new Date();
       console.log('update_status_post_by_owner', url);
+
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {'Cache-Control': 'no-cache'},
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        GetProduct(true);
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+      }
+    } catch (e) {
+      ShowToast('An error occured.', 'error');
+
+      console.log(e);
+    }
+  }
+  async function UpdatePackageTracking(status) {
+    try {
+      const url =
+        baseUrl +
+        'update_proccess_status?id=' +
+        item?.id +
+        '&proccess_status=' +
+        status +
+        '&package_timer=true';
+
+      console.log('update_proccess_status', url);
 
       const res = await fetch(url, {
         method: 'GET',
@@ -2086,7 +2133,7 @@ function OrderItem({
 
                   {item?.package_status == '' && (
                     <TouchableOpacity
-                      onPress={() => UpdateOrderTracking('package')}>
+                      onPress={() => UpdatePackageTracking('package')}>
                       <Image
                         source={require('../../../../../assets/Check.png')}
                         style={{height: 30, width: 30, resizeMode: 'contain'}}
@@ -2194,7 +2241,14 @@ function OrderItem({
                       // marginHorizontal: 20,
                     }}
                   />
-                  {item?.received_paid_status == '' && (
+                  <TextFormatted
+                    style={{
+                      fontWeight: '700',
+                      color: theme.colors.primary,
+                    }}>
+                    {Timer}
+                  </TextFormatted>
+                  {/* {item?.received_paid_status == '' && (
                     <TextFormatted
                       style={{
                         fontWeight: '700',
@@ -2207,7 +2261,7 @@ function OrderItem({
                         ? '00'
                         : seconds}
                     </TextFormatted>
-                  )}
+                  )} */}
                 </View>
               </View>
 
