@@ -12,6 +12,7 @@ import OrderConfirm from '../screens/home/Tab/User/OrderConfirm';
 import AddProduct from '../screens/home/Tab/Owner/AddProduct';
 import Payment from '../screens/home/Tab/User/Payment';
 import OwnerSignup from '../screens/home/Tab/User/OwnerSignup';
+import Scanner from '../screens/home/Tab/User/Scanner';
 import ImageZoom from '../components/ImageZoom';
 import FullVideo from '../components/FullVideo';
 import MapScreen from '../components/MapScreen';
@@ -22,6 +23,7 @@ function App() {
   return (
     <Stack.Navigator
       screenOptions={{headerShown: false, orientation: 'portrait'}}
+      // initialRouteName="Scanner">
       initialRouteName="DrawerNavigator">
       <Stack.Screen name="DrawerNavigator" component={DrawerNavigator} />
       <Stack.Screen name="ProductDetail" component={ProductDetail} />
@@ -38,6 +40,7 @@ function App() {
       <Stack.Screen name="MapScreen" component={MapScreen} />
       <Stack.Screen name="Payment" component={Payment} />
       <Stack.Screen name="OwnerSignup" component={OwnerSignup} />
+      <Stack.Screen name="Scanner" component={Scanner} />
     </Stack.Navigator>
   );
 }

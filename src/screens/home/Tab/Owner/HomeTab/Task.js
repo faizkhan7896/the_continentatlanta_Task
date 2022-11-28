@@ -1045,6 +1045,7 @@ function OrderItem({
   const [visible, setVisible] = useState(false);
   const [Step3, setStep3] = useState(false);
   const [status, setStatus] = useState({});
+  const [SubOrderIds, setSubOrderIds] = useState([]);
   const [fileResponse, setFileResponse] = useState([]);
   const [thumb, setThumb] = useState([]);
   const [playing, setPlaying] = useState(false);
@@ -1060,8 +1061,9 @@ function OrderItem({
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
   const [isPending, startTransition] = useTransition();
-  // alert(JSON.stringify(auth.id));
   const [relode, setRelode] = useState({});
+  // alert(JSON.stringify(status));
+  // console.log(status);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -1804,15 +1806,11 @@ function OrderItem({
                                 resizeMode: 'contain',
                                 marginTop: 15,
                                 tintColor:
-                                  v.status == 'ACCEPT'
-                                    ? // || Object.values(status) == 'ACCEPT'
-                                      theme.colors.green
+                                  Object.values(status).find(
+                                    i => i == 'ACCEPT',
+                                  ) && Object.keys(status).find(x => x == v.id)
+                                    ? theme.colors.green
                                     : theme.colors.Black,
-                                // tintColor:
-                                //   v.status == 'ACCEPT' ||
-                                //   Object.values(status) == 'ACCEPT'
-                                //     ? theme.colors.green
-                                //     : theme.colors.Black,
                               }}
                             />
                           </TouchableOpacity>
@@ -1831,9 +1829,10 @@ function OrderItem({
                                 resizeMode: 'contain',
                                 marginTop: 15,
                                 tintColor:
-                                  v.status == 'CANCEL'
-                                    ? // || Object.values(status) == 'CANCEL'
-                                      theme.colors.red
+                                  Object.values(status).find(
+                                    i => i == 'CANCEL',
+                                  ) && Object.keys(status).find(x => x == v.id)
+                                    ? theme.colors.red
                                     : theme.colors.Black,
                               }}
                             />
@@ -1847,18 +1846,14 @@ function OrderItem({
             ))}
           </View>
           <SubItem text="Total" amount={'¥' + item?.total_price} />
+          {/* <SubItem text="Total" amount={'¥' + status?.length} /> */}
 
           {item?.status == 'PENDING' && (
             <View style={{marginTop: 20}}>
               <SolidButton
                 text="SUBMIT"
-                backgroundColor={
-                  item?.status == 'PENDING'
-                    ? theme.colors.green
-                    : theme.colors.Gray
-                }
+                backgroundColor={theme.colors.green}
                 onPress={() => {
-                  // alert(JSON.stringify(params?.item?.post_position[0].position));
                   SubmitAvailablity(
                     Object.keys(status).join(','),
                     Object.values(status).join(','),
@@ -2133,7 +2128,16 @@ function OrderItem({
 
                   {item?.package_status == '' && (
                     <TouchableOpacity
-                      onPress={() => UpdatePackageTracking('package')}>
+                      onPress={() => {
+                        if (item?.contains_time == 'NO') {
+                          ShowToast(
+                            'You have to upload at least one image, video or audio',
+                            'error',
+                          );
+                          return;
+                        }
+                        UpdatePackageTracking('package');
+                      }}>
                       <Image
                         source={require('../../../../../assets/Check.png')}
                         style={{height: 30, width: 30, resizeMode: 'contain'}}
@@ -2241,13 +2245,23 @@ function OrderItem({
                       // marginHorizontal: 20,
                     }}
                   />
-                  <TextFormatted
-                    style={{
-                      fontWeight: '700',
-                      color: theme.colors.primary,
-                    }}>
-                    {Timer}
-                  </TextFormatted>
+                  {item?.received_paid_status == '' ? (
+                    <TextFormatted
+                      style={{
+                        fontWeight: '700',
+                        color: theme.colors.primary,
+                      }}>
+                      {Timer}
+                    </TextFormatted>
+                  ) : (
+                    <TextFormatted
+                      style={{
+                        fontWeight: '700',
+                        color: theme.colors.primary,
+                      }}>
+                      00:00
+                    </TextFormatted>
+                  )}
                   {/* {item?.received_paid_status == '' && (
                     <TextFormatted
                       style={{
@@ -2450,7 +2464,16 @@ function OrderItem({
 
                 {item?.received_paid_status == '' && (
                   <TouchableOpacity
-                    onPress={() => UpdateOrderTracking('received_paid')}>
+                    onPress={() => {
+                      if (item?.package_time == 'NO') {
+                        ShowToast(
+                          'You have to upload at least one image, video or audio',
+                          'error',
+                        );
+                        return;
+                      }
+                      UpdateOrderTracking('received_paid');
+                    }}>
                     <Image
                       source={require('../../../../../assets/Check.png')}
                       style={{height: 30, width: 30, resizeMode: 'contain'}}

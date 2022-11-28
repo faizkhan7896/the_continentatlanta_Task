@@ -41,7 +41,7 @@ export default function TabScreen({navigation}) {
             STATUS
           </Text>
         </TouchableOpacity>
-        <View style={{width: 20}} />
+        <View style={{width: 10}} />
         <TouchableOpacity
           onPress={() => setCurrentPage(2)}
           style={[
@@ -59,7 +59,9 @@ export default function TabScreen({navigation}) {
             SHOWCASE
           </Text>
         </TouchableOpacity>
-        {/* <TouchableOpacity
+        {/* <View style={{width: 10}} />
+
+        <TouchableOpacity
           onPress={() => setCurrentPage(3)}
           style={[
             styles.container,
