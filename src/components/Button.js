@@ -56,6 +56,18 @@ export default function Button({
           borderRadius: 12,
           marginBottom: marginBottom,
         }}>
+        {/* <Image
+            style={{
+              height: 30,
+              width: 30,
+              resizeMode: 'contain',
+              alignSelf: 'center',
+            }}
+            // source={require('../assets/gif/loading.gif')}
+            source={{
+              uri: 'https://gifimage.net/wp-content/uploads/2018/11/transparent-loading-gif-free-1.gif',
+            }}
+          /> */}
         {loading ? (
           <ActivityIndicator size={'small'} style={{margin: 2}} color="#fff" />
         ) : (

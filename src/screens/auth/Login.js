@@ -28,7 +28,7 @@ export default function Login({navigation}) {
   const [hide, setHide] = useState(false);
 
   const [email, setEmail] = useState('Alfaiz@gmail.com');
-  const [password, setPassword] = useState('12345');
+  const [password, setPassword] = useState('123456');
   const [loading, setLoading] = useState(false);
 
   async function Login() {
@@ -91,7 +91,38 @@ export default function Login({navigation}) {
         backgroundColor={theme.colors.primary}
       />
       <ScrollView>
-        <Image style={styles.btn} source={require('../../assets/Logo.png')} />
+        <View
+          style={{
+            width: 100,
+            height: 100,
+            marginTop: 50,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 3.84,
+
+            elevation: 5,
+            backgroundColor: theme.colors.primary,
+            borderWidth: 1,
+            borderColor: theme.colors.Black,
+            alignItems: 'center',
+            justifyContent: 'center',
+            alignSelf: 'center',
+            borderRadius: 10,
+          }}>
+          <Image
+            style={{
+              borderRadius: 10,
+              width: 100,
+              height: 100,
+              resizeMode: 'contain',
+            }}
+            source={require('../../assets/Logo.png')}
+          />
+        </View>
         <View
           style={{
             alignItems: 'center',
@@ -244,6 +275,17 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
     marginTop: 50,
     alignSelf: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
+    backgroundColor: theme.colors.primary,
+    borderWidth: 1,
   },
   title: {
     fontSize: 27,

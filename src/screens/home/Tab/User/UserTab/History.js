@@ -1793,7 +1793,10 @@ function OrderItem({
                     marginHorizontal: 20,
                     position: 'absolute',
                     top: -40,
-                    backgroundColor: theme.colors.yellow,
+                    backgroundColor:
+                      item?.package_status == 'package'
+                        ? theme.colors.green
+                        : theme.colors.yellow,
                   }}>
                   <TextFormatted
                     style={{fontWeight: '500', paddingHorizontal: 80}}>
@@ -2028,74 +2031,90 @@ function OrderItem({
                   marginHorizontal: 20,
                   position: 'absolute',
                   top: -40,
-                  backgroundColor: theme.colors.red,
+                  backgroundColor:
+                    item?.received_paid_status == 'received_paid'
+                      ? theme.colors.green
+                      : theme.colors.yellow,
                 }}>
                 <TextFormatted
                   style={{fontWeight: '500', paddingHorizontal: 80}}>
                   Package Ready
                 </TextFormatted>
               </View>
+
               <View
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
                   paddingHorizontal: 30,
                   marginTop: 10,
+                  justifyContent: 'space-between',
                 }}>
-                <Image
-                  source={{uri: item?.post?.image}}
-                  style={{
-                    height: 60,
-                    width: 60,
-                    resizeMode: 'cover',
-                    borderRadius: 50,
-                    backgroundColor: theme.colors.Tabbg + '33',
-                    marginRight: 20,
-                  }}
-                />
                 <View
                   style={{
+                    flexDirection: 'row',
                     alignItems: 'center',
-                    // width: dimensions.width / 2,
-                    // marginRight: dimensions.width / 8,
                   }}>
-                  <TextFormatted
-                    numberOfLines={1}
+                  <Image
+                    source={{uri: item?.post?.image}}
                     style={{
-                      width: dimensions.width / 2.2,
-                      fontSize: 16,
-                      fontWeight: '700',
-                      color: theme.colors.primary,
-                      // backgroundColor: theme.colors.yellow,
+                      height: 60,
+                      width: 60,
+                      resizeMode: 'cover',
+                      borderRadius: 50,
+                      backgroundColor: theme.colors.Tabbg + '33',
+                      marginRight: 20,
+                    }}
+                  />
+
+                  <View
+                    style={{
+                      alignItems: 'center',
+                      // width: dimensions.width / 2,
+                      // marginRight: dimensions.width / 8,
                     }}>
-                    {/* {item?.package_time} */}
-                    {item?.package_time == 'NO'
-                      ? 'Details will add its time'
-                      : item?.package_time}
-                  </TextFormatted>
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (item?.package_lat == '' && item?.package_lon == '') {
-                        ShowToast('Location not available', 'error');
-                        return;
-                      } else {
-                        navigation.navigate('MapScreen', {
-                          lat: item?.package_lat,
-                          log: item?.package_lon,
-                        });
-                      }
-                    }}>
-                    <Image
-                      source={require('../../../../../assets/gps.png')}
+                    <TextFormatted
+                      numberOfLines={1}
                       style={{
-                        height: 40,
-                        width: 60,
-                        resizeMode: 'contain',
-                        // marginRight: 20,
-                      }}
-                    />
-                  </TouchableOpacity>
+                        maxWidth: dimensions.width / 2,
+                        fontSize: 16,
+                        fontWeight: '700',
+                        color: theme.colors.primary,
+                        // backgroundColor: theme.colors.yellow,
+                      }}>
+                      {/* {item?.package_time} */}
+                      {item?.package_time == 'NO'
+                        ? 'Details will add its time'
+                        : item?.package_time}
+                    </TextFormatted>
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (
+                          item?.package_lat == '' &&
+                          item?.package_lon == ''
+                        ) {
+                          ShowToast('Location not available', 'error');
+                          return;
+                        } else {
+                          navigation.navigate('MapScreen', {
+                            lat: item?.package_lat,
+                            log: item?.package_lon,
+                          });
+                        }
+                      }}>
+                      <Image
+                        source={require('../../../../../assets/gps.png')}
+                        style={{
+                          height: 40,
+                          width: 60,
+                          resizeMode: 'contain',
+                          // marginRight: 20,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
+
                 <View style={{alignItems: 'center'}}>
                   <Image
                     source={require('../../../../../assets/clock.png')}
@@ -2355,7 +2374,10 @@ function OrderItem({
                     marginHorizontal: 20,
                     position: 'absolute',
                     top: -40,
-                    backgroundColor: theme.colors.red,
+                    backgroundColor:
+                      item?.payment_status == 'DONE'
+                        ? theme.colors.green
+                        : theme.colors.yellow,
                   }}>
                   <TextFormatted
                     style={{fontWeight: '500', paddingHorizontal: 80}}>
@@ -2562,28 +2584,6 @@ function OrderItem({
                     />
                   </TouchableOpacity>
 
-                  {/* <TouchableOpacity
-                          onPress={() => {
-                            if (item?.received_paid_image_3 == '') {
-                              // setModalThree(true);
-
-                              requestCameraVideoPermission();
-                              setCurrentID(3);
-                            } else {
-                              navigation.navigate('ImageZoom', {
-                                image: item?.received_paid_image_3,
-                              });
-                            }
-                          }}>
-                          <Image
-                            source={require('../../../../../assets/video.png')}
-                            style={{
-                              height: 30,
-                              width: 30,
-                              resizeMode: 'contain',
-                            }}
-                          />
-                        </TouchableOpacity> */}
                   {audioloading_3 ? (
                     <ActivityIndicator
                       size={'small'}
@@ -2649,7 +2649,15 @@ function OrderItem({
                   }}
                 />
 
-                <View style={{alignItems: 'center'}}>
+                <TouchableOpacity
+                  style={{alignItems: 'center'}}
+                  onPress={() => {
+                    if (item?.payment_status == 'WAIT') {
+                      navigation.navigate('Scanner', item);
+                    } else {
+                      ShowToast('Payment Completed');
+                    }
+                  }}>
                   <Image
                     source={require('../../../../../assets/qr.png')}
                     style={{
@@ -2659,7 +2667,7 @@ function OrderItem({
                       marginTop: 10,
                     }}
                   />
-                </View>
+                </TouchableOpacity>
 
                 <TouchableOpacity
                   // onPress={() => navigation.navigate('Payment')}

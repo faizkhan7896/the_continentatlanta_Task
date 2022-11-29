@@ -1792,53 +1792,109 @@ function OrderItem({
                       </View>
 
                       {/* {v.status == 'PENDING' ? ( */}
-                      <View style={{flexDirection: 'row'}}>
-                        <View style={{}}>
-                          <TouchableOpacity
-                            onPress={() => {
-                              setStatus(i => ({...i, [v.id]: 'ACCEPT'}));
-                            }}>
-                            <Image
-                              source={require('../../../../../assets/righticon.png')}
-                              style={{
-                                width: 30,
-                                height: 30,
-                                resizeMode: 'contain',
-                                marginTop: 15,
-                                tintColor:
-                                  Object.values(status).find(
-                                    i => i == 'ACCEPT',
-                                  ) && Object.keys(status).find(x => x == v.id)
-                                    ? theme.colors.green
-                                    : theme.colors.Black,
-                              }}
-                            />
-                          </TouchableOpacity>
+                      {item?.status == 'PENDING' ? (
+                        <View style={{flexDirection: 'row'}}>
+                          <View style={{}}>
+                            <TouchableOpacity
+                              onPress={() => {
+                                setStatus(i => ({...i, [v.id]: 'ACCEPT'}));
+                              }}>
+                              <Image
+                                source={require('../../../../../assets/righticon.png')}
+                                style={{
+                                  width: 30,
+                                  height: 30,
+                                  resizeMode: 'contain',
+                                  marginTop: 15,
+                                  tintColor:
+                                    status[v.id] == 'ACCEPT'
+                                      ? theme.colors.green
+                                      : theme.colors.Black,
+                                }}
+                                //   tintColor:
+                                //     Object.values(status).find(
+                                //       i => i == 'ACCEPT',
+                                //     ) && Object.keys(status).find(x => x == v.id)
+                                //       ? theme.colors.green
+                                //       : theme.colors.Black,
+                                // }}
+                              />
+                            </TouchableOpacity>
+                          </View>
+                          <View style={{width: 30}} />
+                          <View style={{}}>
+                            <TouchableOpacity
+                              onPress={() => {
+                                setStatus(i => ({...i, [v.id]: 'CANCEL'}));
+                              }}>
+                              <Image
+                                source={require('../../../../../assets/wrongicon.png')}
+                                style={{
+                                  width: 30,
+                                  height: 30,
+                                  resizeMode: 'contain',
+                                  marginTop: 15,
+                                  tintColor:
+                                    status[v.id] == 'CANCEL'
+                                      ? theme.colors.red
+                                      : theme.colors.Black,
+                                }}
+                              />
+                            </TouchableOpacity>
+                          </View>
                         </View>
-                        <View style={{width: 30}} />
-                        <View style={{}}>
-                          <TouchableOpacity
-                            onPress={() => {
-                              setStatus(i => ({...i, [v.id]: 'CANCEL'}));
-                            }}>
-                            <Image
-                              source={require('../../../../../assets/wrongicon.png')}
-                              style={{
-                                width: 30,
-                                height: 30,
-                                resizeMode: 'contain',
-                                marginTop: 15,
-                                tintColor:
-                                  Object.values(status).find(
-                                    i => i == 'CANCEL',
-                                  ) && Object.keys(status).find(x => x == v.id)
-                                    ? theme.colors.red
-                                    : theme.colors.Black,
-                              }}
-                            />
-                          </TouchableOpacity>
+                      ) : (
+                        <View style={{flexDirection: 'row'}}>
+                          <View style={{}}>
+                            <TouchableOpacity
+                              onPress={() => {
+                                setStatus(i => ({...i, [v.id]: 'ACCEPT'}));
+                              }}>
+                              <Image
+                                source={require('../../../../../assets/righticon.png')}
+                                style={{
+                                  width: 30,
+                                  height: 30,
+                                  resizeMode: 'contain',
+                                  marginTop: 15,
+                                  tintColor:
+                                    v.status == 'ACCEPT'
+                                      ? theme.colors.green
+                                      : theme.colors.Black,
+                                }}
+                                //   tintColor:
+                                //     Object.values(status).find(
+                                //       i => i == 'ACCEPT',
+                                //     ) && Object.keys(status).find(x => x == v.id)
+                                //       ? theme.colors.green
+                                //       : theme.colors.Black,
+                                // }}
+                              />
+                            </TouchableOpacity>
+                          </View>
+                          <View style={{width: 30}} />
+                          <View style={{}}>
+                            <TouchableOpacity
+                              onPress={() => {
+                                setStatus(i => ({...i, [v.id]: 'CANCEL'}));
+                              }}>
+                              <Image
+                                source={require('../../../../../assets/wrongicon.png')}
+                                style={{
+                                  width: 30,
+                                  height: 30,
+                                  resizeMode: 'contain',
+                                  marginTop: 15,
+                                  tintColor:
+                                    v.status == 'CANCEL'
+                                      ? theme.colors.red
+                                      : theme.colors.Black,
+                                }}
+                              />
+                            </TouchableOpacity>
+                          </View>
                         </View>
-                      </View>
+                      )}
                     </View>
                   </View>
                 </View>
@@ -1927,7 +1983,10 @@ function OrderItem({
                     marginHorizontal: 20,
                     position: 'absolute',
                     top: -40,
-                    backgroundColor: theme.colors.yellow,
+                    backgroundColor:
+                      item?.package_status == 'package'
+                        ? theme.colors.green
+                        : theme.colors.yellow,
                   }}>
                   <TextFormatted
                     style={{fontWeight: '500', paddingHorizontal: 80}}>
@@ -2169,7 +2228,10 @@ function OrderItem({
                   marginHorizontal: 20,
                   position: 'absolute',
                   top: -40,
-                  backgroundColor: theme.colors.red,
+                  backgroundColor:
+                    item?.received_paid_status == 'received_paid'
+                      ? theme.colors.green
+                      : theme.colors.yellow,
                 }}>
                 <TextFormatted
                   style={{fontWeight: '500', paddingHorizontal: 80}}>
@@ -2183,57 +2245,75 @@ function OrderItem({
                   alignItems: 'center',
                   paddingHorizontal: 30,
                   marginTop: 10,
+                  justifyContent: 'space-between',
                 }}>
-                <Image
-                  source={{uri: item?.post?.image}}
-                  style={{
-                    height: 60,
-                    width: 60,
-                    resizeMode: 'cover',
-                    borderRadius: 50,
-                    marginRight: 20,
-                    backgroundColor: theme.colors.Tabbg + '33',
-                  }}
-                />
                 <View
                   style={{
+                    flexDirection: 'row',
                     alignItems: 'center',
-                    // width: dimensions.width / 2.5,
-                    // marginRight: dimensions.width / 8,
+                    // paddingHorizontal: 30,
                   }}>
-                  <TextFormatted
+                  <Image
+                    source={{uri: item?.post?.image}}
                     style={{
-                      fontWeight: '700',
-                      width: dimensions.width / 2.2,
-                      color: theme.colors.primary,
+                      height: 60,
+                      width: 60,
+                      resizeMode: 'cover',
+                      borderRadius: 50,
+                      marginRight: 20,
+                      backgroundColor: theme.colors.Tabbg + '33',
+                    }}
+                  />
+
+                  <View
+                    style={{
+                      alignItems: 'center',
+                      // width: dimensions.width / 2.5,
+                      // marginRight: dimensions.width / 8,
+                      // borderWidth: 1,
+                      // borderColor: theme.colors.green,
                     }}>
-                    {item?.package_time == 'NO'
-                      ? 'Details will add its time'
-                      : item?.package_time}
-                  </TextFormatted>
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (item?.package_lat == '' && item?.package_lon == '') {
-                        ShowToast('Location not available', 'error');
-                        return;
-                      } else {
-                        navigation.navigate('MapScreen', {
-                          lat: item?.package_lat,
-                          log: item?.package_lon,
-                        });
-                      }
-                    }}>
-                    <Image
-                      source={require('../../../../../assets/gps.png')}
+                    <TextFormatted
                       style={{
-                        height: 40,
-                        width: 60,
-                        resizeMode: 'contain',
-                        // marginRight: 20,
-                      }}
-                    />
-                  </TouchableOpacity>
+                        fontWeight: '700',
+                        fontSize: 16,
+                        maxWidth: dimensions.width / 2,
+                        color: theme.colors.primary,
+                      }}>
+                      {item?.package_time == 'NO'
+                        ? 'Details will add its time'
+                        : item?.package_time}
+                    </TextFormatted>
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (
+                          item?.package_lat == '' &&
+                          item?.package_lon == ''
+                        ) {
+                          ShowToast('Location not available', 'error');
+                          return;
+                        } else {
+                          navigation.navigate('MapScreen', {
+                            lat: item?.package_lat,
+                            log: item?.package_lon,
+                          });
+                        }
+                      }}>
+                      <Image
+                        source={require('../../../../../assets/gps.png')}
+                        style={{
+                          height: 50,
+                          width: 70,
+                          resizeMode: 'contain',
+                          // marginRight: 20,
+                          // borderWidth: 1,
+                          // borderColor: theme.colors.green,
+                        }}
+                      />
+                    </TouchableOpacity>
+                  </View>
                 </View>
+
                 <View style={{alignItems: 'center'}}>
                   <Image
                     source={require('../../../../../assets/clock.png')}
@@ -2503,7 +2583,10 @@ function OrderItem({
                     marginHorizontal: 20,
                     position: 'absolute',
                     top: -40,
-                    backgroundColor: theme.colors.red,
+                    backgroundColor:
+                      item?.payment_status == 'DONE'
+                        ? theme.colors.green
+                        : theme.colors.yellow,
                   }}>
                   <TextFormatted
                     style={{fontWeight: '500', paddingHorizontal: 80}}>
@@ -2743,19 +2826,7 @@ function OrderItem({
                     }}
                   /> */}
                 </View>
-                {/* <View
-                  style={{
-                    backgroundColor: theme.colors.Tabbg,
-                    alignSelf: 'center',
-                    paddingHorizontal: 15,
-                    paddingVertical: 8,
-                    borderRadius: 10,
-                    marginTop: 10,
-                  }}>
-                  <TextFormatted style={{fontSize: 16, fontWeight: '700'}}>
-                    Pay By Code
-                  </TextFormatted>
-                </View> */}
+
                 <View
                   style={{
                     backgroundColor: theme.colors.C4C4C4,
@@ -2772,27 +2843,15 @@ function OrderItem({
                         : require('../../../../../assets/qr.png')
                     }
                     style={{
-                      height: 110,
-                      width: 110,
+                      height: 140,
+                      width: 140,
                       resizeMode: 'contain',
                       marginTop: 10,
                       borderRadius: 10,
                     }}
                   />
                 </View>
-                {/* <TouchableOpacity
-                  style={{
-                    backgroundColor: theme.colors.Tabbg,
-                    alignSelf: 'center',
-                    paddingHorizontal: 15,
-                    paddingVertical: 8,
-                    borderRadius: 10,
-                    marginTop: 10,
-                  }}>
-                  <TextFormatted style={{fontSize: 16, fontWeight: '700'}}>
-                    Pay By Code
-                  </TextFormatted>
-                </TouchableOpacity> */}
+
                 {item?.payment_status == 'DONE' && (
                   <View style={{height: 30}} />
                 )}
@@ -2806,20 +2865,6 @@ function OrderItem({
                 )}
                 <View style={{height: 30}} />
               </View>
-
-              {/* {item?.payment_status == 'DONE' && (
-                <View
-                  style={{
-                    marginTop: 20,
-                    marginBottom: 50,
-                  }}>
-                  <SolidButton
-                    borderRadius={50}
-                    text={'Order Completed'}
-                    backgroundColor={theme.colors.green}
-                  />
-                </View>
-              )} */}
             </View>
           )}
         </View>

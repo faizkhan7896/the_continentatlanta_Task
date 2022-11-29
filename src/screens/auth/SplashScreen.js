@@ -12,7 +12,38 @@ export default function Splash({navigation}) {
     <View style={styles.linearGradient}>
       <Statusbar barStyle={'light-content'} backgroundColor={'#0091E7'} />
 
-      <Image style={styles.btn} source={require('../../assets/Logo.png')} />
+      <View
+        style={{
+          width: 100,
+          height: 100,
+          marginTop: 50,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+
+          elevation: 5,
+          backgroundColor: theme.colors.primary,
+          borderWidth: 1,
+          borderColor: theme.colors.Black,
+          alignItems: 'center',
+          justifyContent: 'center',
+          alignSelf: 'center',
+          borderRadius: 10,
+        }}>
+        <Image
+          style={{
+            borderRadius: 10,
+            width: 100,
+            height: 100,
+            resizeMode: 'contain',
+          }}
+          source={require('../../assets/Logo.png')}
+        />
+      </View>
     </View>
   );
 }
