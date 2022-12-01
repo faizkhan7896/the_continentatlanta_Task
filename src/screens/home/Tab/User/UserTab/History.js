@@ -1829,9 +1829,7 @@ function OrderItem({
                       fontWeight: '700',
                       color: theme.colors.primary,
                     }}>
-                    {item?.contains_time == 'NO'
-                      ? 'Details will add its time'
-                      : item?.contains_time}
+                    {item?.contains_time == 'NO' ? '' : item?.contains_time}
                   </TextFormatted>
                 </View>
 
@@ -2083,9 +2081,7 @@ function OrderItem({
                         // backgroundColor: theme.colors.yellow,
                       }}>
                       {/* {item?.package_time} */}
-                      {item?.package_time == 'NO'
-                        ? 'Details will add its time'
-                        : item?.package_time}
+                      {item?.package_time == 'NO' ? '' : item?.package_time}
                     </TextFormatted>
                     <TouchableOpacity
                       onPress={() => {
@@ -2412,7 +2408,7 @@ function OrderItem({
                         color: theme.colors.primary,
                       }}>
                       {item?.received_and_paid_time == 'NO'
-                        ? 'Details will add its time'
+                        ? ''
                         : item?.received_and_paid_time}
                     </TextFormatted>
                     <TouchableOpacity

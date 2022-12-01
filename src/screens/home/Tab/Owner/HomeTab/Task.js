@@ -65,6 +65,7 @@ export default function History({navigation, setGet_followed_event}) {
   const [refreshing, setRefreshing] = useState(false);
   // alert(JSON.stringify(latitude));
   const [isFocused, setIsFocused] = useState(true);
+  const [submitted, setSubmitted] = useState(false);
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -211,6 +212,7 @@ export default function History({navigation, setGet_followed_event}) {
       if (rslt.success == '1') {
         setLoading(false);
         GetProduct(true);
+        setSubmitted(true);
         // UpdateOrder(ParentID, 'ACCEPT');
       } else {
         ShowToast(rslt.message || 'Unknown error', 'error');
@@ -879,6 +881,7 @@ export default function History({navigation, setGet_followed_event}) {
             AddPackage_Audio={AddPackage_Audio}
             pickPackageVideo={requestCameraVideoPermission}
             picCamera={picCamera}
+            submitted={submitted}
             navigation={navigation}
             auth={auth}
           />
@@ -1039,6 +1042,7 @@ function OrderItem({
   pickPackageVideo,
   auth,
   picCamera,
+  submitted,
 }) {
   const dimensions = useWindowDimensions();
 
@@ -1796,8 +1800,12 @@ function OrderItem({
                         <View style={{flexDirection: 'row'}}>
                           <View style={{}}>
                             <TouchableOpacity
+                              activeOpacity={submitted == false ? 0 : 1}
                               onPress={() => {
-                                setStatus(i => ({...i, [v.id]: 'ACCEPT'}));
+                                if (submitted == false) {
+                                  setStatus(i => ({...i, [v.id]: 'ACCEPT'}));
+                                } else {
+                                }
                               }}>
                               <Image
                                 source={require('../../../../../assets/righticon.png')}
@@ -1824,8 +1832,12 @@ function OrderItem({
                           <View style={{width: 30}} />
                           <View style={{}}>
                             <TouchableOpacity
+                              activeOpacity={submitted == false ? 0 : 1}
                               onPress={() => {
-                                setStatus(i => ({...i, [v.id]: 'CANCEL'}));
+                                if (submitted == false) {
+                                  setStatus(i => ({...i, [v.id]: 'CANCEL'}));
+                                } else {
+                                }
                               }}>
                               <Image
                                 source={require('../../../../../assets/wrongicon.png')}
@@ -1908,15 +1920,21 @@ function OrderItem({
             <View style={{marginTop: 20}}>
               <SolidButton
                 text="SUBMIT"
-                backgroundColor={theme.colors.green}
+                backgroundColor={
+                  submitted == false ? theme.colors.green : theme.colors.Gray
+                }
                 onPress={() => {
-                  SubmitAvailablity(
-                    Object.keys(status).join(','),
-                    Object.values(status).join(','),
-                  );
+                  if (submitted == false) {
+                    SubmitAvailablity(
+                      Object.keys(status).join(','),
+                      Object.values(status).join(','),
+                    );
+                  } else {
+                  }
                 }}
                 marginHorizontal={1}
                 // loading={loading}
+                activeOpacity={submitted == false ? 0 : 1}
               />
             </View>
           )}
@@ -2018,9 +2036,7 @@ function OrderItem({
                       fontWeight: '700',
                       color: theme.colors.primary,
                     }}>
-                    {item?.contains_time == 'NO'
-                      ? 'Details will add its time'
-                      : item?.contains_time}
+                    {item?.contains_time == 'NO' ? '' : item?.contains_time}
                   </TextFormatted>
                 </View>
 
@@ -2280,9 +2296,7 @@ function OrderItem({
                         maxWidth: dimensions.width / 2,
                         color: theme.colors.primary,
                       }}>
-                      {item?.package_time == 'NO'
-                        ? 'Details will add its time'
-                        : item?.package_time}
+                      {item?.package_time == 'NO' ? '' : item?.package_time}
                     </TextFormatted>
                     <TouchableOpacity
                       onPress={() => {
@@ -2620,7 +2634,7 @@ function OrderItem({
                         color: theme.colors.primary,
                       }}>
                       {item?.received_and_paid_time == 'NO'
-                        ? 'Details will add its time'
+                        ? ''
                         : item?.received_and_paid_time}
                     </TextFormatted>
                     <TouchableOpacity

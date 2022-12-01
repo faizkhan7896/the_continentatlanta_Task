@@ -16,8 +16,8 @@
 //   );
 // }
 
-import React from 'react';
-import {Dimensions, View} from 'react-native';
+import React, {useState} from 'react';
+import {Dimensions, Image, TouchableOpacity, View} from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
 import Statusbar from '../../../../../components/Statusbar';
 import {theme} from '../../../../../utils/theme';
@@ -38,6 +38,7 @@ const MARKERS = [
 ];
 
 export default function MapSearch({navigation}) {
+  const [Add, setAdd] = useState(false);
   return (
     <View
       style={{
@@ -58,17 +59,52 @@ export default function MapSearch({navigation}) {
           longitudeDelta: 0.0621,
         }}
         style={{flex: 1}}>
-        {MARKERS.map((item, index) => (
+        {Add == false ? (
+          MARKERS.map((item, index) => (
+            <Marker
+              draggable={true}
+              key={index}
+              image={require('../../../../../assets/Deal.png')}
+              coordinate={{
+                latitude: item.latitude || 0,
+                longitude: item.longitude || 0,
+              }}
+            />
+          ))
+        ) : (
           <Marker
-            draggable={true}
-            key={index}
+            // image={require('../../../../../assets/Deal.png')}
             coordinate={{
-              latitude: item.latitude || 0,
-              longitude: item.longitude || 0,
+              latitude: MARKERS[0].latitude || 0,
+              longitude: MARKERS[0].longitude || 0,
             }}
+            // onSelect={v => console.log('onSelect', v)}
+            // onDrag={v => console.log('onDrag', v)}
+            onDragend={v => alert('onDragend', v)}
+            // onDragStart={v => console.log('onDragStart', v)}
+            draggable
           />
-        ))}
+        )}
       </MapView>
+
+      <TouchableOpacity
+        onPress={() => {
+          setAdd(!Add);
+        }}
+        style={{
+          paddingVertical: 15,
+          paddingHorizontal: 15,
+          backgroundColor: theme.colors.green,
+          borderRadius: 120,
+          position: 'absolute',
+          bottom: 40,
+          right: 20,
+        }}>
+        <Image
+          source={require('../../../../../assets/Add.png')}
+          style={{height: 24, width: 24, resizeMode: 'contain'}}
+        />
+      </TouchableOpacity>
     </View>
   );
 }
