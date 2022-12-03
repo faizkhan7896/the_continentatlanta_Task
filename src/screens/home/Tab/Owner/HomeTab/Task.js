@@ -1035,14 +1035,12 @@ function OrderItem({
   onBuffer,
   onError,
   AddAudio,
-  SubmitAvailablity,
   GetProduct,
   setPackage_CurrentID,
   AddPackage_Audio,
   pickPackageVideo,
   auth,
   picCamera,
-  submitted,
 }) {
   const dimensions = useWindowDimensions();
 
@@ -1066,8 +1064,47 @@ function OrderItem({
   const [seconds, setSeconds] = useState(0);
   const [isPending, startTransition] = useTransition();
   const [relode, setRelode] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   // alert(JSON.stringify(status));
   // console.log(status);
+
+  async function SubmitAvailablity(order_id, status) {
+    try {
+      setLoading(true);
+      const url =
+        baseUrl +
+        'accept_cancel_status_sub_orders?order_id=' +
+        order_id +
+        '&status=' +
+        status;
+      console.log('accept_cancel_status_sub_orders', url);
+      // return;
+
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {'Cache-Control': 'no-cache'},
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        setLoading(false);
+        GetProduct(true);
+        setSubmitted(true);
+        // UpdateOrder(ParentID, 'ACCEPT');
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+        setLoading(false);
+      }
+    } catch (e) {
+      setLoading(false);
+      ShowToast('An error occured.', 'error');
+
+      console.log(e);
+    }
+  }
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -1251,6 +1288,7 @@ function OrderItem({
       },
     );
   };
+
   const pause_3 = () => {
     soundPlaying_3.current.pause();
     setPlaying_3(false);

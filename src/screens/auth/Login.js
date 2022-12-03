@@ -27,8 +27,8 @@ export default function Login({navigation}) {
   // alert(JSON.stringify(CurrentFlow));
   const [hide, setHide] = useState(false);
 
-  const [email, setEmail] = useState('Alfaiz@gmail.com');
-  const [password, setPassword] = useState('123456');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   async function Login() {

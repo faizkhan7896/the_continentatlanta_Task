@@ -64,7 +64,7 @@ export default function Login({navigation}) {
               fontSize: 18,
               fontWeight: '700',
             }}>
-            PikPic
+            TapTack
           </Text>
         </View>
 
