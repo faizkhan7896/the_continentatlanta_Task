@@ -39,6 +39,7 @@ export default function CustomTextInput({
   borderWidth,
   View_marginTop,
   borderColor,
+  borderRadius,
 }) {
   return (
     <View>
@@ -50,7 +51,7 @@ export default function CustomTextInput({
         style={{
           backgroundColor: backgroundColor || theme.colors.inputBG,
           paddingHorizontal: paddingHorizontal || 15,
-          borderRadius: 10,
+          borderRadius: borderRadius || 10,
           marginTop: View_marginTop || 10,
           opacity: opacitytwo,
           width: width || Dimensions.get('window').width - 60,
@@ -60,6 +61,15 @@ export default function CustomTextInput({
           borderWidth: borderWidth,
           borderColor: borderColor || theme.colors.C4C4C4,
           // flex: 1,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 1,
+          },
+          shadowOpacity: 0.2,
+          shadowRadius: 1.41,
+
+          elevation: 2,
         }}>
         <View
           style={{

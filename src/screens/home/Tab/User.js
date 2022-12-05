@@ -61,7 +61,7 @@ export default function TabScreen({navigation}) {
         </TouchableOpacity>
         <View style={{width: 10}} />
 
-        {/* <TouchableOpacity
+        <TouchableOpacity
           onPress={() => setCurrentPage(3)}
           style={[
             styles.container,
@@ -77,7 +77,7 @@ export default function TabScreen({navigation}) {
             }}>
             MAP
           </Text>
-        </TouchableOpacity> */}
+        </TouchableOpacity>
       </View>
       {currentPage == 1 ? (
         <History navigation={navigation} />

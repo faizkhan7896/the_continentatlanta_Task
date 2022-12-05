@@ -242,13 +242,13 @@ export default function LogOut({navigation}) {
           ref={scrollRef}
           contentContainerStyle={{justifyContent: 'space-between'}}>
           <View>
-            <Header navigation={navigation} Headertext={'Details'} />
+            <Header navigation={navigation} Headertext={'Product Details'} />
             <View>
               <ImageBackground
                 source={{uri: data?.image}}
                 style={{
                   width: dimensions.width - 30,
-                  height: dimensions.height / 3,
+                  height: dimensions.height / 2.5,
                   alignSelf: 'center',
                   backgroundColor: theme.colors.Tabbg,
                 }}
