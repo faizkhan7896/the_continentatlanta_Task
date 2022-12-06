@@ -17,6 +17,9 @@ export default function SettingItem({
   source,
   onValueChange,
   value,
+  height,
+  width,
+  marginLeft,
 }) {
   const dimensions = useWindowDimensions();
 
@@ -37,10 +40,12 @@ export default function SettingItem({
           }}>
           <Image
             style={{
-              height: 40,
-              width: 40,
+              height: height || 40,
+              width: width || 40,
               resizeMode: 'contain',
               marginRight: 10,
+              marginLeft: marginLeft,
+              tintColor: theme.colors.yellow,
             }}
             source={source}
           />

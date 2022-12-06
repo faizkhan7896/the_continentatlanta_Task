@@ -13,6 +13,9 @@ import AddProduct from '../screens/home/Tab/Owner/AddProduct';
 import Payment from '../screens/home/Tab/User/Payment';
 import OwnerSignup from '../screens/home/Tab/User/OwnerSignup';
 import Scanner from '../screens/home/Tab/User/Scanner';
+import Privacy from '../screens/home/Drawer/Privacy';
+import About from '../screens/home/Drawer/About';
+import Support from '../screens/home/Drawer/Support';
 import ImageZoom from '../components/ImageZoom';
 import FullVideo from '../components/FullVideo';
 import MapScreen from '../components/MapScreen';
@@ -41,6 +44,9 @@ function App() {
       <Stack.Screen name="Payment" component={Payment} />
       <Stack.Screen name="OwnerSignup" component={OwnerSignup} />
       <Stack.Screen name="Scanner" component={Scanner} />
+      <Stack.Screen name="Privacy" component={Privacy} />
+      <Stack.Screen name="About" component={About} />
+      <Stack.Screen name="Support" component={Support} />
     </Stack.Navigator>
   );
 }

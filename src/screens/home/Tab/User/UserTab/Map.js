@@ -17,7 +17,7 @@
 // }
 
 import moment from 'moment';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -29,10 +29,13 @@ import {
 } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import MapView, {Marker} from 'react-native-maps';
+import {useSelector} from 'react-redux';
 import Statusbar from '../../../../../components/Statusbar';
 import TextFormated from '../../../../../components/TextFormated';
 import CustomTextInput from '../../../../../components/TextInput';
+import {baseUrl} from '../../../../../utils/constance';
 import {theme} from '../../../../../utils/theme';
+import {ShowToast} from '../../../../../utils/ToastFunction';
 
 const MARKERS = [
   {latitude: 22.761794329667982, longitude: 75.88739432394505},
@@ -62,6 +65,42 @@ export default function MapSearch({navigation}) {
   const [openTime_1, setOpenTime_1] = useState(false);
   const [closeTime, setCloseTime] = useState();
   const [closeTime_2, setCloseTime_2] = useState(false);
+  const auth = useSelector(state => state.auth);
+  const [setSinglemarketdata, setSetSinglemarketdata] = useState();
+
+  const [data, setData] = useState();
+  // alert(JSON.stringify(setSinglemarketdata));
+
+  async function GetMarkets(silent = false) {
+    try {
+      const url = baseUrl + 'get_all_market';
+      console.log(url);
+
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        setData(rslt.market_data);
+      } else {
+        // ShowToast(rslt.message || 'Unknown error', 'error');
+      }
+    } catch (e) {
+      // alert('An error occured.');
+      ShowToast('An error occured.', 'error');
+      console.log(e);
+    }
+  }
+
+  useEffect(() => {
+    GetMarkets();
+  }, []);
 
   // alert(openTime);
 
@@ -125,15 +164,18 @@ export default function MapSearch({navigation}) {
         }}
         style={{flex: 1}}>
         {Add == false ? (
-          MARKERS.map((item, index) => (
+          data?.map((item, index) => (
             <Marker
-              onPress={() => setModal_2(true)}
+              onPress={() => {
+                setModal_2(true);
+                setSetSinglemarketdata(item);
+              }}
               draggable={true}
               key={index}
               image={require('../../../../../assets/Deal.png')}
               coordinate={{
-                latitude: item.latitude || 0,
-                longitude: item.longitude || 0,
+                latitude: item.lat || 0,
+                longitude: item.long || 0,
               }}
             />
           ))
@@ -150,6 +192,10 @@ export default function MapSearch({navigation}) {
               setTimeout(() => {
                 setModal(true);
               }, 600);
+              //   console.log(auth.id);
+              //   console.log(new Date());
+              // console.log(v?.nativeEvent?.coordinate?.latitude);
+              // console.log(v?.nativeEvent?.coordinate?.longitude);
             }}
             draggable
             // onDragStart={v => console.log('onDragStart', v)}
@@ -183,6 +229,7 @@ export default function MapSearch({navigation}) {
         visible={modal}
         onDismiss={() => {
           setModal(false);
+          setSetSinglemarketdata();
         }}
         transparent
         style={{}}>
@@ -190,6 +237,7 @@ export default function MapSearch({navigation}) {
           onPress={() => {
             setModal(false);
             setAdd(false);
+            setSetSinglemarketdata();
           }}
           activeOpacity={1}
           style={{
@@ -388,6 +436,7 @@ export default function MapSearch({navigation}) {
                     setTimeout(() => {
                       setAdd(false);
                     }, 300);
+                    setSetSinglemarketdata();
                   }}
                   style={{
                     alignItems: 'center',
@@ -506,7 +555,7 @@ export default function MapSearch({navigation}) {
                   marginTop={0}
                   width={Dimensions.get('window').width / 2}
                   placeholder="Market Name"
-                  value={'Christmas Party'}
+                  value={setSinglemarketdata?.market_name}
                   // onChangeText={setPrice}
                   autoFocus={true}
                   borderWidth={1}
@@ -542,7 +591,8 @@ export default function MapSearch({navigation}) {
                       flex: 1,
                       paddingHorizontal: 15,
                     }}>
-                    {moment(new Date()).format('ll')}
+                    {moment(setSinglemarketdata?.date_time).format('ll')}
+                    {/* {setSinglemarketdata?.date_time} */}
                   </TextFormated>
                 </View>
                 <CustomTextInput
@@ -553,7 +603,7 @@ export default function MapSearch({navigation}) {
                   marginTop={0}
                   width={Dimensions.get('window').width / 2}
                   placeholder="Duration"
-                  value={'10:00 Am - 11:00 PM'}
+                  value={setSinglemarketdata?.duration}
                   autoFocus={true}
                   borderWidth={1}
                   borderRadius={6}

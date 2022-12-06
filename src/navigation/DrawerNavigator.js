@@ -29,14 +29,83 @@ import SubCart from '../screens/home/Drawer/SubCart';
 import LogOut from '../screens/home/Drawer/LogOut';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import CustomDrawer from '../components/CustomDrawer';
-import {Image} from 'react-native';
+import {Alert, Image, View} from 'react-native';
 import {theme} from '../utils/theme';
 
 const Stack = createNativeStackNavigator();
 
 const Drawer = createDrawerNavigator();
 
-function App() {
+function App({navigation}) {
+  async function Login() {
+    try {
+      setLoading(true);
+      const url = baseUrl + 'delete_user';
+      const body = new FormData();
+      body.append('user_id', auth.id);
+
+      const res = await fetch(url, {
+        method: 'POST',
+        body: body,
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.status == '1') {
+        store.dispatch({
+          type: SELECTEDLANGUAGE,
+          payload: {lang: ''},
+        });
+        store.dispatch({
+          type: LANGUAGESELECTED,
+          payload: {select: false},
+        });
+        store.dispatch({
+          type: SIGNOUT,
+        });
+
+        ShowToast('Account deleted successfully.');
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+      }
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      // alert('An error occured.');
+      ShowToast('An error occured.', 'error');
+
+      console.log(e);
+    }
+  }
+
+  // const showConfirmDialog = () => {
+  //   return Alert.alert(
+  //     'Are your sure?',
+  //     'Are you sure you want to remove this beautiful box?',
+  //     [
+  //       // The "Yes" button
+  //       {
+  //         text: 'Yes',
+  //         onPress: () => {
+  //           // setShowBox(false);
+  //         },
+  //       },
+  //       // The "No" button
+  //       // Does nothing but dismiss the dialog when tapped
+  //       {
+  //         text: 'No',
+  //         onPress: () => {
+  //           navigation.goBack();
+  //         },
+  //       },
+  //     ],
+  //   );
+  // };
+
   return (
     <Drawer.Navigator
       drawerContent={props => <CustomDrawer {...props} />}
@@ -86,7 +155,7 @@ function App() {
           ),
         }}
       /> */}
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name="About"
         component={About}
         options={{
@@ -95,14 +164,15 @@ function App() {
               style={{
                 height: 30,
                 width: 30,
+                tintColor: theme.colors.yellow,
                 resizeMode: 'contain',
               }}
               source={require('../assets/Abouts.png')}
             />
           ),
         }}
-      />
-      <Drawer.Screen
+      /> */}
+      {/* <Drawer.Screen
         name="Privacy"
         component={Privacy}
         options={{
@@ -112,8 +182,26 @@ function App() {
                 height: 30,
                 width: 30,
                 resizeMode: 'contain',
+                tintColor: theme.colors.yellow,
               }}
               source={require('../assets/PrivacyPolicy.png')}
+            />
+          ),
+        }}
+      /> */}
+      <Drawer.Screen
+        name="Settings"
+        component={Settings}
+        options={{
+          drawerIcon: ({color}) => (
+            <Image
+              style={{
+                height: 24,
+                width: 24,
+                resizeMode: 'contain',
+                marginLeft: 5,
+              }}
+              source={require('../assets/Setting.png')}
             />
           ),
         }}
@@ -150,7 +238,7 @@ function App() {
           ),
         }}
       /> */}
-      <Drawer.Screen
+      {/* <Drawer.Screen
         name="LogOut"
         component={LogOut}
         options={{
@@ -159,13 +247,14 @@ function App() {
               style={{
                 height: 30,
                 width: 30,
+                tintColor: theme.colors.yellow,
                 resizeMode: 'contain',
               }}
               source={require('../assets/Logout.png')}
             />
           ),
         }}
-      />
+      /> */}
     </Drawer.Navigator>
   );
 }

@@ -49,7 +49,7 @@ export default function CustomTextInput({
 
       <View
         style={{
-          backgroundColor: backgroundColor || theme.colors.inputBG,
+          backgroundColor: backgroundColor || theme.colors.primary,
           paddingHorizontal: paddingHorizontal || 15,
           borderRadius: borderRadius || 10,
           marginTop: View_marginTop || 10,

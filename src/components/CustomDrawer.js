@@ -55,10 +55,11 @@ export default function CustomDrawer(props) {
       />
       <View
         style={{
-          marginTop: 20,
+          paddingTop: 20,
           paddingHorizontal: 20,
           flexDirection: 'row',
           alignItems: 'center',
+          backgroundColor: theme.colors.primary,
         }}>
         <Image
           style={{

@@ -14,6 +14,7 @@ import {
 import {ActivityIndicator} from 'react-native-paper';
 import WebView from 'react-native-webview';
 import Button from '../../../components/Button';
+import Header from '../../../components/Header';
 import Statusbar from '../../../components/Statusbar';
 import TextFormatted from '../../../components/TextFormated';
 import {theme} from '../../../utils/theme';
@@ -145,7 +146,9 @@ export default function Payments({navigation}) {
         barStyle="dark-content"
         backgroundColor={theme.colors.primary}
       />
-      <View
+      <Header navigation={navigation} Headertext={'About us'} />
+
+      {/* <View
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
@@ -184,7 +187,7 @@ export default function Payments({navigation}) {
           }}
           source={{uri: 'https://picsum.photos/500'}}
         />
-      </View>
+      </View> */}
       {/* <Image
         style={{
           height: dimensions.height / 3,
