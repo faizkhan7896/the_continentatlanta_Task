@@ -22,7 +22,6 @@ export default function TabScreen({navigation}) {
     <View style={{flex: 1}}>
       {/* <View style={{marginBottom: -90, marginTop: 60}}> */}
       <StatusBar backgroundColor="#fff" barStyle="light-content" />
-
       <View style={styles.maincontainer}>
         <TouchableOpacity
           onPress={() => setCurrentPage(1)}

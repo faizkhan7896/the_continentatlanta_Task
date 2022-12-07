@@ -495,8 +495,9 @@ export default function History({navigation, setGet_followed_event}) {
                   <View style={{width: 7}} />
 
                   <TouchableOpacity
+                    activeOpacity={1}
                     onPress={() => {
-                      ShowToast('This feature will come in future update');
+                      // ShowToast('This feature will come in future update');
                       return;
                       if (item.ask_status == 'NO') {
                         StatusUpdate(
@@ -549,6 +550,7 @@ export default function History({navigation, setGet_followed_event}) {
                   <View style={{width: 7}} />
 
                   <TouchableOpacity
+                    activeOpacity={1}
                     onPress={() => {}}
                     style={{
                       alignItems: 'center',
@@ -572,8 +574,9 @@ export default function History({navigation, setGet_followed_event}) {
                   <View style={{width: 7}} />
 
                   <TouchableOpacity
+                    activeOpacity={1}
                     onPress={() => {
-                      ShowToast('This feature will come in future update');
+                      // ShowToast('This feature will come in future update');
                       return;
                       if (item.rent_status == 'NO') {
                         StatusUpdate(
@@ -689,8 +692,9 @@ export default function History({navigation, setGet_followed_event}) {
               <View style={{width: 10}} />
 
               <TouchableOpacity
+                activeOpacity={1}
                 onPress={() => {
-                  ShowToast('This feature will come in future update');
+                  // ShowToast('This feature will come in future update');
                 }}
                 // onPress={() => {
                 //   if (item.avaibility_tackout == '') {
@@ -748,8 +752,9 @@ export default function History({navigation, setGet_followed_event}) {
               <View style={{width: 10}} />
 
               <TouchableOpacity
+                activeOpacity={1}
                 onPress={() => {
-                  ShowToast('This feature will come in future update');
+                  // ShowToast('This feature will come in future update');
                 }}
                 // onPress={() => {
                 //   if (item.avaibility_delivery == '') {

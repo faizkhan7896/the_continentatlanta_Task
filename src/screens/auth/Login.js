@@ -179,7 +179,7 @@ export default function Login({navigation}) {
             loading={loading}
           />
         </View>
-        <View
+        {/* <View
           style={{
             marginTop: 30,
             alignItems: 'center',
@@ -189,8 +189,8 @@ export default function Login({navigation}) {
             style={{color: theme.colors.Black, alignSelf: 'center'}}>
             or continue with
           </TextFormated>
-        </View>
-        <View
+        </View> */}
+        {/* <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
@@ -206,7 +206,6 @@ export default function Login({navigation}) {
               source={require('../../assets/Google_Button.png')}
             />
           </TouchableOpacity>
-          {/* <View style={{borderEndWidth: 30}} /> */}
           <TouchableOpacity
             onPress={() => {
               ShowToast('This feature will come in future update');
@@ -220,13 +219,12 @@ export default function Login({navigation}) {
             onPress={() => {
               ShowToast('This feature will come in future update');
             }}>
-            {/* <View style={{borderEndWidth: 30}} /> */}
             <Image
               style={styles.socialbutton}
               source={require('../../assets/Facebook_Button.png')}
             />
           </TouchableOpacity>
-        </View>
+        </View> */}
         <View
           style={{
             flexDirection: 'row',

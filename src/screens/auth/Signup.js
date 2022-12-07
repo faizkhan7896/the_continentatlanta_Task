@@ -221,6 +221,15 @@ export default function Login({navigation}) {
               // borderWidth: 1,
               width: Dimensions.get('window').width - 30,
               paddingHorizontal: 15,
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 0,
+                height: 1,
+              },
+              shadowOpacity: 0.2,
+              shadowRadius: 1.41,
+
+              elevation: 2,
             }}>
             <View
               style={{
@@ -248,7 +257,7 @@ export default function Login({navigation}) {
                     fontWeight: '500',
                     fontSize: 16,
                     paddingVertical: 15,
-                    color: theme.colors.C4C4C4,
+                    color: theme.colors.Gray,
                     flex: 1,
                     paddingHorizontal: 15,
                   }}>
@@ -294,7 +303,7 @@ export default function Login({navigation}) {
             marginTop={50}
           />
         </View>
-        <View
+        {/* <View
           style={{
             marginTop: 30,
             alignItems: 'center',
@@ -304,8 +313,8 @@ export default function Login({navigation}) {
             style={{color: theme.colors.Black, alignSelf: 'center'}}>
             or continue with
           </TextFormated>
-        </View>
-        <View
+        </View> */}
+        {/* <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
@@ -321,7 +330,6 @@ export default function Login({navigation}) {
               source={require('../../assets/Google_Button.png')}
             />
           </TouchableOpacity>
-          {/* <View style={{borderEndWidth: 30}} /> */}
           <TouchableOpacity
             onPress={() => {
               ShowToast('This feature will come in future update');
@@ -331,7 +339,6 @@ export default function Login({navigation}) {
               source={require('../../assets/Apple_Button.png')}
             />
           </TouchableOpacity>
-          {/* <View style={{borderEndWidth: 30}} /> */}
           <TouchableOpacity
             onPress={() => {
               ShowToast('This feature will come in future update');
@@ -341,7 +348,7 @@ export default function Login({navigation}) {
               source={require('../../assets/Facebook_Button.png')}
             />
           </TouchableOpacity>
-        </View>
+        </View> */}
         <View
           style={{
             flexDirection: 'row',

@@ -1643,9 +1643,10 @@ function OrderItem({
         <View style={{width: 10}} />
 
         <TouchableOpacity
+          activeOpacity={1}
           onPress={() => {
-            ShowToast('This feature will come in future update');
-            return;
+            // ShowToast('This feature will come in future update');
+            // return;
           }}
           style={{
             alignItems: 'center',
@@ -1680,9 +1681,10 @@ function OrderItem({
         <View style={{width: 10}} />
 
         <TouchableOpacity
+          activeOpacity={1}
           onPress={() => {
-            ShowToast('This feature will come in future update');
-            return;
+            // ShowToast('This feature will come in future update');
+            // return;
           }}
           style={{
             alignItems: 'center',
