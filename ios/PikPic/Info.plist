@@ -36,11 +36,11 @@
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
-	<string>TapTack requires to access camera for uploading photos to your profile or posts</string>
+	<string>TapTack requires to access camera for uploading photos to posts, Product images and other</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>TapTack requires to access location for displaying your li location</string>
+	<string>TapTack requires to access your location because Location is being used for Buy and Sell purpose in this app we get location to show from where user will upload the products for sell </string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>TapTack requires to access location for displaying your li location</string>
+	<string>TapTack requires to access your location because Location is being used for Buy and Sell purpose in this app we get location to show from where user will upload the products for sell </string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>TapTack requires to access Audio recording to record and uplod videos</string>
 	<key>NSPhotoLibraryUsageDescription</key>

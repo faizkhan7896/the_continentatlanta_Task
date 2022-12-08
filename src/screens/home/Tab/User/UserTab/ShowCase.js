@@ -1,10 +1,10 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
+  Animated,
   Dimensions,
   FlatList,
   Image,
   ImageBackground,
-  RefreshControl,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -17,6 +17,7 @@ import LoadingSpinner from '../../../../../components/LoadingSpinner';
 import {baseUrl} from '../../../../../utils/constance';
 import {theme} from '../../../../../utils/theme';
 import {ShowToast} from '../../../../../utils/ToastFunction';
+import {RefreshControl} from 'react-native-web-refresh-control';
 import {useSelector} from 'react-redux';
 
 export default function ShowCase({navigation, setGet_followed_event}) {
@@ -25,6 +26,7 @@ export default function ShowCase({navigation, setGet_followed_event}) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [isFocused, setIsFocused] = useState(true);
 
   async function LikeUnlike(id) {
     try {
@@ -72,7 +74,7 @@ export default function ShowCase({navigation, setGet_followed_event}) {
         }
         setRefreshing(false);
       } else {
-        ShowToast(rslt.message || 'Unknown error', 'error');
+        // ShowToast(rslt.message || 'Unknown error', 'error');
         if (!silent) {
           setLoading(false);
         }
@@ -106,20 +108,47 @@ export default function ShowCase({navigation, setGet_followed_event}) {
     return unsubscribe;
   }, [navigation]);
 
+  useEffect(() => {
+    const int = setInterval(() => {
+      if (isFocused) GetProduct(true);
+    }, 5000);
+    return () => clearInterval(int);
+  }, [isFocused]);
+
+  // const fadeAnim = new Animated.Value(0);
+
+  // // const fadeout = () => {
+  // Animated.timing(fadeAnim, {
+  //   toValue: 1,
+  //   duration: 3000,
+  //   useNativeDriver: true,
+  // }).start();
+
+  // const position = new Animated.ValueXY({x: 0, y: 100});
+  // Animated.spring(position, {
+  //   toValue: {x: -30, y: -10},
+  //   speed: 10,
+  //   bounciness: 40,
+  //   useNativeDriver: true,
+  // }).start();
+
+  // const post = new Animated.ValueXY({x: 0, y: 0});
+  // Animated.spring(post, {
+  //   toValue: {x: 10, y: -130},
+  //   speed: 10,
+  //   bounciness: 20,
+  //   useNativeDriver: true,
+  // }).start();
+
   return (
     <View style={{flex: 1}}>
       <LoadingSpinner size={60} visible={loading} color={theme.colors.yellow} />
 
       <FlatList
         data={data}
-        // refreshControl={
-        //   <RefreshControl
-        //     refreshing={refreshing}
-        //     onRefresh={onRefresh}
-        //     tintColor={theme?.colors?.yellow}
-        //     // colors={theme?.colors?.yellow}
-        //   />
-        // }
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
         ListEmptyComponent={
           <View
             style={{
@@ -294,6 +323,40 @@ export default function ShowCase({navigation, setGet_followed_event}) {
           </TouchableOpacity>
         )}
       />
+
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate('JoinedMarkets');
+        }}
+        style={{
+          paddingVertical: 15,
+          paddingHorizontal: 15,
+          backgroundColor: theme.colors.green,
+          borderRadius: 120,
+          position: 'absolute',
+          bottom: 40,
+          right: 20,
+        }}>
+        {/* <Animated.View
+          style={[
+            styles.fade,
+            {
+              opacity: fadeAnim,
+            },
+          ]}> */}
+        {/* <Image source={require('../../assets/icons/using/Logo.png')} /> */}
+        <Image
+          style={{
+            height: 45,
+            width: 45,
+            resizeMode: 'contain',
+            // tintColor: theme.colors.primary,
+          }}
+          // source={require('../../../../../assets/Shop.png')}
+          source={require('../../../../../assets/gif/shop.gif')}
+        />
+        {/* </Animated.View> */}
+      </TouchableOpacity>
     </View>
   );
 }

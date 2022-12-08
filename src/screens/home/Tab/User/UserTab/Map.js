@@ -67,6 +67,8 @@ export default function MapSearch({navigation}) {
   const [closeTime_2, setCloseTime_2] = useState(false);
   const auth = useSelector(state => state.auth);
   const [setSinglemarketdata, setSetSinglemarketdata] = useState();
+  const [market_name, setMarket_name] = useState('');
+  const [isFocused, setIsFocused] = useState(true);
 
   const [data, setData] = useState();
   // alert(JSON.stringify(setSinglemarketdata));
@@ -82,9 +84,9 @@ export default function MapSearch({navigation}) {
           'content-type': 'multipart/form-data',
         },
       });
-      console.log(res);
+      // console.log(res);
       const rslt = await res.json();
-      console.log(rslt);
+      // console.log(rslt);
 
       if (rslt.success == '1') {
         setData(rslt.market_data);
@@ -98,9 +100,92 @@ export default function MapSearch({navigation}) {
     }
   }
 
+  async function AddMarket() {
+    if (!market_name) {
+      ShowToast('Please enter your market name.', 'error');
+      return;
+    }
+    if (!date) {
+      ShowToast('Please select your market opening date.', 'error');
+      return;
+    }
+    if (!openTime) {
+      ShowToast('Please select your market open time.', 'error');
+      return;
+    }
+    if (!closeTime) {
+      ShowToast('Please select your market close time.', 'error');
+      return;
+    }
+    try {
+      setLoading(true);
+      const url = baseUrl + 'create_market';
+
+      // const token = await firebase.messaging().getToken();
+      // alert(token);
+      const body = new FormData();
+      body.append('creator_user_id', auth.id);
+      body.append('market_name', market_name);
+      body.append('date', date);
+      body.append(
+        'duration',
+        moment(openTime).format('LT') + '-' + moment(closeTime).format('LT'),
+      );
+      body.append('lat', selectedLat);
+      body.append('long', selectedLon);
+      body.append('date_time', date);
+
+      console.log(body);
+      // return;
+
+      const res = await fetch(url, {
+        method: 'POST',
+        body: body,
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        setModal(false);
+        GetMarkets();
+        setTimeout(() => {
+          setAdd(false);
+        }, 300);
+        setSetSinglemarketdata();
+        ShowToast('Market created successfully.');
+        setSelectedLat();
+        setSelectedLon();
+        setDate();
+        setOpenTime();
+        setCloseTime();
+        setMarket_name();
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+      }
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      // alert('An error occured.');
+      ShowToast('An error occured.', 'error');
+
+      console.log(e);
+    }
+  }
+
   useEffect(() => {
     GetMarkets();
   }, []);
+
+  useEffect(() => {
+    const int = setInterval(() => {
+      if (isFocused) GetMarkets(true);
+    }, 5000);
+    return () => clearInterval(int);
+  }, [isFocused]);
 
   // alert(openTime);
 
@@ -277,8 +362,8 @@ export default function MapSearch({navigation}) {
                   marginTop={0}
                   width={Dimensions.get('window').width / 2}
                   placeholder="Market Name"
-                  // value={price}
-                  // onChangeText={setPrice}
+                  value={market_name}
+                  onChangeText={setMarket_name}
                   autoFocus={true}
                   borderWidth={1}
                   borderRadius={6}
@@ -431,12 +516,7 @@ export default function MapSearch({navigation}) {
                 </TouchableOpacity>
                 <TouchableOpacity
                   onPress={() => {
-                    // AddProduct();
-                    setModal(false);
-                    setTimeout(() => {
-                      setAdd(false);
-                    }, 300);
-                    setSetSinglemarketdata();
+                    AddMarket();
                   }}
                   style={{
                     alignItems: 'center',
@@ -537,7 +617,7 @@ export default function MapSearch({navigation}) {
                       color: theme.colors.Black,
                       fontSize: 18,
                     }}>
-                    17
+                    {setSinglemarketdata?.attendees?.length}
                   </TextFormated>
                   <TextFormated
                     style={{
@@ -623,7 +703,10 @@ export default function MapSearch({navigation}) {
                     paddingVertical: 10,
                     flexDirection: 'row',
                     borderRadius: 6,
-                    backgroundColor: theme.colors.green,
+                    backgroundColor:
+                      setSinglemarketdata?.creator_user_id == auth?.id
+                        ? theme.colors.red
+                        : theme.colors.green,
                     // flex: 1,
                     shadowColor: '#000',
                     shadowOffset: {
@@ -649,7 +732,9 @@ export default function MapSearch({navigation}) {
                         color: theme.colors.primary,
                         fontSize: 16,
                       }}>
-                      JOIN
+                      {setSinglemarketdata?.creator_user_id == auth?.id
+                        ? 'DELETE'
+                        : 'JOIN'}
                     </TextFormated>
                   )}
                 </TouchableOpacity>

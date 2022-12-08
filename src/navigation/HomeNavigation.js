@@ -12,6 +12,8 @@ import OrderConfirm from '../screens/home/Tab/User/OrderConfirm';
 import AddProduct from '../screens/home/Tab/Owner/AddProduct';
 import Payment from '../screens/home/Tab/User/Payment';
 import OwnerSignup from '../screens/home/Tab/User/OwnerSignup';
+import JoinedMarkets from '../screens/home/Tab/User/JoinedMarkets';
+import AllMarketProduct from '../screens/home/Tab/User/AllMarketProduct';
 import Scanner from '../screens/home/Tab/User/Scanner';
 import Privacy from '../screens/home/Drawer/Privacy';
 import About from '../screens/home/Drawer/About';
@@ -47,6 +49,8 @@ function App() {
       <Stack.Screen name="Privacy" component={Privacy} />
       <Stack.Screen name="About" component={About} />
       <Stack.Screen name="Support" component={Support} />
+      <Stack.Screen name="JoinedMarkets" component={JoinedMarkets} />
+      <Stack.Screen name="AllMarketProduct" component={AllMarketProduct} />
     </Stack.Navigator>
   );
 }
