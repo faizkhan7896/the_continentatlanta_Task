@@ -61,6 +61,7 @@ export default function MapSearch({navigation}) {
   const [date, setDate] = useState();
   const [loading, setLoading] = useState(false);
   const [Modal_2, setModal_2] = useState(false);
+  const [Modal_3, setModal_3] = useState(false);
   const [openTime, setOpenTime] = useState();
   const [openTime_1, setOpenTime_1] = useState(false);
   const [closeTime, setCloseTime] = useState();
@@ -71,7 +72,7 @@ export default function MapSearch({navigation}) {
   const [isFocused, setIsFocused] = useState(true);
 
   const [data, setData] = useState();
-  // alert(JSON.stringify(setSinglemarketdata));
+  // alert(JSON.stringify(Modal_2));
 
   async function GetMarkets(silent = false) {
     try {
@@ -187,6 +188,13 @@ export default function MapSearch({navigation}) {
     return () => clearInterval(int);
   }, [isFocused]);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      setAdd(false);
+    });
+    return unsubscribe;
+  }, [navigation]);
+
   // alert(openTime);
 
   return (
@@ -295,22 +303,28 @@ export default function MapSearch({navigation}) {
           setAdd(true);
         }}
         style={{
-          paddingVertical: 15,
-          paddingHorizontal: 15,
-          backgroundColor: theme.colors.green,
+          // paddingVertical: 15,
+          // paddingHorizontal: 15,
+          // backgroundColor: theme.colors.green,
           borderRadius: 120,
           position: 'absolute',
           bottom: 40,
           right: 20,
         }}>
         <Image
-          source={require('../../../../../assets/Add.png')}
-          style={{height: 24, width: 24, resizeMode: 'contain'}}
+          style={{
+            height: 80,
+            width: 80,
+            resizeMode: 'cover',
+            // tintColor: theme.colors.primary,
+            borderRadius: 150,
+          }}
+          source={require('../../../../../assets/gif/add.gif')}
         />
       </TouchableOpacity>
 
       <Modal
-        animationType="slide"
+        animationType="fade"
         visible={modal}
         onDismiss={() => {
           setModal(false);
@@ -514,7 +528,81 @@ export default function MapSearch({navigation}) {
                     )}
                   </View>
                 </TouchableOpacity>
+
                 <TouchableOpacity
+                  onPress={() => {
+                    // if (!market_name) {
+                    //   ShowToast('Please enter your market name.', 'error');
+                    //   return;
+                    // }
+                    // if (!date) {
+                    //   ShowToast(
+                    //     'Please select your market opening date.',
+                    //     'error',
+                    //   );
+                    //   return;
+                    // }
+                    // if (!openTime) {
+                    //   ShowToast(
+                    //     'Please select your market open time.',
+                    //     'error',
+                    //   );
+                    //   return;
+                    // }
+                    // if (!closeTime) {
+                    //   ShowToast(
+                    //     'Please select your market close time.',
+                    //     'error',
+                    //   );
+                    //   return;
+                    // }
+                    navigation.navigate('SelectProduct', {
+                      market_name: market_name,
+                      date: date,
+                      openTime: openTime,
+                      closeTime: closeTime,
+                      selectedLat: selectedLat,
+                      selectedLon: selectedLon,
+                    });
+                    setTimeout(() => {
+                      setModal(false);
+                      setSelectedLat();
+                      setSelectedLon();
+                      setDate();
+                      setOpenTime();
+                      setCloseTime();
+                      setMarket_name();
+                    }, 100);
+                  }}
+                  style={{
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    paddingVertical: 10,
+                    flexDirection: 'row',
+                    borderRadius: 6,
+                    backgroundColor: theme.colors.green,
+                    // flex: 1,
+                    shadowColor: '#000',
+                    shadowOffset: {
+                      width: 0,
+                      height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 3.84,
+
+                    elevation: 5,
+                    marginVertical: 20,
+                  }}>
+                  <TextFormated
+                    style={{
+                      fontWeight: '700',
+                      color: theme.colors.primary,
+                      fontSize: 16,
+                    }}>
+                    NEXT
+                  </TextFormated>
+                </TouchableOpacity>
+                {/* <TouchableOpacity
                   onPress={() => {
                     AddMarket();
                   }}
@@ -553,7 +641,7 @@ export default function MapSearch({navigation}) {
                       SUBMIT
                     </TextFormated>
                   )}
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </ScrollView>
             </View>
           </TouchableOpacity>

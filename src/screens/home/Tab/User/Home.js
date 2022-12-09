@@ -63,6 +63,7 @@ export default function Login({navigation}) {
               color: theme.colors.Black,
               fontSize: 18,
               fontWeight: '700',
+              fontFamily: 'Poppins-SemiBold',
             }}>
             TapTack
           </Text>

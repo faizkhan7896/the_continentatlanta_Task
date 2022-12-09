@@ -86,7 +86,7 @@ export default function Login({navigation}) {
       body.append('email', email);
       body.append('password', password);
       body.append('name', name);
-      body.append('dob', date);
+      body.append('dob', 'Remove For App Store');
       body.append('country_code', country_code);
       body.append('mobile', number);
 
@@ -213,7 +213,7 @@ export default function Login({navigation}) {
           />
           <View style={{height: 15}} />
 
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => setOpen(true)}
             style={{
               flexDirection: 'row',
@@ -277,7 +277,7 @@ export default function Login({navigation}) {
                 </TextFormated>
               )}
             </View>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <View style={{height: 15}} />
           <CustomTextInput

@@ -337,25 +337,14 @@ export default function ShowCase({navigation, setGet_followed_event}) {
           bottom: 40,
           right: 20,
         }}>
-        {/* <Animated.View
-          style={[
-            styles.fade,
-            {
-              opacity: fadeAnim,
-            },
-          ]}> */}
-        {/* <Image source={require('../../assets/icons/using/Logo.png')} /> */}
         <Image
           style={{
             height: 45,
             width: 45,
             resizeMode: 'contain',
-            // tintColor: theme.colors.primary,
           }}
-          // source={require('../../../../../assets/Shop.png')}
           source={require('../../../../../assets/gif/shop.gif')}
         />
-        {/* </Animated.View> */}
       </TouchableOpacity>
     </View>
   );

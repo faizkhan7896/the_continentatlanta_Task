@@ -636,27 +636,27 @@ export default function History({navigation, setGet_followed_event}) {
               }}>
               <TouchableOpacity
                 onPress={() => {
-                  if (item.avaibility_atstor == '') {
-                    AvailablityUpdate(
-                      item.id,
-                      'avaibility_atstor',
-                      'AT STORE',
-                      'avaibility_tackout',
-                      item.avaibility_tackout,
-                      'avaibility_delivery',
-                      item.avaibility_delivery,
-                    );
-                  } else {
-                    AvailablityUpdate(
-                      item.id,
-                      'avaibility_atstor',
-                      '',
-                      'avaibility_tackout',
-                      item.avaibility_tackout,
-                      'avaibility_delivery',
-                      item.avaibility_delivery,
-                    );
-                  }
+                  // if (item.avaibility_atstor == '') {
+                  //   AvailablityUpdate(
+                  //     item.id,
+                  //     'avaibility_atstor',
+                  //     'AT STORE',
+                  //     'avaibility_tackout',
+                  //     item.avaibility_tackout,
+                  //     'avaibility_delivery',
+                  //     item.avaibility_delivery,
+                  //   );
+                  // } else {
+                  //   AvailablityUpdate(
+                  //     item.id,
+                  //     'avaibility_atstor',
+                  //     '',
+                  //     'avaibility_tackout',
+                  //     item.avaibility_tackout,
+                  //     'avaibility_delivery',
+                  //     item.avaibility_delivery,
+                  //   );
+                  // }
                 }}
                 style={{
                   alignItems: 'center',
@@ -822,8 +822,8 @@ export default function History({navigation, setGet_followed_event}) {
           navigation.navigate('AddProduct');
         }}
         style={{
-          paddingVertical: 15,
-          paddingHorizontal: 15,
+          // paddingVertical: 15,
+          // paddingHorizontal: 15,
           backgroundColor: theme.colors.green,
           borderRadius: 120,
           position: 'absolute',
@@ -831,8 +831,14 @@ export default function History({navigation, setGet_followed_event}) {
           right: 20,
         }}>
         <Image
-          source={require('../../../../../assets/Add.png')}
-          style={{height: 24, width: 24, resizeMode: 'contain'}}
+          style={{
+            height: 80,
+            width: 80,
+            resizeMode: 'cover',
+            // tintColor: theme.colors.green,
+            borderRadius: 150,
+          }}
+          source={require('../../../../../assets/gif/add.gif')}
         />
       </TouchableOpacity>
     </View>
