@@ -70,6 +70,8 @@ export default function MapSearch({navigation}) {
   const [setSinglemarketdata, setSetSinglemarketdata] = useState();
   const [market_name, setMarket_name] = useState('');
   const [isFocused, setIsFocused] = useState(true);
+  const [joined, setJoined] = useState(false);
+  const [deleted, setDeleted] = useState(false);
 
   const [data, setData] = useState();
   // alert(JSON.stringify(Modal_2));
@@ -101,43 +103,15 @@ export default function MapSearch({navigation}) {
     }
   }
 
-  async function AddMarket() {
-    if (!market_name) {
-      ShowToast('Please enter your market name.', 'error');
-      return;
-    }
-    if (!date) {
-      ShowToast('Please select your market opening date.', 'error');
-      return;
-    }
-    if (!openTime) {
-      ShowToast('Please select your market open time.', 'error');
-      return;
-    }
-    if (!closeTime) {
-      ShowToast('Please select your market close time.', 'error');
-      return;
-    }
+  async function DeleteMarket(id) {
     try {
       setLoading(true);
-      const url = baseUrl + 'create_market';
+      const url = baseUrl + 'delete_market';
 
-      // const token = await firebase.messaging().getToken();
-      // alert(token);
       const body = new FormData();
-      body.append('creator_user_id', auth.id);
-      body.append('market_name', market_name);
-      body.append('date', date);
-      body.append(
-        'duration',
-        moment(openTime).format('LT') + '-' + moment(closeTime).format('LT'),
-      );
-      body.append('lat', selectedLat);
-      body.append('long', selectedLon);
-      body.append('date_time', date);
+      body.append('market_id', id);
 
       console.log(body);
-      // return;
 
       const res = await fetch(url, {
         method: 'POST',
@@ -151,19 +125,13 @@ export default function MapSearch({navigation}) {
       console.log(rslt);
 
       if (rslt.success == '1') {
-        setModal(false);
-        GetMarkets();
+        setDeleted(true);
         setTimeout(() => {
-          setAdd(false);
-        }, 300);
-        setSetSinglemarketdata();
-        ShowToast('Market created successfully.');
-        setSelectedLat();
-        setSelectedLon();
-        setDate();
-        setOpenTime();
-        setCloseTime();
-        setMarket_name();
+          setDeleted(false);
+          setModal_2(false);
+          ShowToast('Market deleted successfully.');
+          GetMarkets();
+        }, 2000);
       } else {
         ShowToast(rslt.message || 'Unknown error', 'error');
       }
@@ -177,9 +145,9 @@ export default function MapSearch({navigation}) {
     }
   }
 
-  useEffect(() => {
-    GetMarkets();
-  }, []);
+  // useEffect(() => {
+  //   GetMarkets();
+  // }, []);
 
   useEffect(() => {
     const int = setInterval(() => {
@@ -531,31 +499,31 @@ export default function MapSearch({navigation}) {
 
                 <TouchableOpacity
                   onPress={() => {
-                    // if (!market_name) {
-                    //   ShowToast('Please enter your market name.', 'error');
-                    //   return;
-                    // }
-                    // if (!date) {
-                    //   ShowToast(
-                    //     'Please select your market opening date.',
-                    //     'error',
-                    //   );
-                    //   return;
-                    // }
-                    // if (!openTime) {
-                    //   ShowToast(
-                    //     'Please select your market open time.',
-                    //     'error',
-                    //   );
-                    //   return;
-                    // }
-                    // if (!closeTime) {
-                    //   ShowToast(
-                    //     'Please select your market close time.',
-                    //     'error',
-                    //   );
-                    //   return;
-                    // }
+                    if (!market_name) {
+                      ShowToast('Please enter your market name.', 'error');
+                      return;
+                    }
+                    if (!date) {
+                      ShowToast(
+                        'Please select your market opening date.',
+                        'error',
+                      );
+                      return;
+                    }
+                    if (!openTime) {
+                      ShowToast(
+                        'Please select your market open time.',
+                        'error',
+                      );
+                      return;
+                    }
+                    if (!closeTime) {
+                      ShowToast(
+                        'Please select your market close time.',
+                        'error',
+                      );
+                      return;
+                    }
                     navigation.navigate('SelectProduct', {
                       market_name: market_name,
                       date: date,
@@ -679,155 +647,238 @@ export default function MapSearch({navigation}) {
               alignItems: 'center',
               borderRadius: 20,
               borderColor: theme.colors.Light_Gray,
+              // justifyContent: 'center',
               // borderWidth: 0.4,
               // marginBottom: 45,
             }}>
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                borderRadius: 20,
-                overflow: 'hidden',
-                alignItems: 'flex-start',
-              }}>
-              <ScrollView style={{paddingVertical: 15}}>
-                <View
-                  style={{
-                    backgroundColor: theme.colors.inputBG,
-                    borderRadius: 6,
-                    alignItems: 'center',
-                    // borderWidth: 1,
-                    borderColor: 'red',
-                  }}>
-                  <TextFormated
+            {joined == false ? (
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  borderRadius: 20,
+                  overflow: 'hidden',
+                  alignItems: 'flex-start',
+                }}>
+                <ScrollView style={{paddingVertical: 15}}>
+                  <View
                     style={{
-                      fontWeight: '700',
-                      color: theme.colors.Black,
-                      fontSize: 18,
+                      backgroundColor: theme.colors.inputBG,
+                      borderRadius: 6,
+                      alignItems: 'center',
+                      // borderWidth: 1,
+                      borderColor: 'red',
                     }}>
-                    {setSinglemarketdata?.attendees?.length}
-                  </TextFormated>
-                  <TextFormated
-                    style={{
-                      color: theme.colors.Black,
-                      fontSize: 10,
-                    }}>
-                    Attendees
-                  </TextFormated>
-                </View>
-                <CustomTextInput
-                  View_marginTop={0}
-                  paddingTop={8}
-                  paddingBottom={8}
-                  paddingHorizontal={0.1}
-                  marginTop={0}
-                  width={Dimensions.get('window').width / 2}
-                  placeholder="Market Name"
-                  value={setSinglemarketdata?.market_name}
-                  // onChangeText={setPrice}
-                  autoFocus={true}
-                  borderWidth={1}
-                  borderRadius={6}
-                  editable={false}
-                />
-
-                <View
-                  style={{
-                    backgroundColor: theme.colors.inputBG,
-                    borderRadius: 6,
-                    alignItems: 'flex-start',
-                    width: Dimensions.get('window').width / 2,
-                    borderWidth: 1,
-                    borderColor: 'red',
-                    marginTop: 10,
-                    shadowColor: '#000',
-                    shadowOffset: {
-                      width: 0,
-                      height: 1,
-                    },
-                    shadowOpacity: 0.2,
-                    shadowRadius: 1.41,
-
-                    elevation: 2,
-                    borderColor: theme.colors.C4C4C4,
-                  }}>
-                  <TextFormated
-                    style={{
-                      fontWeight: '500',
-                      paddingVertical: 10,
-                      color: theme.colors.Black,
-                      flex: 1,
-                      paddingHorizontal: 15,
-                    }}>
-                    {moment(setSinglemarketdata?.date_time).format('ll')}
-                    {/* {setSinglemarketdata?.date_time} */}
-                  </TextFormated>
-                </View>
-                <CustomTextInput
-                  View_marginTop={0}
-                  paddingTop={8}
-                  paddingBottom={8}
-                  paddingHorizontal={0.1}
-                  marginTop={0}
-                  width={Dimensions.get('window').width / 2}
-                  placeholder="Duration"
-                  value={setSinglemarketdata?.duration}
-                  autoFocus={true}
-                  borderWidth={1}
-                  borderRadius={6}
-                  editable={false}
-                />
-                <TouchableOpacity
-                  onPress={() => {
-                    // AddProduct();
-                    setModal_2(false);
-                    // setTimeout(() => {
-                    //   setAdd(false);
-                    // }, 300);
-                  }}
-                  style={{
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    paddingVertical: 10,
-                    flexDirection: 'row',
-                    borderRadius: 6,
-                    backgroundColor:
-                      setSinglemarketdata?.creator_user_id == auth?.id
-                        ? theme.colors.red
-                        : theme.colors.green,
-                    // flex: 1,
-                    shadowColor: '#000',
-                    shadowOffset: {
-                      width: 0,
-                      height: 2,
-                    },
-                    shadowOpacity: 0.25,
-                    shadowRadius: 3.84,
-
-                    elevation: 5,
-                    marginVertical: 20,
-                  }}>
-                  {loading ? (
-                    <ActivityIndicator
-                      size={'small'}
-                      style={{margin: 2}}
-                      color="#fff"
-                    />
-                  ) : (
                     <TextFormated
                       style={{
                         fontWeight: '700',
-                        color: theme.colors.primary,
-                        fontSize: 16,
+                        color: theme.colors.Black,
+                        fontSize: 18,
                       }}>
-                      {setSinglemarketdata?.creator_user_id == auth?.id
-                        ? 'DELETE'
-                        : 'JOIN'}
+                      {setSinglemarketdata?.attendees?.length}
                     </TextFormated>
-                  )}
+                    <TextFormated
+                      style={{
+                        color: theme.colors.Black,
+                        fontSize: 10,
+                      }}>
+                      Attendees
+                    </TextFormated>
+                  </View>
+                  <CustomTextInput
+                    View_marginTop={0}
+                    paddingTop={8}
+                    paddingBottom={8}
+                    paddingHorizontal={0.1}
+                    marginTop={0}
+                    width={Dimensions.get('window').width / 2}
+                    placeholder="Market Name"
+                    value={setSinglemarketdata?.market_name}
+                    // onChangeText={setPrice}
+                    autoFocus={true}
+                    borderWidth={1}
+                    borderRadius={6}
+                    editable={false}
+                  />
+
+                  <View
+                    style={{
+                      backgroundColor: theme.colors.inputBG,
+                      borderRadius: 6,
+                      alignItems: 'flex-start',
+                      width: Dimensions.get('window').width / 2,
+                      borderWidth: 1,
+                      borderColor: 'red',
+                      marginTop: 10,
+                      shadowColor: '#000',
+                      shadowOffset: {
+                        width: 0,
+                        height: 1,
+                      },
+                      shadowOpacity: 0.2,
+                      shadowRadius: 1.41,
+
+                      elevation: 2,
+                      borderColor: theme.colors.C4C4C4,
+                    }}>
+                    <TextFormated
+                      style={{
+                        fontWeight: '500',
+                        paddingVertical: 10,
+                        color: theme.colors.Black,
+                        flex: 1,
+                        paddingHorizontal: 15,
+                      }}>
+                      {moment(setSinglemarketdata?.date_time).format('ll')}
+                      {/* {setSinglemarketdata?.date_time} */}
+                    </TextFormated>
+                  </View>
+                  <CustomTextInput
+                    View_marginTop={0}
+                    paddingTop={8}
+                    paddingBottom={8}
+                    paddingHorizontal={0.1}
+                    marginTop={0}
+                    width={Dimensions.get('window').width / 2}
+                    placeholder="Duration"
+                    value={setSinglemarketdata?.duration}
+                    autoFocus={true}
+                    borderWidth={1}
+                    borderRadius={6}
+                    editable={false}
+                  />
+
+                  {/* {setSinglemarketdata?.creator_user_id == auth?.id && (
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate('UpdateMarket');
+                    }}
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      paddingVertical: 10,
+                      flexDirection: 'row',
+                      borderRadius: 6,
+                      backgroundColor: theme.colors.green,
+                      // flex: 1,
+                      shadowColor: '#000',
+                      shadowOffset: {
+                        width: 0,
+                        height: 2,
+                      },
+                      shadowOpacity: 0.25,
+                      shadowRadius: 3.84,
+
+                      elevation: 5,
+                      marginVertical: 20,
+                    }}>
+                    {loading ? (
+                      <ActivityIndicator
+                        size={'small'}
+                        style={{margin: 2}}
+                        color="#fff"
+                      />
+                    ) : (
+                      <TextFormated
+                        style={{
+                          fontWeight: '700',
+                          color: theme.colors.primary,
+                        }}>
+                        ADD MORE PRODUCT
+                      </TextFormated>
+                    )}
+                  </TouchableOpacity>
+                )} */}
+                  <TouchableOpacity
+                    onPress={() => {
+                      if (setSinglemarketdata?.creator_user_id != auth?.id) {
+                        setJoined(true);
+                        setTimeout(() => {
+                          setJoined(false);
+                          setModal_2(false);
+                        }, 1500);
+                      } else {
+                        DeleteMarket(setSinglemarketdata?.id);
+                      }
+                    }}
+                    style={{
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      paddingVertical: 10,
+                      flexDirection: 'row',
+                      borderRadius: 6,
+                      backgroundColor:
+                        setSinglemarketdata?.creator_user_id == auth?.id
+                          ? theme.colors.red
+                          : theme.colors.green,
+                      // flex: 1,
+                      shadowColor: '#000',
+                      shadowOffset: {
+                        width: 0,
+                        height: 2,
+                      },
+                      shadowOpacity: 0.25,
+                      shadowRadius: 3.84,
+
+                      elevation: 5,
+                      marginVertical: 20,
+                    }}>
+                    {loading ? (
+                      <ActivityIndicator
+                        size={'small'}
+                        style={{margin: 2}}
+                        color="#fff"
+                      />
+                    ) : (
+                      <TextFormated
+                        style={{
+                          fontWeight: '700',
+                          color: theme.colors.primary,
+                        }}>
+                        {setSinglemarketdata?.creator_user_id == auth?.id
+                          ? 'DELETE'
+                          : 'JOIN'}
+                      </TextFormated>
+                    )}
+                  </TouchableOpacity>
+                </ScrollView>
+              </View>
+            ) : (
+              <TouchableOpacity
+                activeOpacity={1}
+                style={{
+                  backgroundColor: theme.colors.primary,
+                  width: Dimensions.get('window').width / 1.8,
+                  height: Dimensions.get('window').width - 140,
+                  alignItems: 'center',
+                  borderRadius: 20,
+                  borderColor: theme.colors.Light_Gray,
+                  justifyContent: 'center',
+                }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    setAdd(true);
+                  }}
+                  style={{
+                    justifyContent: 'center',
+                  }}>
+                  <Image
+                    style={{
+                      width: Dimensions.get('window').width / 2.8,
+                      height: Dimensions.get('window').width / 2.8,
+                      resizeMode: 'cover',
+                      // tintColor: theme.colors.primary,
+                      borderRadius: 150,
+                    }}
+                    source={
+                      deleted == true
+                        ? require('../../../../../assets/gif/delete.gif')
+                        : require('../../../../../assets/gif/Success.gif')
+                    }
+                  />
                 </TouchableOpacity>
-              </ScrollView>
-            </View>
+              </TouchableOpacity>
+            )}
           </TouchableOpacity>
         </TouchableOpacity>
       </Modal>

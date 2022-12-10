@@ -15,6 +15,7 @@ import OwnerSignup from '../screens/home/Tab/User/OwnerSignup';
 import JoinedMarkets from '../screens/home/Tab/User/JoinedMarkets';
 import AllMarketProduct from '../screens/home/Tab/User/AllMarketProduct';
 import SelectProduct from '../screens/home/Tab/User/SelectProduct';
+import UpdateMarket from '../screens/home/Tab/User/UpdateMarket';
 import Scanner from '../screens/home/Tab/User/Scanner';
 import Privacy from '../screens/home/Drawer/Privacy';
 import About from '../screens/home/Drawer/About';
@@ -53,6 +54,7 @@ function App() {
       <Stack.Screen name="JoinedMarkets" component={JoinedMarkets} />
       <Stack.Screen name="AllMarketProduct" component={AllMarketProduct} />
       <Stack.Screen name="SelectProduct" component={SelectProduct} />
+      <Stack.Screen name="UpdateMarket" component={UpdateMarket} />
     </Stack.Navigator>
   );
 }

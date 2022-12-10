@@ -16,6 +16,7 @@ export default function Header({
   navigation,
   backonPress,
   opacity,
+  tintColor,
 }) {
   return (
     <View
@@ -53,7 +54,15 @@ export default function Header({
 
       <TouchableOpacity onPress={onPressTwo}>
         <Image
-          style={{height: 40, width: 40, resizeMode: 'contain'}}
+          style={{
+            height: 24,
+            width: 24,
+            resizeMode: 'contain',
+            tintColor: tintColor,
+            // backgroundColor: theme.colors.green,
+            // paddingVertical: 15,
+            // paddingHorizontal: 15,
+          }}
           source={sourcetwo}
         />
       </TouchableOpacity>
