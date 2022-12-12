@@ -209,7 +209,7 @@ export default function ShowCase({navigation, setGet_followed_event}) {
           ListEmptyComponent={
             <View
               style={{
-                // alignItems: 'center',
+                alignItems: 'center',
                 flex: 1,
                 backgroundColor: '#fff',
                 justifyContent: 'center',
@@ -221,7 +221,7 @@ export default function ShowCase({navigation, setGet_followed_event}) {
                   width: dimensions.width / 2,
                   resizeMode: 'contain',
                   alignSelf: 'center',
-                  // borderWidth: 1,
+                  borderWidth: 1,
                 }}
               />
               <Text

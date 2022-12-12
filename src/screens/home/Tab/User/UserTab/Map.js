@@ -72,6 +72,7 @@ export default function MapSearch({navigation}) {
   const [isFocused, setIsFocused] = useState(true);
   const [joined, setJoined] = useState(false);
   const [deleted, setDeleted] = useState(false);
+  const [Leave, setLeave] = useState(false);
 
   const [data, setData] = useState();
   // alert(JSON.stringify(Modal_2));
@@ -126,12 +127,97 @@ export default function MapSearch({navigation}) {
 
       if (rslt.success == '1') {
         setDeleted(true);
+        GetMarkets();
         setTimeout(() => {
           setDeleted(false);
           setModal_2(false);
-          ShowToast('Market deleted successfully.');
+        }, 1800);
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+      }
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      // alert('An error occured.');
+      ShowToast('An error occured.', 'error');
+
+      console.log(e);
+    }
+  }
+
+  async function JoinMarket(id) {
+    try {
+      setLoading(true);
+      const url = baseUrl + 'join_market';
+
+      const body = new FormData();
+      body.append('user_id', auth?.id);
+      body.append('market_id', id);
+
+      console.log(body);
+
+      const res = await fetch(url, {
+        method: 'POST',
+        body: body,
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        setJoined(true);
+        setTimeout(() => {
+          setJoined(false);
+          setModal_2(false);
           GetMarkets();
-        }, 2000);
+        }, 1800);
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+      }
+      setLoading(false);
+    } catch (e) {
+      setLoading(false);
+      // alert('An error occured.');
+      ShowToast('An error occured.', 'error');
+
+      console.log(e);
+    }
+  }
+
+  async function LeaveMarket(id) {
+    try {
+      setLoading(true);
+      const url = baseUrl + 'leave_market';
+
+      const body = new FormData();
+      body.append('user_id', auth?.id);
+      body.append('market_id', id);
+
+      console.log(body);
+
+      const res = await fetch(url, {
+        method: 'POST',
+        body: body,
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        setLeave(true);
+        setDeleted(true);
+        setTimeout(() => {
+          setLeave(false);
+          setDeleted(false);
+          setModal_2(false);
+          GetMarkets();
+        }, 1800);
       } else {
         ShowToast(rslt.message || 'Unknown error', 'error');
       }
@@ -255,8 +341,8 @@ export default function MapSearch({navigation}) {
               }, 600);
               //   console.log(auth.id);
               //   console.log(new Date());
-              // console.log(v?.nativeEvent?.coordinate?.latitude);
-              // console.log(v?.nativeEvent?.coordinate?.longitude);
+              console.log(v?.nativeEvent?.coordinate?.latitude);
+              console.log(v?.nativeEvent?.coordinate?.longitude);
             }}
             draggable
             // onDragStart={v => console.log('onDragStart', v)}
@@ -621,13 +707,17 @@ export default function MapSearch({navigation}) {
         visible={Modal_2}
         onDismiss={() => {
           setModal_2(false);
+          //   : Leave == false
+          //   ? setModal_2(true)
+          //   : deleted == false
+          //   ? setModal_2(false)
+          //   : setModal_2(true);
         }}
         transparent
         style={{}}>
         <TouchableOpacity
           onPress={() => {
             setModal_2(false);
-            // setAdd(false);
           }}
           activeOpacity={1}
           style={{
@@ -651,7 +741,7 @@ export default function MapSearch({navigation}) {
               // borderWidth: 0.4,
               // marginBottom: 45,
             }}>
-            {joined == false ? (
+            {joined == false && deleted == false ? (
               <View
                 style={{
                   flex: 1,
@@ -747,100 +837,104 @@ export default function MapSearch({navigation}) {
                     borderRadius={6}
                     editable={false}
                   />
+                  {setSinglemarketdata?.attendees.find(
+                    v => v?.id == auth?.id,
+                  ) ? (
+                    <TouchableOpacity
+                      onPress={() => {
+                        LeaveMarket(setSinglemarketdata?.id);
+                      }}
+                      style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        paddingVertical: 10,
+                        flexDirection: 'row',
+                        borderRadius: 6,
+                        backgroundColor: theme.colors.red,
+                        // flex: 1,
+                        shadowColor: '#000',
+                        shadowOffset: {
+                          width: 0,
+                          height: 2,
+                        },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 3.84,
 
-                  {/* {setSinglemarketdata?.creator_user_id == auth?.id && (
-                  <TouchableOpacity
-                    onPress={() => {
-                      navigation.navigate('UpdateMarket');
-                    }}
-                    style={{
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      paddingVertical: 10,
-                      flexDirection: 'row',
-                      borderRadius: 6,
-                      backgroundColor: theme.colors.green,
-                      // flex: 1,
-                      shadowColor: '#000',
-                      shadowOffset: {
-                        width: 0,
-                        height: 2,
-                      },
-                      shadowOpacity: 0.25,
-                      shadowRadius: 3.84,
+                        elevation: 5,
+                        marginVertical: 20,
+                      }}>
+                      {loading ? (
+                        <ActivityIndicator
+                          size={'small'}
+                          style={{margin: 2}}
+                          color="#fff"
+                        />
+                      ) : (
+                        <TextFormated
+                          style={{
+                            fontWeight: '700',
+                            color: theme.colors.primary,
+                          }}>
+                          LEAVE
+                        </TextFormated>
+                      )}
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity
+                      onPress={() => {
+                        if (setSinglemarketdata?.creator_user_id != auth?.id) {
+                          setLoading(true);
+                          setTimeout(() => {
+                            JoinMarket(setSinglemarketdata?.id);
+                          }, 500);
+                        } else {
+                          setLoading(true);
+                          setTimeout(() => {
+                            DeleteMarket(setSinglemarketdata?.id);
+                          }, 500);
+                        }
+                      }}
+                      style={{
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        paddingVertical: 10,
+                        flexDirection: 'row',
+                        borderRadius: 6,
+                        backgroundColor:
+                          setSinglemarketdata?.creator_user_id == auth?.id
+                            ? theme.colors.red
+                            : theme.colors.green,
+                        // flex: 1,
+                        shadowColor: '#000',
+                        shadowOffset: {
+                          width: 0,
+                          height: 2,
+                        },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 3.84,
 
-                      elevation: 5,
-                      marginVertical: 20,
-                    }}>
-                    {loading ? (
-                      <ActivityIndicator
-                        size={'small'}
-                        style={{margin: 2}}
-                        color="#fff"
-                      />
-                    ) : (
-                      <TextFormated
-                        style={{
-                          fontWeight: '700',
-                          color: theme.colors.primary,
-                        }}>
-                        ADD MORE PRODUCT
-                      </TextFormated>
-                    )}
-                  </TouchableOpacity>
-                )} */}
-                  <TouchableOpacity
-                    onPress={() => {
-                      if (setSinglemarketdata?.creator_user_id != auth?.id) {
-                        setJoined(true);
-                        setTimeout(() => {
-                          setJoined(false);
-                          setModal_2(false);
-                        }, 1500);
-                      } else {
-                        DeleteMarket(setSinglemarketdata?.id);
-                      }
-                    }}
-                    style={{
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      paddingVertical: 10,
-                      flexDirection: 'row',
-                      borderRadius: 6,
-                      backgroundColor:
-                        setSinglemarketdata?.creator_user_id == auth?.id
-                          ? theme.colors.red
-                          : theme.colors.green,
-                      // flex: 1,
-                      shadowColor: '#000',
-                      shadowOffset: {
-                        width: 0,
-                        height: 2,
-                      },
-                      shadowOpacity: 0.25,
-                      shadowRadius: 3.84,
-
-                      elevation: 5,
-                      marginVertical: 20,
-                    }}>
-                    {loading ? (
-                      <ActivityIndicator
-                        size={'small'}
-                        style={{margin: 2}}
-                        color="#fff"
-                      />
-                    ) : (
-                      <TextFormated
-                        style={{
-                          fontWeight: '700',
-                          color: theme.colors.primary,
-                        }}>
-                        {setSinglemarketdata?.creator_user_id == auth?.id
-                          ? 'DELETE'
-                          : 'JOIN'}
-                      </TextFormated>
-                    )}
-                  </TouchableOpacity>
+                        elevation: 5,
+                        marginVertical: 20,
+                      }}>
+                      {loading ? (
+                        <ActivityIndicator
+                          size={'small'}
+                          style={{margin: 2}}
+                          color="#fff"
+                        />
+                      ) : (
+                        <TextFormated
+                          style={{
+                            fontWeight: '700',
+                            color: theme.colors.primary,
+                          }}>
+                          {setSinglemarketdata?.creator_user_id == auth?.id
+                            ? 'DELETE'
+                            : 'JOIN'}
+                        </TextFormated>
+                      )}
+                    </TouchableOpacity>
+                  )}
                 </ScrollView>
               </View>
             ) : (
@@ -870,12 +964,44 @@ export default function MapSearch({navigation}) {
                       // tintColor: theme.colors.primary,
                       borderRadius: 150,
                     }}
+                    // source={require('../../../../../assets/gif/delete.gif')}
                     source={
                       deleted == true
                         ? require('../../../../../assets/gif/delete.gif')
                         : require('../../../../../assets/gif/Success.gif')
                     }
                   />
+                  {Leave == false ? (
+                    <TextFormated
+                      style={{
+                        fontWeight: '700',
+                        color:
+                          deleted == true
+                            ? theme.colors.red
+                            : theme.colors.green,
+                        alignSelf: 'center',
+                        fontSize: 20,
+                        textAlign: 'center',
+                      }}>
+                      {deleted == true
+                        ? 'Market Deleted Successfully'
+                        : 'Market Joined Successfully'}
+                    </TextFormated>
+                  ) : (
+                    <TextFormated
+                      style={{
+                        fontWeight: '700',
+                        color:
+                          deleted == true
+                            ? theme.colors.red
+                            : theme.colors.green,
+                        alignSelf: 'center',
+                        fontSize: 20,
+                        textAlign: 'center',
+                      }}>
+                      Market Leaved Successfully
+                    </TextFormated>
+                  )}
                 </TouchableOpacity>
               </TouchableOpacity>
             )}

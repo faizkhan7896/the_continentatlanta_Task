@@ -815,10 +815,10 @@ export default function History({navigation, setGet_followed_event}) {
 
       <TouchableOpacity
         onPress={() => {
-          // if (profileData?.signup_status == 'Owner Account Not Activated') {
-          //   navigation.navigate('OwnerSignup');
-          //   return;
-          // }
+          if (profileData?.signup_status == 'Owner Account Not Activated') {
+            navigation.navigate('OwnerSignup');
+            return;
+          }
           navigation.navigate('AddProduct');
         }}
         style={{
