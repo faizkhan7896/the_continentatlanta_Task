@@ -131,7 +131,7 @@ export default function Payments({navigation}) {
           style={{
             borderRadius: 20,
             marginHorizontal: 20,
-            height: dimensions.width / 2.5,
+            height: dimensions.width / 3,
             // backgroundColor: theme.colors.yellow,
             flex: 1,
             justifyContent: 'center',
@@ -184,7 +184,7 @@ export default function Payments({navigation}) {
           </LinearGradient>
         </TouchableOpacity>
 
-        <TouchableOpacity
+        {/* <TouchableOpacity
           onPress={() => {
             onPressMobileNumberClick('+81 80 6634 5512');
           }}
@@ -234,7 +234,7 @@ export default function Payments({navigation}) {
               +81 80 6634 5512
             </TextFormatted>
           </LinearGradient>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
     </View>
   );

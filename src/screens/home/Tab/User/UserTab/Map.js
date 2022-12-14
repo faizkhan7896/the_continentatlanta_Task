@@ -324,6 +324,7 @@ export default function MapSearch({navigation}) {
                 latitude: item.lat || 0,
                 longitude: item.long || 0,
               }}
+              style={{tintColor: theme.colors.green}}
             />
           ))
         ) : (
@@ -703,15 +704,10 @@ export default function MapSearch({navigation}) {
       </Modal>
 
       <Modal
-        animationType="none"
         visible={Modal_2}
+        animationType="none"
         onDismiss={() => {
           setModal_2(false);
-          //   : Leave == false
-          //   ? setModal_2(true)
-          //   : deleted == false
-          //   ? setModal_2(false)
-          //   : setModal_2(true);
         }}
         transparent
         style={{}}>
@@ -756,7 +752,6 @@ export default function MapSearch({navigation}) {
                       backgroundColor: theme.colors.inputBG,
                       borderRadius: 6,
                       alignItems: 'center',
-                      // borderWidth: 1,
                       borderColor: 'red',
                     }}>
                     <TextFormated
@@ -820,7 +815,6 @@ export default function MapSearch({navigation}) {
                         paddingHorizontal: 15,
                       }}>
                       {moment(setSinglemarketdata?.date_time).format('ll')}
-                      {/* {setSinglemarketdata?.date_time} */}
                     </TextFormated>
                   </View>
                   <CustomTextInput

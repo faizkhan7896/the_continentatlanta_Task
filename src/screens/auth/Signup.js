@@ -32,8 +32,8 @@ export default function Login({navigation}) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [date, setDate] = useState();
-  const [country_code, setCountry_code] = useState('');
+  const [date, setDate] = useState(new Date());
+  const [country_code, setCountry_code] = useState('+81');
   const [number, setNumber] = useState('');
 
   const [loading, setLoading] = useState(false);
@@ -86,7 +86,7 @@ export default function Login({navigation}) {
       body.append('email', email);
       body.append('password', password);
       body.append('name', name);
-      body.append('dob', 'Remove For App Store');
+      body.append('dob', date);
       body.append('country_code', country_code);
       body.append('mobile', number);
 
