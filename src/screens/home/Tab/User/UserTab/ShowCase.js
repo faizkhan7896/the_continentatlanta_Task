@@ -27,6 +27,7 @@ export default function ShowCase({navigation, setGet_followed_event}) {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [isFocused, setIsFocused] = useState(true);
+  const [l, setL] = useState(true);
 
   async function LikeUnlike(id) {
     try {
@@ -63,9 +64,9 @@ export default function ShowCase({navigation, setGet_followed_event}) {
         method: 'GET',
         headers: {'Cache-Control': 'no-cache'},
       });
-      console.log(res);
+      // console.log(res);
       const rslt = await res.json();
-      console.log(rslt);
+      // console.log(rslt);
 
       if (rslt.success == '1') {
         setData(rslt.post_data.reverse());
@@ -142,7 +143,12 @@ export default function ShowCase({navigation, setGet_followed_event}) {
 
   return (
     <View style={{flex: 1}}>
-      <LoadingSpinner size={60} visible={loading} color={theme.colors.yellow} />
+      <LoadingSpinner
+        textContent="Loading..."
+        size={60}
+        visible={loading}
+        color={theme.colors.yellow}
+      />
 
       <FlatList
         data={data}
@@ -152,31 +158,22 @@ export default function ShowCase({navigation, setGet_followed_event}) {
         ListEmptyComponent={
           <View
             style={{
-              // alignItems: 'center',
               flex: 1,
+              alignItems: 'center',
               backgroundColor: '#fff',
               justifyContent: 'center',
             }}>
             <Image
-              source={require('../../../../../assets/DataNotFound.png')}
+              source={require('../../../../../assets/gif/DataNotFound.gif')}
               style={{
-                height: dimensions.width / 2,
-                width: dimensions.width / 2,
+                height: dimensions.width / 1.5,
+                width: dimensions.width / 1.5,
                 resizeMode: 'contain',
                 alignSelf: 'center',
-                // borderWidth: 1,
+                borderWidth: 3,
+                borderColor: theme.colors.primary,
               }}
             />
-            <Text
-              style={{
-                fontSize: 24,
-                fontWeight: '700',
-                color: theme.colors.Black,
-                marginVertical: 15,
-                textAlign: 'center',
-              }}>
-              Data Not Found
-            </Text>
           </View>
         }
         numColumns={2}
@@ -329,21 +326,22 @@ export default function ShowCase({navigation, setGet_followed_event}) {
           navigation.navigate('JoinedMarkets');
         }}
         style={{
-          paddingVertical: 15,
-          paddingHorizontal: 15,
+          // paddingVertical: 7,
+          paddingHorizontal: 7,
           backgroundColor: theme.colors.green,
           borderRadius: 120,
           position: 'absolute',
           bottom: 40,
-          right: 20,
+          right: 30,
         }}>
         <Image
           style={{
-            height: 45,
-            width: 45,
-            resizeMode: 'contain',
+            borderRadius: 120,
+            height: 70,
+            width: 55,
+            resizeMode: 'cover',
           }}
-          source={require('../../../../../assets/gif/shop.gif')}
+          source={require('../../../../../assets/gif/market.gif')}
         />
       </TouchableOpacity>
     </View>

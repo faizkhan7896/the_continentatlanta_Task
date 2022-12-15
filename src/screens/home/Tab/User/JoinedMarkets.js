@@ -22,6 +22,7 @@ import {theme} from '../../../../utils/theme';
 import {ShowToast} from '../../../../utils/ToastFunction';
 import {RefreshControl} from 'react-native-web-refresh-control';
 import {useSelector} from 'react-redux';
+import moment from 'moment';
 
 export default function ShowCase({navigation, setGet_followed_event}) {
   const dimensions = useWindowDimensions();
@@ -104,6 +105,7 @@ export default function ShowCase({navigation, setGet_followed_event}) {
     try {
       setLoading(true);
       const url = baseUrl + 'leave_market';
+      console.log(url);
 
       const body = new FormData();
       body.append('user_id', auth?.id);
@@ -123,6 +125,7 @@ export default function ShowCase({navigation, setGet_followed_event}) {
       console.log(rslt);
 
       if (rslt.success == '1') {
+        setData([]);
         GetProduct();
       } else {
         ShowToast(rslt.message || 'Unknown error', 'error');
@@ -137,11 +140,6 @@ export default function ShowCase({navigation, setGet_followed_event}) {
     }
   }
 
-  const onRefresh = useCallback(() => {
-    setRefreshing(true);
-    GetProduct(true);
-  }, []);
-
   useEffect(() => {
     GetProduct();
   }, []);
@@ -152,6 +150,27 @@ export default function ShowCase({navigation, setGet_followed_event}) {
       <Header navigation={navigation} Headertext={'Markets'} />
       <LoadingSpinner size={60} visible={loading} color={theme.colors.yellow} />
       <ScrollView>
+        {data.length == 0 && (
+          <View
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              backgroundColor: '#fff',
+              justifyContent: 'center',
+            }}>
+            <Image
+              source={require('../../../../assets/gif/DataNotFound.gif')}
+              style={{
+                height: dimensions.width / 1.5,
+                width: dimensions.width / 1.5,
+                resizeMode: 'contain',
+                alignSelf: 'center',
+                borderWidth: 3,
+                borderColor: theme.colors.primary,
+              }}
+            />
+          </View>
+        )}
         {data.map((v, i) => (
           <View style={{}}>
             <View
@@ -174,7 +193,9 @@ export default function ShowCase({navigation, setGet_followed_event}) {
                     color: theme.colors.Black,
                     textAlign: 'center',
                   }}>
-                  Christmas Party, 17 Dec
+                  {v?.maekrt_data?.market_name +
+                    ', ' +
+                    moment(v?.maekrt_data?.date_time).format('ll')}
                 </Text>
 
                 <Text
@@ -184,12 +205,12 @@ export default function ShowCase({navigation, setGet_followed_event}) {
                     textAlign: 'center',
                     marginTop: 5,
                   }}>
-                  06:00 PM - 12:00 AM
+                  {v?.maekrt_data?.duration}
                 </Text>
               </View>
               <TouchableOpacity
                 onPress={() => {
-                  LeaveMarket(v?.id);
+                  LeaveMarket(v?.market_id);
                 }}
                 style={{
                   backgroundColor: theme.colors.red,
@@ -222,27 +243,31 @@ export default function ShowCase({navigation, setGet_followed_event}) {
               horizontal
               // ItemSeparatorComponent={() => <View style={{width: 20}} />}
               ListFooterComponent={
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('AllMarketProduct')}
-                  style={{
-                    backgroundColor: theme.colors.primary,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    borderRadius: 5,
-                    paddingVertical: 15,
-                    width: dimensions.width / 4,
-                    height: dimensions.width / 3,
-                  }}>
-                  <Text
-                    style={{
-                      fontWeight: '600',
-                      color: theme.colors.Black,
-                      fontSize: 12,
-                      paddingHorizontal: 20,
-                    }}>
-                    VIEW ALL
-                  </Text>
-                </TouchableOpacity>
+                <View>
+                  {data[i].selected_products?.length > 9 && (
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate('AllMarketProduct')}
+                      style={{
+                        backgroundColor: theme.colors.primary,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: 5,
+                        paddingVertical: 15,
+                        width: dimensions.width / 4,
+                        height: dimensions.width / 3,
+                      }}>
+                      <Text
+                        style={{
+                          fontWeight: '600',
+                          color: theme.colors.Black,
+                          fontSize: 12,
+                          paddingHorizontal: 20,
+                        }}>
+                        VIEW ALL
+                      </Text>
+                    </TouchableOpacity>
+                  )}
+                </View>
               }
               renderItem={({item, index}) => (
                 <TouchableOpacity

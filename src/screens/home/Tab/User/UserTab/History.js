@@ -397,31 +397,22 @@ export default function History({navigation, setGet_followed_event}) {
         ListEmptyComponent={
           <View
             style={{
-              // alignItems: 'center',
               flex: 1,
+              alignItems: 'center',
               backgroundColor: '#fff',
               justifyContent: 'center',
             }}>
             <Image
-              source={require('../../../../../assets/DataNotFound.png')}
+              source={require('../../../../../assets/gif/DataNotFound.gif')}
               style={{
-                height: dimensions.width / 2,
-                width: dimensions.width / 2,
+                height: dimensions.width / 1.5,
+                width: dimensions.width / 1.5,
                 resizeMode: 'contain',
                 alignSelf: 'center',
-                // borderWidth: 1,
+                borderWidth: 3,
+                borderColor: theme.colors.primary,
               }}
             />
-            <Text
-              style={{
-                fontSize: 24,
-                fontWeight: '700',
-                color: theme.colors.Black,
-                marginVertical: 15,
-                textAlign: 'center',
-              }}>
-              Data Not Found
-            </Text>
           </View>
         }
         showsVerticalScrollIndicator={false}
@@ -1466,12 +1457,16 @@ function OrderItem({
 
       <View style={{marginVertical: 20}}>
         <SolidButton
-          source={require('../../../../../assets/ScrollDown.png')}
+          source={require('../../../../../assets/gif/down.gif')}
+          rotate={visible == true && '180deg'}
+          paddingVertical={7}
           backgroundColor={theme.colors.ScrollDown}
           onPress={() => {
             setVisible(!visible);
           }}
           marginHorizontal={0.1}
+          img_height={24}
+          img_width={24}
         />
       </View>
       {/* )} */}
@@ -1736,7 +1731,9 @@ function OrderItem({
           {item?.order_otp != 'PENDING' && (
             <View style={{marginVertical: 20}}>
               <SolidButton
-                source={require('../../../../../assets/ScrollDown.png')}
+                source={require('../../../../../assets/gif/down.gif')}
+                rotate={Step3 == true && '180deg'}
+                paddingVertical={7}
                 backgroundColor={theme.colors.ScrollDown}
                 onPress={() => {
                   if (item?.video_1 != 'https://pickpic4u.com/uploads/NO') {

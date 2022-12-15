@@ -75,6 +75,7 @@ export default function Login({navigation}) {
     //   ShowToast('You must be older than 13 years', 'error');
     //   return;
     // }
+    // return;
 
     try {
       setLoading(true);
@@ -292,6 +293,7 @@ export default function Login({navigation}) {
             value={number}
             searchbar={require('../../assets/Number.png')}
             placeholder={'Mobile Number'}
+            maxLength={11}
           />
         </View>
         <View style={{marginHorizontal: 20}}>
@@ -301,6 +303,7 @@ export default function Login({navigation}) {
             paddingVertical={15}
             borderRadius={10}
             marginTop={50}
+            loading={loading}
           />
         </View>
         {/* <View

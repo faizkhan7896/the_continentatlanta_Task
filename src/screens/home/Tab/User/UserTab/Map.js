@@ -36,6 +36,7 @@ import CustomTextInput from '../../../../../components/TextInput';
 import {baseUrl} from '../../../../../utils/constance';
 import {theme} from '../../../../../utils/theme';
 import {ShowToast} from '../../../../../utils/ToastFunction';
+import LoadingSpinner from '../../../../../components/LoadingSpinner';
 
 const MARKERS = [
   {latitude: 22.761794329667982, longitude: 75.88739432394505},
@@ -58,7 +59,7 @@ export default function MapSearch({navigation}) {
   const [selectedLon, setSelectedLon] = useState();
   const [modal, setModal] = useState(false);
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState();
+  const [date, setDate] = useState('');
   const [loading, setLoading] = useState(false);
   const [Modal_2, setModal_2] = useState(false);
   const [Modal_3, setModal_3] = useState(false);
@@ -79,6 +80,7 @@ export default function MapSearch({navigation}) {
 
   async function GetMarkets(silent = false) {
     try {
+      setLoading(true);
       const url = baseUrl + 'get_all_market';
       console.log(url);
 
@@ -94,10 +96,13 @@ export default function MapSearch({navigation}) {
 
       if (rslt.success == '1') {
         setData(rslt.market_data);
+        setLoading(false);
       } else {
+        setLoading(false);
         // ShowToast(rslt.message || 'Unknown error', 'error');
       }
     } catch (e) {
+      setLoading(false);
       // alert('An error occured.');
       ShowToast('An error occured.', 'error');
       console.log(e);
@@ -231,9 +236,9 @@ export default function MapSearch({navigation}) {
     }
   }
 
-  // useEffect(() => {
-  //   GetMarkets();
-  // }, []);
+  useEffect(() => {
+    GetMarkets();
+  }, []);
 
   useEffect(() => {
     const int = setInterval(() => {
@@ -262,6 +267,13 @@ export default function MapSearch({navigation}) {
         barStyle={'dark-content'}
         backgroundColor={theme.colors.primary}
       />
+      <LoadingSpinner
+        textContent="Loading..."
+        size={60}
+        visible={loading}
+        color={theme.colors.yellow}
+      />
+
       <DatePicker
         modal
         open={open}
@@ -319,17 +331,20 @@ export default function MapSearch({navigation}) {
               }}
               draggable={true}
               key={index}
-              image={require('../../../../../assets/Deal.png')}
+              style={{height: 30, width: 30, resizeMode: 'contain'}}
+              image={
+                item?.attendees.find(v => v?.id == auth?.id)
+                  ? require('../../../../../assets/Joined.png')
+                  : require('../../../../../assets/Deal.png')
+              }
               coordinate={{
                 latitude: item.lat || 0,
                 longitude: item.long || 0,
               }}
-              style={{tintColor: theme.colors.green}}
             />
           ))
         ) : (
           <Marker
-            // image={require('../../../../../assets/Deal.png')}
             coordinate={{
               latitude: MARKERS[0].latitude || 0,
               longitude: MARKERS[0].longitude || 0,

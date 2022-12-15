@@ -33,7 +33,7 @@ export default function ShowCase({navigation, setGet_followed_event}) {
   const [isFocused, setIsFocused] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState([]);
   const {params} = useRoute();
-  // alert(JSON.stringify(params.market_name));
+  // alert(JSON.stringify(params?.date));
 
   async function LikeUnlike(id) {
     try {
@@ -126,7 +126,7 @@ export default function ShowCase({navigation, setGet_followed_event}) {
       );
       body.append('lat', params?.selectedLat);
       body.append('long', params?.selectedLon);
-      body.append('date_time', params?.date);
+      body.append('date_time', new Date(params?.date).toISOString());
       body.append('selected_products', selectedProduct.join(','));
 
       console.log(body);
@@ -203,54 +203,30 @@ export default function ShowCase({navigation, setGet_followed_event}) {
         }}>
         <FlatList
           data={data}
-          // refreshControl={
-          //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          // }
           ListEmptyComponent={
             <View
               style={{
-                alignItems: 'center',
                 flex: 1,
+                alignItems: 'center',
                 backgroundColor: '#fff',
                 justifyContent: 'center',
               }}>
               <Image
-                source={require('../../../../assets/DataNotFound.png')}
+                source={require('../../../../assets/gif/DataNotFound.gif')}
                 style={{
-                  height: dimensions.width / 2,
-                  width: dimensions.width / 2,
+                  height: dimensions.width / 1.5,
+                  width: dimensions.width / 1.5,
                   resizeMode: 'contain',
                   alignSelf: 'center',
-                  borderWidth: 1,
+                  borderWidth: 3,
+                  borderColor: theme.colors.primary,
                 }}
               />
-              <Text
-                style={{
-                  fontSize: 24,
-                  fontWeight: '700',
-                  color: theme.colors.Black,
-                  marginVertical: 15,
-                  textAlign: 'center',
-                }}>
-                Data Not Found
-              </Text>
             </View>
           }
           numColumns={2}
-          style={{
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-          }}
-          contentContainerStyle={
-            {
-              // flexDirection: 'row',
-              // flexWrap: 'wrap',
-            }
-          }
-          // horizontal
           showsVerticalScrollIndicator={false}
           scrollEnabled={true}
-          // contentContainerStyle={{marginVertical: 15}}
           ItemSeparatorComponent={() => <View style={{width: 20}} />}
           renderItem={({item, index}) => (
             <TouchableOpacity
