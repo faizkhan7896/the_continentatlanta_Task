@@ -47,7 +47,7 @@ export default function Scanner({navigation}) {
     <View style={{flex: 1, backgroundColor: theme.colors.Black}}>
       <Statusbar
         backgroundColor={theme.colors.Black}
-        barStyle="light-content"
+        barStyle={'dark-content'}
       />
       <Header
         navigation={navigation}

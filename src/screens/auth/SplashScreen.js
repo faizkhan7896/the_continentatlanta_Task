@@ -10,7 +10,7 @@ export default function Splash({navigation}) {
   }, 1000);
   return (
     <View style={styles.linearGradient}>
-      <Statusbar barStyle={'light-content'} backgroundColor={'#0091E7'} />
+      <Statusbar barStyle={'dark-content'} backgroundColor={'#0091E7'} />
 
       <View
         style={{

@@ -27,7 +27,7 @@ export default function Image_Zoom({navigation}) {
         // justifyContent: 'center',
       }}>
       <Statusbar
-        barStyle={'light-content'}
+        barStyle={'dark-content'}
         backgroundColor={theme.colors.Black}
       />
       <Header

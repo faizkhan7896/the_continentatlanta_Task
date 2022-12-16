@@ -183,7 +183,12 @@ export default function ShowCase({navigation, setGet_followed_event}) {
         flex: 1,
         backgroundColor: '#fff',
       }}>
-      <LoadingSpinner size={60} visible={loading} color={theme.colors.yellow} />
+      <LoadingSpinner
+        textContent="Loading..."
+        size={60}
+        visible={loading}
+        color={theme.colors.yellow}
+      />
 
       <Statusbar
         barStyle="dark-content"

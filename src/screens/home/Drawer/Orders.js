@@ -22,7 +22,7 @@ export default function TabScreen({navigation}) {
     <View style={{flex: 1, backgroundColor: theme.colors.primary}}>
       <Statusbar
         backgroundColor={theme.colors.primary}
-        barStyle="light-content"
+        barStyle={'dark-content'}
       />
       <Header navigation={navigation} Headertext={'Orders'} />
 

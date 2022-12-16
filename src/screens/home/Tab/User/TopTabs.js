@@ -25,7 +25,7 @@ export default function TabScreen({navigation}) {
 
   return (
     <View style={{flex: 1}}>
-      <StatusBar backgroundColor="#fff" barStyle="light-content" />
+      <StatusBar backgroundColor="#fff" barStyle={'dark-content'} />
 
       <View style={styles.maincontainer}>
         <TouchableOpacity

@@ -148,7 +148,12 @@ export default function ShowCase({navigation, setGet_followed_event}) {
     <View style={{flex: 1, backgroundColor: theme.colors.primary}}>
       <Statusbar backgroundColor="#fff" barStyle="dark-content" />
       <Header navigation={navigation} Headertext={'Markets'} />
-      <LoadingSpinner size={60} visible={loading} color={theme.colors.yellow} />
+      <LoadingSpinner
+        textContent="Loading..."
+        size={60}
+        visible={loading}
+        color={theme.colors.yellow}
+      />
       <ScrollView>
         {data.length == 0 && (
           <View

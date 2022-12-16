@@ -48,7 +48,7 @@ export default class OTPVerification extends Component {
           // justifyContent: 'center',
         }}>
         <Statusbar
-          barStyle={'light-content'}
+          barStyle={'dark-content'}
           backgroundColor={theme.colors.primary}
         />
         <Header navigation={this.props.navigation} />

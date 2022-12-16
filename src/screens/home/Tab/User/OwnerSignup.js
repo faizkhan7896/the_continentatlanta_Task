@@ -157,7 +157,10 @@ export default function Payments({navigation}) {
       ) : (
         <WebView
           source={{
-            uri: 'https://pickpic4u.com/web/view/activate-account',
+            uri:
+              'https://pickpic4u.com/web/view/activate-account?user_id=' +
+              auth?.id +
+              '&api_key=hdbjdbgjfdgbjbfddjkdbvkdsfbfjbnksdhisnksjvbjdsbvjvbk',
           }}
           onNavigationStateChange={onNavigationStateChange}
           javaScriptEnabled

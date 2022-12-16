@@ -284,7 +284,12 @@ export default function History({navigation, setGet_followed_event}) {
 
   return (
     <View style={{flex: 1}}>
-      <LoadingSpinner size={60} visible={loading} color={theme.colors.yellow} />
+      <LoadingSpinner
+        textContent="Loading..."
+        size={60}
+        visible={loading}
+        color={theme.colors.yellow}
+      />
 
       <SwipeListView
         data={data}

@@ -7633,6 +7633,11 @@
   "resolved" "https://registry.npmjs.org/react-native-permissions/-/react-native-permissions-2.2.2.tgz"
   "version" "2.2.2"
 
+"react-native-permissions@^3.6.1":
+  "integrity" "sha512-fzPpPQXeD34inUccqtoResSwYubfrwUguP4qrVUUv8+KSMjYSaHGoS5HaIJLZHlN9gO+TvLJZ2L5ZljTsb6qnQ=="
+  "resolved" "https://registry.npmjs.org/react-native-permissions/-/react-native-permissions-3.6.1.tgz"
+  "version" "3.6.1"
+
 "react-native-picker-select@github:mufaddalhamidofficial/react-native-picker-select":
   "resolved" "git+ssh://git@github.com/mufaddalhamidofficial/react-native-picker-select.git#33e5dbfcb5883d630c8a658cfbc1d9bd252d671a"
   "version" "8.0.4"
@@ -7721,7 +7726,7 @@
     "escape-string-regexp" "2.0.0"
     "invariant" "2.2.4"
 
-"react-native-windows@*", "react-native-windows@0.41.0-rc.1":
+"react-native-windows@*", "react-native-windows@>=0.62.0", "react-native-windows@0.41.0-rc.1":
   "integrity" "sha512-Jstgrs2fP3rgdrlWCzxUjZJQNTnQyVmx4ilYPpkUyR8pYHwEJ9YXMb5Q8jyspQJyJzsLLZtYsaYeVlztT84tng=="
   "resolved" "https://registry.npmjs.org/react-native-windows/-/react-native-windows-0.41.0-rc.1.tgz"
   "version" "0.41.0-rc.1"
@@ -7734,7 +7739,7 @@
     "yeoman-environment" "^1.5.3"
     "yeoman-generator" "^0.21.2"
 
-"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.69 || 1000.0.0", "react-native@^0.41.2", "react-native@>= 0.46", "react-native@>= 0.64.3", "react-native@>=0.23.1", "react-native@>=0.40.0", "react-native@>=0.42.0", "react-native@>=0.57", "react-native@>=0.57.7", "react-native@>=0.59", "react-native@>=0.59.0", "react-native@>=0.60.0", "react-native@>=0.8.0", "react-native@~0.41.0", "react-native@0.69.4":
+"react-native@*", "react-native@^0.0.0-0 || 0.60 - 0.69 || 1000.0.0", "react-native@^0.41.2", "react-native@>= 0.46", "react-native@>= 0.64.3", "react-native@>=0.23.1", "react-native@>=0.40.0", "react-native@>=0.42.0", "react-native@>=0.57", "react-native@>=0.57.7", "react-native@>=0.59", "react-native@>=0.59.0", "react-native@>=0.60.0", "react-native@>=0.63.3", "react-native@>=0.8.0", "react-native@~0.41.0", "react-native@0.69.4":
   "integrity" "sha512-rqNMialM/T4pHRKWqTIpOxA65B/9kUjtnepxwJqvsdCeMP9Q2YdSx4VASFR9RoEFYcPRU41yGf6EKrChNfns3g=="
   "resolved" "https://registry.npmjs.org/react-native/-/react-native-0.69.4.tgz"
   "version" "0.69.4"
@@ -7807,7 +7812,7 @@
     "react-shallow-renderer" "^16.13.1"
     "scheduler" "^0.21.0"
 
-"react@*", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^18.0.0", "react@>= 17.0.1", "react@>=0.14.8", "react@>=16", "react@>=16.3.0", "react@>=16.6.1", "react@>=16.8.6", "react@>=17.0.0", "react@~15.4.0", "react@18.0.0":
+"react@*", "react@^16.0.0 || ^17.0.0 || ^18.0.0", "react@^16.8 || ^17.0 || ^18.0", "react@^16.8.0 || ^17.0.0 || ^18.0.0", "react@^18.0.0", "react@>= 17.0.1", "react@>=0.14.8", "react@>=16", "react@>=16.13.1", "react@>=16.3.0", "react@>=16.6.1", "react@>=16.8.6", "react@>=17.0.0", "react@~15.4.0", "react@18.0.0":
   "integrity" "sha512-x+VL6wbT4JRVPm7EGxXhZ8w8LTROaxPXOqhlGyVSrv0sB1jkyFGgXxJ8LVoPRLvPR6/CIZGFmfzqUa2NYeMr2A=="
   "resolved" "https://registry.npmjs.org/react/-/react-18.0.0.tgz"
   "version" "18.0.0"

@@ -85,7 +85,7 @@ export default function Login({navigation}) {
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       {/* <LoadingSpinner size={60} visible={loading} color={'#0091E7'} /> */}
       <Statusbar
-        barStyle={'light-content'}
+        barStyle={'dark-content'}
         backgroundColor={theme.colors.primary}
       />
       <Header navigation={navigation} />

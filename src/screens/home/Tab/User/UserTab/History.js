@@ -387,7 +387,12 @@ export default function History({navigation, setGet_followed_event}) {
 
   return (
     <View style={{flex: 1}}>
-      <LoadingSpinner size={60} visible={loading} color={theme.colors.yellow} />
+      <LoadingSpinner
+        textContent="Loading..."
+        size={60}
+        visible={loading}
+        color={theme.colors.yellow}
+      />
 
       <FlatList
         data={data}
@@ -1465,8 +1470,8 @@ function OrderItem({
             setVisible(!visible);
           }}
           marginHorizontal={0.1}
-          img_height={24}
           img_width={24}
+          img_height={24}
         />
       </View>
       {/* )} */}
@@ -1734,6 +1739,8 @@ function OrderItem({
                 source={require('../../../../../assets/gif/down.gif')}
                 rotate={Step3 == true && '180deg'}
                 paddingVertical={7}
+                img_width={24}
+                img_height={24}
                 backgroundColor={theme.colors.ScrollDown}
                 onPress={() => {
                   if (item?.video_1 != 'https://pickpic4u.com/uploads/NO') {
@@ -1983,8 +1990,15 @@ function OrderItem({
                     <ActivityIndicator size={'small'} style={{}} color="#fff" />
                   ) : (
                     <TouchableOpacity
+                      // onPress={() => {
+                      //   playing ? pause() : play();
+                      // }}>
                       onPress={() => {
-                        playing ? pause() : play();
+                        if (
+                          item?.audio_1 != 'https://pickpic4u.com/uploads/NO'
+                        ) {
+                          playing ? pause() : play();
+                        }
                       }}>
                       <Image
                         source={
