@@ -815,7 +815,20 @@ export default function History({navigation, setGet_followed_event}) {
             navigation.navigate('OwnerSignup');
             return;
           }
-          navigation.navigate('AddProduct');
+          if (profileData?.signup_status == 'Account Under Review') {
+            // navigation.navigate('OwnerSignup');
+            ShowToast('Your account is under review.');
+            return;
+          }
+          if (profileData?.signup_status == 'Account Activated Successfully') {
+            navigation.navigate('AddProduct');
+            return;
+          }
+          if (profileData?.signup_status == 'Account Disabled') {
+            ShowToast('Your account is disabled.');
+            // navigation.navigate('OwnerSignup');
+            return;
+          }
         }}
         style={{
           // paddingVertical: 15,

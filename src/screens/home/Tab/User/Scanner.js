@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
@@ -63,7 +64,18 @@ export default function Scanner({navigation}) {
           showMarker={true}
           // flashMode={RNCamera.Constants.FlashMode.torch}
           customMarker={
-            <View>
+            <View
+              onPress={() => {
+                navigation.navigate('Payment', {
+                  url:
+                    'https://pickpic4u.com/web/view/create-checkout-session?quantity=1&user_id=' +
+                    auth?.id +
+                    '&owner_id=' +
+                    params?.post?.user_id +
+                    '&order_id=' +
+                    params?.id,
+                });
+              }}>
               <Image
                 style={{
                   height: Dimensions.get('window').width / 1.1,
