@@ -1699,10 +1699,16 @@ function OrderItem({
                 <View style={{flex: 1}}>
                   <SolidButton
                     text="SUBMIT"
-                    backgroundColor={theme.colors.green}
+                    backgroundColor={
+                      item?.availablity_submitted != 'WAITING'
+                        ? theme.colors.green
+                        : theme.colors.Gray
+                    }
                     onPress={() => {
-                      // alert(JSON.stringify(item?.item?.post_position[0].position));
-                      AcceptOrder(item?.id);
+                      if (item?.availablity_submitted != 'WAITING') {
+                        AcceptOrder(item?.id);
+                      } else {
+                      }
                     }}
                     marginHorizontal={1}
                     loading={Accept_loading}

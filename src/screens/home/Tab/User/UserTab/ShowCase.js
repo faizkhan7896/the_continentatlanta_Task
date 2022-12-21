@@ -126,8 +126,13 @@ export default function ShowCase({navigation, setGet_followed_event}) {
         setRefreshing(false);
       } else {
         // ShowToast(rslt.message || 'Unknown error', 'error');
+        // alert(rslt.message);
+
         if (!silent) {
           setLoading(false);
+        }
+        if (rslt.message == 'Market Not Found') {
+          setMarkets([]);
         }
         setRefreshing(false);
       }
@@ -167,13 +172,15 @@ export default function ShowCase({navigation, setGet_followed_event}) {
       console.log(rslt);
 
       if (rslt.success == '1') {
-        setMarkets([]);
-        GetProduct();
+        GetMarkets();
       } else {
         ShowToast(rslt.message || 'Unknown error', 'error');
+        GetMarkets();
       }
+      GetMarkets();
       setLoading(false);
     } catch (e) {
+      GetMarkets();
       setLoading(false);
       // alert('An error occured.');
       ShowToast('An error occured.', 'error');
@@ -190,6 +197,7 @@ export default function ShowCase({navigation, setGet_followed_event}) {
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       GetProduct(true);
+      GetMarkets(true);
     });
     return unsubscribe;
   }, [navigation]);

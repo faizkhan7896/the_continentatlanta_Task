@@ -80,7 +80,9 @@ export default function MapSearch({navigation}) {
 
   async function GetMarkets(silent = false) {
     try {
-      setLoading(true);
+      if (!silent) {
+        setLoading(true);
+      }
       const url = baseUrl + 'get_all_market';
       console.log(url);
 
@@ -96,14 +98,19 @@ export default function MapSearch({navigation}) {
 
       if (rslt.success == '1') {
         setData(rslt.market_data);
-        setLoading(false);
+
+        if (!silent) {
+          setLoading(false);
+        }
       } else {
-        setLoading(false);
-        // ShowToast(rslt.message || 'Unknown error', 'error');
+        if (!silent) {
+          setLoading(false);
+        } // ShowToast(rslt.message || 'Unknown error', 'error');
       }
     } catch (e) {
-      setLoading(false);
-      // alert('An error occured.');
+      if (!silent) {
+        setLoading(false);
+      } // alert('An error occured.');
       ShowToast('An error occured.', 'error');
       console.log(e);
     }
@@ -331,17 +338,19 @@ export default function MapSearch({navigation}) {
               }}
               draggable={true}
               key={index}
-              style={{height: 30, width: 30, resizeMode: 'contain'}}
-              image={
-                item?.attendees.find(v => v?.id == auth?.id)
-                  ? require('../../../../../assets/Joined.png')
-                  : require('../../../../../assets/Deal.png')
-              }
               coordinate={{
                 latitude: item.lat || 0,
                 longitude: item.long || 0,
-              }}
-            />
+              }}>
+              <Image
+                source={
+                  item?.attendees.find(v => v?.id == auth?.id)
+                    ? require('../../../../../assets/Joined.png')
+                    : require('../../../../../assets/Deal.png')
+                }
+                style={{width: 24, height: 24}}
+              />
+            </Marker>
           ))
         ) : (
           <Marker
