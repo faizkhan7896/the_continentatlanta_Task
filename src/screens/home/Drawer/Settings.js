@@ -11,6 +11,7 @@ import {SIGNOUT} from '../../../redux/ActionTypes';
 import {useSelector} from 'react-redux';
 import {baseUrl} from '../../../utils/constance';
 import {ShowToast} from '../../../utils/ToastFunction';
+import OneSignal from 'react-native-onesignal';
 
 export default function Settings({navigation}) {
   const [first, setFirst] = useState(false);
@@ -27,6 +28,7 @@ export default function Settings({navigation}) {
           store.dispatch({
             type: SIGNOUT,
           });
+          OneSignal.removeExternalUserId();
         },
       },
       {text: 'No'},

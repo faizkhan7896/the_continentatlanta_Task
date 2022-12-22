@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>359549806218-ae27mjbvcpi65pfdefot35lbbsd2kekj.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.359549806218-ae27mjbvcpi65pfdefot35lbbsd2kekj</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>359549806218-bvucm38boide0ibjvlud3av8fm6nnnma.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBYqwMw3jSxo33kl_nBh_TATqrH2f2eyqY</string>
+	<key>GCM_SENDER_ID</key>
+	<string>359549806218</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.technorizen.reactnative.PikPic</string>
+	<key>PROJECT_ID</key>
+	<string>taptack-29c39</string>
+	<key>STORAGE_BUCKET</key>
+	<string>taptack-29c39.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:359549806218:ios:dcd6d5185f1d20ce02ef73</string>
+</dict>
+</plist>

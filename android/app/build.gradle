@@ -1,4 +1,16 @@
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath 'gradle.plugin.com.onesignal:onesignal-gradle-plugin:[0.12.10, 0.99.99]'
+    }
+}
+apply plugin: 'com.onesignal.androidsdk.onesignal-gradle-plugin'
+
+
 apply plugin: "com.android.application"
+
 
 import com.android.build.OutputFile
 
@@ -82,6 +94,8 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
+apply plugin: 'com.google.gms.google-services' // <- Add this line
+
 
 /**
  * Set this to true to create two separate APKs instead of one:
@@ -129,6 +143,7 @@ def reactNativeArchitectures() {
 }
 
 android {
+
     ndkVersion rootProject.ext.ndkVersion
 
     compileSdkVersion rootProject.ext.compileSdkVersion

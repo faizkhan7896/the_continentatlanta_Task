@@ -37,6 +37,8 @@ import {baseUrl} from '../../../../../utils/constance';
 import {theme} from '../../../../../utils/theme';
 import {ShowToast} from '../../../../../utils/ToastFunction';
 import LoadingSpinner from '../../../../../components/LoadingSpinner';
+import RNLocation from 'react-native-location';
+import Geolocation from '@react-native-community/geolocation';
 
 const MARKERS = [
   {latitude: 22.761794329667982, longitude: 75.88739432394505},
@@ -74,9 +76,12 @@ export default function MapSearch({navigation}) {
   const [joined, setJoined] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const [Leave, setLeave] = useState(false);
+  const [location, setLocation] = useState('');
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
 
   const [data, setData] = useState();
-  // alert(JSON.stringify(Modal_2));
+  // alert(JSON.stringify(longitude));
 
   async function GetMarkets(silent = false) {
     try {
@@ -84,7 +89,7 @@ export default function MapSearch({navigation}) {
         setLoading(true);
       }
       const url = baseUrl + 'get_all_market';
-      console.log(url);
+      // console.log(url);
 
       const res = await fetch(url, {
         method: 'GET',
@@ -111,7 +116,7 @@ export default function MapSearch({navigation}) {
       if (!silent) {
         setLoading(false);
       } // alert('An error occured.');
-      ShowToast('An error occured.', 'error');
+      // ShowToast('An error occured.', 'error');
       console.log(e);
     }
   }
@@ -139,7 +144,7 @@ export default function MapSearch({navigation}) {
 
       if (rslt.success == '1') {
         setDeleted(true);
-        GetMarkets();
+        GetMarkets(true);
         setTimeout(() => {
           setDeleted(false);
           setModal_2(false);
@@ -184,7 +189,7 @@ export default function MapSearch({navigation}) {
         setTimeout(() => {
           setJoined(false);
           setModal_2(false);
-          GetMarkets();
+          GetMarkets(true);
         }, 1800);
       } else {
         ShowToast(rslt.message || 'Unknown error', 'error');
@@ -228,7 +233,7 @@ export default function MapSearch({navigation}) {
           setLeave(false);
           setDeleted(false);
           setModal_2(false);
-          GetMarkets();
+          GetMarkets(true);
         }, 1800);
       } else {
         ShowToast(rslt.message || 'Unknown error', 'error');
@@ -243,8 +248,42 @@ export default function MapSearch({navigation}) {
     }
   }
 
+  const currentLocation = async () => {
+    await RNLocation.requestPermission({
+      ios: 'whenInUse',
+      android: {
+        detail: 'coarse',
+      },
+    });
+    Geolocation.getCurrentPosition(async info => {
+      setLongitude(info.coords.longitude);
+      setLatitude(info.coords.latitude);
+
+      // ShowToast(JSON.stringify(info.coords));
+      const url =
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=' +
+        info.coords.latitude +
+        ',' +
+        info.coords.longitude +
+        '&key=AIzaSyCj_8-SZsoxYxZwN_Wi_7hU8kDSeQx_YVQ';
+      try {
+        // setLoading(true);
+        const res = await fetch(url);
+        // console.log(res);
+
+        const json = await res.json();
+        // console.log(json);
+        setLocation(json.results[0]?.formatted_address);
+      } catch (e) {
+        // setLoading(false);
+        ShowToast(e.toString());
+      }
+    }, console.warn);
+  };
+
   useEffect(() => {
-    GetMarkets();
+    currentLocation();
+    GetMarkets(true);
   }, []);
 
   useEffect(() => {
@@ -323,8 +362,8 @@ export default function MapSearch({navigation}) {
 
       <MapView
         initialRegion={{
-          latitude: MARKERS[0].latitude || 0,
-          longitude: MARKERS[0].longitude || 0,
+          latitude: latitude || MARKERS[0].latitude || 0,
+          longitude: longitude || MARKERS[0].longitude || 0,
           latitudeDelta: 0.1222,
           longitudeDelta: 0.0621,
         }}
@@ -355,8 +394,8 @@ export default function MapSearch({navigation}) {
         ) : (
           <Marker
             coordinate={{
-              latitude: MARKERS[0].latitude || 0,
-              longitude: MARKERS[0].longitude || 0,
+              latitude: latitude || MARKERS[0].latitude || 0,
+              longitude: longitude || MARKERS[0].longitude || 0,
             }}
             onDragEnd={v => {
               setSelectedLat(v?.nativeEvent?.coordinate?.latitude);
@@ -389,6 +428,15 @@ export default function MapSearch({navigation}) {
           position: 'absolute',
           bottom: 40,
           right: 20,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+
+          elevation: 5,
         }}>
         <Image
           style={{

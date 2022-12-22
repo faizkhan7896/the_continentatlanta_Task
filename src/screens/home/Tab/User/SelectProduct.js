@@ -93,7 +93,7 @@ export default function ShowCase({navigation, setGet_followed_event}) {
       }
     } catch (e) {
       // alert('An error occured.');
-      ShowToast('An error occured.', 'error');
+      // ShowToast('An error occured.', 'error');
       if (!silent) {
         setLoading(false);
       }
@@ -104,16 +104,16 @@ export default function ShowCase({navigation, setGet_followed_event}) {
   }
 
   async function AddMarket() {
-    if (selectedProduct.length == 0) {
-      ShowToast('You have to add at least one product', 'error');
-      return;
-    }
+    // if (selectedProduct.length == 0) {
+    //   ShowToast('You have to add at least one product', 'error');
+    //   return;
+    // }
     try {
       setLoading(true);
       const url = baseUrl + 'create_market';
 
-      // const token = await firebase.messaging().getToken();
-      // alert(token);
+      console.log(url);
+
       const body = new FormData();
       body.append('creator_user_id', auth.id);
       body.append('market_name', params?.market_name);

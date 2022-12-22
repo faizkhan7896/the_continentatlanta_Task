@@ -22,6 +22,8 @@ import {ShowToast} from '../../utils/ToastFunction';
 import moment from 'moment';
 import {SIGNUP} from '../../redux/ActionTypes';
 import store from '../../redux/store';
+import OneSignal from 'react-native-onesignal';
+import {firebase} from '@react-native-firebase/messaging';
 
 export default function Login({navigation}) {
   const {params} = useRoute();
@@ -81,7 +83,7 @@ export default function Login({navigation}) {
       setLoading(true);
       const url = baseUrl + 'signup';
 
-      // const token = await firebase.messaging().getToken();
+      const token = await firebase.messaging().getToken();
       // alert(token);
       const body = new FormData();
       body.append('email', email);
@@ -109,6 +111,8 @@ export default function Login({navigation}) {
           type: SIGNUP,
           payload: rslt.user_data,
         });
+        OneSignal.setExternalUserId(rslt.user_data.id);
+
         ShowToast(rslt.message + ' Signup successfully.');
       } else {
         ShowToast(rslt.message || 'Unknown error', 'error');

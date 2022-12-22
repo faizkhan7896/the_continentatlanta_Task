@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "359549806218",
+    "project_id": "taptack-29c39",
+    "storage_bucket": "taptack-29c39.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:359549806218:android:3f3cd7521c81596a02ef73",
+        "android_client_info": {
+          "package_name": "com.pikpic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "359549806218-gm2akjjl00jm6i5kqb33mfvueo2fm9s5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD0qngL9k7YBLNrcEZMpnzK9W43WWlfMSo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "359549806218-gm2akjjl00jm6i5kqb33mfvueo2fm9s5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

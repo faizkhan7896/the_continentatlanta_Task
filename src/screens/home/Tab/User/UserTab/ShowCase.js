@@ -679,6 +679,16 @@ export default function ShowCase({navigation, setGet_followed_event}) {
           position: 'absolute',
           bottom: 40,
           right: 30,
+          overflow: 'hidden',
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+
+          elevation: 5,
         }}>
         <Image
           style={{

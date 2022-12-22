@@ -20,6 +20,8 @@ import store from '../../redux/store';
 import {baseUrl} from '../../utils/constance';
 import {theme} from '../../utils/theme';
 import {ShowToast} from '../../utils/ToastFunction';
+import {firebase} from '@react-native-firebase/messaging';
+import OneSignal from 'react-native-onesignal';
 
 export default function Login({navigation}) {
   const {params} = useRoute();
@@ -45,13 +47,15 @@ export default function Login({navigation}) {
       setLoading(true);
       const url = baseUrl + 'login';
 
-      // const token = await firebase.messaging().getToken();
+      const token = await firebase.messaging().getToken();
       // alert(token);
       const body = new FormData();
       body.append('email', email);
       body.append('password', password);
 
       console.log(body);
+      console.log(token);
+      // return;
 
       const res = await fetch(url, {
         method: 'POST',
@@ -69,6 +73,7 @@ export default function Login({navigation}) {
           type: LOGIN,
           payload: rslt.user_data,
         });
+        OneSignal.setExternalUserId(rslt.user_data.id);
         ShowToast('Login successfully.');
       } else {
         ShowToast(rslt.message || 'Unknown error', 'error');
