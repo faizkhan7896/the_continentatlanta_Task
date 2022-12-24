@@ -21,6 +21,8 @@ import {ShowToast} from '../../../../../utils/ToastFunction';
 import {RefreshControl} from 'react-native-web-refresh-control';
 import {useSelector} from 'react-redux';
 import moment from 'moment';
+import RNLocation from 'react-native-location';
+import Geolocation from '@react-native-community/geolocation';
 
 export default function ShowCase({navigation, setGet_followed_event}) {
   const dimensions = useWindowDimensions();
@@ -31,6 +33,9 @@ export default function ShowCase({navigation, setGet_followed_event}) {
   const [isFocused, setIsFocused] = useState(true);
   const [l, setL] = useState(true);
   const [markets, setMarkets] = useState([]);
+  const [location, setLocation] = useState('');
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
 
   async function LikeUnlike(id) {
     try {
@@ -106,7 +111,15 @@ export default function ShowCase({navigation, setGet_followed_event}) {
       if (!silent) {
         setLoading(true);
       }
-      const url = baseUrl + 'get_all_market_of_user?user_id=' + auth?.id;
+      const url =
+        baseUrl +
+        'get_all_market_of_user?user_id=' +
+        auth?.id +
+        'lat=' +
+        latitude +
+        '&long=' +
+        longitude;
+
       console.log(url);
 
       const res = await fetch(url, {
@@ -185,9 +198,43 @@ export default function ShowCase({navigation, setGet_followed_event}) {
     }
   }
 
+  const currentLocation = async () => {
+    await RNLocation.requestPermission({
+      ios: 'whenInUse',
+      android: {
+        detail: 'coarse',
+      },
+    });
+    Geolocation.getCurrentPosition(async info => {
+      setLongitude(info.coords.longitude);
+      setLatitude(info.coords.latitude);
+
+      // ShowToast(JSON.stringify(info.coords));
+      const url =
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=' +
+        info.coords.latitude +
+        ',' +
+        info.coords.longitude +
+        '&key=AIzaSyCj_8-SZsoxYxZwN_Wi_7hU8kDSeQx_YVQ';
+      try {
+        // setLoading(true);
+        const res = await fetch(url);
+        // console.log(res);
+
+        const json = await res.json();
+        // console.log(json);
+        setLocation(json.results[0]?.formatted_address);
+      } catch (e) {
+        // setLoading(false);
+        ShowToast(e.toString());
+      }
+    }, console.warn);
+  };
+
   useEffect(() => {
     GetProduct();
     GetMarkets();
+    currentLocation();
   }, []);
 
   useEffect(() => {

@@ -118,6 +118,8 @@ export default function ShowCase({navigation, setGet_followed_event}) {
           '-' +
           moment(params?.closeTime).format('LT'),
       );
+      body.append('start_date_time', params?.openTime);
+      body.append('end_date_time', params?.closeTime);
       body.append('lat', params?.selectedLat);
       body.append('long', params?.selectedLon);
       body.append('date_time', new Date(params?.date).toISOString());

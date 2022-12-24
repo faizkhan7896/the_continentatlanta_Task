@@ -63,7 +63,7 @@ export default function MapSearch({navigation}) {
   const [longitude, setLongitude] = useState('');
 
   const [data, setData] = useState();
-  // alert(JSON.stringify(longitude));
+  // alert(JSON.stringify(data));
 
   async function GetMarkets(silent = false) {
     try {
@@ -71,7 +71,7 @@ export default function MapSearch({navigation}) {
         setLoading(true);
       }
       const url = baseUrl + 'get_all_market';
-      // console.log(url);
+      console.log(url);
 
       const res = await fetch(url, {
         method: 'GET',
