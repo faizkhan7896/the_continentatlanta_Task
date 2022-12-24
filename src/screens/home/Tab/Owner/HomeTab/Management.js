@@ -2,23 +2,21 @@ import moment from 'moment';
 import React, {useCallback, useEffect, useState} from 'react';
 import {
   Dimensions,
-  FlatList,
   Image,
   ImageBackground,
-  RefreshControl,
   StyleSheet,
   Text,
   TouchableOpacity,
   useWindowDimensions,
   View,
 } from 'react-native';
+import {SwipeListView} from 'react-native-swipe-list-view';
 import {useSelector} from 'react-redux';
 import LoadingSpinner from '../../../../../components/LoadingSpinner';
 import {default as TextFormated} from '../../../../../components/TextFormated';
 import {baseUrl} from '../../../../../utils/constance';
 import {theme} from '../../../../../utils/theme';
 import {ShowToast} from '../../../../../utils/ToastFunction';
-import {SwipeListView} from 'react-native-swipe-list-view';
 
 export default function History({navigation, setGet_followed_event}) {
   const dimensions = useWindowDimensions();
@@ -425,7 +423,8 @@ export default function History({navigation, setGet_followed_event}) {
                         fontSize: 12,
                         marginTop: 5,
                       }}>
-                      {moment(item.date_time).format('lll')}
+                      {item.date_time}
+                      {/* {moment(item.date_time).format('lll')} */}
                     </TextFormated>
                   </View>
                   <TouchableOpacity

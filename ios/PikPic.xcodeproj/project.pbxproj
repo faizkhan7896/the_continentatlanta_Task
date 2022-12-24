@@ -27,12 +27,12 @@
 		04F955E428AD2B40002EE09D /* Poppins-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 04F955D128AD2B3F002EE09D /* Poppins-Medium.ttf */; };
 		04F955E528AD2B40002EE09D /* Poppins-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 04F955D228AD2B3F002EE09D /* Poppins-LightItalic.ttf */; };
 		04F955E628AD2B40002EE09D /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 04F955D328AD2B3F002EE09D /* Poppins-Regular.ttf */; };
-		0C80B921A6F3F58F76C31292 /* libPods-PikPic.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-PikPic.a */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		7699B88040F8A987B510C191 /* libPods-PikPic-PikPicTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 19F6CBCC0A4E27FBF8BF4A61 /* libPods-PikPic-PikPicTests.a */; };
+		3FF1B9D6A035D4DB5A58EF8A /* Pods_PikPic_PikPicTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01D701FD6EEAA9F7516E23E3 /* Pods_PikPic_PikPicTests.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		E8D62578EBDE10F5183E1A86 /* Pods_PikPic.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C0978490008762D01D259C85 /* Pods_PikPic.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +49,7 @@
 		00E356EE1AD99517003FC87E /* PikPicTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PikPicTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* PikPicTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PikPicTests.m; sourceTree = "<group>"; };
+		01D701FD6EEAA9F7516E23E3 /* Pods_PikPic_PikPicTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PikPic_PikPicTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		041733A12954736F002612DE /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		0463DAA529547BBC00CD6EF0 /* PikPic.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = PikPic.entitlements; path = PikPic/PikPic.entitlements; sourceTree = "<group>"; };
 		04F955C128AD2B3F002EE09D /* Poppins-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Poppins-SemiBold.ttf"; path = "../../assets/fonts/Poppins-SemiBold.ttf"; sourceTree = "<group>"; };
@@ -75,13 +76,12 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = PikPic/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = PikPic/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = PikPic/main.m; sourceTree = "<group>"; };
-		19F6CBCC0A4E27FBF8BF4A61 /* libPods-PikPic-PikPicTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PikPic-PikPicTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B4392A12AC88292D35C810B /* Pods-PikPic.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PikPic.debug.xcconfig"; path = "Target Support Files/Pods-PikPic/Pods-PikPic.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-PikPic.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PikPic.release.xcconfig"; path = "Target Support Files/Pods-PikPic/Pods-PikPic.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-PikPic-PikPicTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PikPic-PikPicTests.debug.xcconfig"; path = "Target Support Files/Pods-PikPic-PikPicTests/Pods-PikPic-PikPicTests.debug.xcconfig"; sourceTree = "<group>"; };
-		5DCACB8F33CDC322A6C60F78 /* libPods-PikPic.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-PikPic.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = PikPic/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-PikPic-PikPicTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PikPic-PikPicTests.release.xcconfig"; path = "Target Support Files/Pods-PikPic-PikPicTests/Pods-PikPic-PikPicTests.release.xcconfig"; sourceTree = "<group>"; };
+		C0978490008762D01D259C85 /* Pods_PikPic.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PikPic.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -90,7 +90,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7699B88040F8A987B510C191 /* libPods-PikPic-PikPicTests.a in Frameworks */,
+				3FF1B9D6A035D4DB5A58EF8A /* Pods_PikPic_PikPicTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,7 +98,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0C80B921A6F3F58F76C31292 /* libPods-PikPic.a in Frameworks */,
+				E8D62578EBDE10F5183E1A86 /* Pods_PikPic.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -165,8 +165,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				5DCACB8F33CDC322A6C60F78 /* libPods-PikPic.a */,
-				19F6CBCC0A4E27FBF8BF4A61 /* libPods-PikPic-PikPicTests.a */,
+				C0978490008762D01D259C85 /* Pods_PikPic.framework */,
+				01D701FD6EEAA9F7516E23E3 /* Pods_PikPic_PikPicTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

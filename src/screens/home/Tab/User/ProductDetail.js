@@ -734,8 +734,13 @@ export default function LogOut({navigation}) {
               text="SUBMIT"
               backgroundColor={theme.colors.green}
               onPress={() => {
-                // alert(JSON.stringify(data?.post_position[0].position));
                 CreateOrder();
+                // alert(JSON.stringify(data?.post_position[0].position));
+                // sendNotification({
+                //   tokens: [data?.user_id],
+                //   title: 'New Order',
+                //   body: auth.name + ' created a new order',
+                // });
               }}
               loading={loading}
             />

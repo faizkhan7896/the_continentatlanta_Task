@@ -1,28 +1,25 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {useRoute} from '@react-navigation/native';
+import moment from 'moment';
+import React, {useEffect, useState} from 'react';
 import {
-  Animated,
   Dimensions,
   FlatList,
   Image,
   ImageBackground,
   StyleSheet,
-  Text,
   TouchableOpacity,
   useWindowDimensions,
   View,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {default as TextFormated} from '../../../../components/TextFormated';
+import {useSelector} from 'react-redux';
+import Header from '../../../../components/Header';
 import LoadingSpinner from '../../../../components/LoadingSpinner';
+import Statusbar from '../../../../components/Statusbar';
+import {default as TextFormated} from '../../../../components/TextFormated';
 import {baseUrl} from '../../../../utils/constance';
 import {theme} from '../../../../utils/theme';
 import {ShowToast} from '../../../../utils/ToastFunction';
-import {RefreshControl} from 'react-native-web-refresh-control';
-import {useSelector} from 'react-redux';
-import Statusbar from '../../../../components/Statusbar';
-import Header from '../../../../components/Header';
-import {useRoute} from '@react-navigation/native';
-import moment from 'moment';
 
 export default function ShowCase({navigation, setGet_followed_event}) {
   const dimensions = useWindowDimensions();
@@ -33,6 +30,7 @@ export default function ShowCase({navigation, setGet_followed_event}) {
   const [isFocused, setIsFocused] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState([]);
   const {params} = useRoute();
+
   // alert(JSON.stringify(params?.date));
 
   async function LikeUnlike(id) {
@@ -104,10 +102,6 @@ export default function ShowCase({navigation, setGet_followed_event}) {
   }
 
   async function AddMarket() {
-    // if (selectedProduct.length == 0) {
-    //   ShowToast('You have to add at least one product', 'error');
-    //   return;
-    // }
     try {
       setLoading(true);
       const url = baseUrl + 'create_market';

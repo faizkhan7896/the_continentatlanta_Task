@@ -52,7 +52,7 @@ export default function ShowCase({navigation, setGet_followed_event}) {
       }
     } catch (e) {
       // alert('An error occured.');
-      ShowToast('An error occured.', 'error');
+      // ShowToast('An error occured.', 'error');
       console.log(e);
     }
   }
@@ -86,7 +86,7 @@ export default function ShowCase({navigation, setGet_followed_event}) {
       }
     } catch (e) {
       // alert('An error occured.');
-      ShowToast('An error occured.', 'error');
+      // ShowToast('An error occured.', 'error');
       if (!silent) {
         setLoading(false);
       }
@@ -119,15 +119,11 @@ export default function ShowCase({navigation, setGet_followed_event}) {
 
       if (rslt.success == '1') {
         setMarkets(rslt.market_data.reverse());
-        // setProducts(rslt.market_data.data[0].selected_products[0].reverse());
         if (!silent) {
           setLoading(false);
         }
         setRefreshing(false);
       } else {
-        // ShowToast(rslt.message || 'Unknown error', 'error');
-        // alert(rslt.message);
-
         if (!silent) {
           setLoading(false);
         }
@@ -138,7 +134,7 @@ export default function ShowCase({navigation, setGet_followed_event}) {
       }
     } catch (e) {
       // alert('An error occured.');
-      ShowToast('An error occured.', 'error');
+      // ShowToast('An error occured.', 'error');
       if (!silent) {
         setLoading(false);
       }
@@ -183,7 +179,7 @@ export default function ShowCase({navigation, setGet_followed_event}) {
       GetMarkets();
       setLoading(false);
       // alert('An error occured.');
-      ShowToast('An error occured.', 'error');
+      // ShowToast('An error occured.', 'error');
 
       console.log(e);
     }

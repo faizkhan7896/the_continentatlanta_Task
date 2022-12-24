@@ -1,21 +1,3 @@
-// import {View, Text, Dimensions} from 'react-native';
-// import React from 'react';
-
-// export default function Map() {
-//   return (
-// <View
-//   style={{
-//     backgroundColor: '#fff',
-//     height: 500,
-//     width: Dimensions.get('window').width,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   }}>
-//       <Text style={{fontSize: 24, fontWeight: '600'}}>Map</Text>
-//     </View>
-//   );
-// }
-
 import moment from 'moment';
 import React, {useEffect, useState} from 'react';
 import {

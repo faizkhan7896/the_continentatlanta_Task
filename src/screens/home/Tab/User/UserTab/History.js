@@ -1217,7 +1217,8 @@ function OrderItem({
                   fontSize: 12,
                   marginTop: 5,
                 }}>
-                {moment(item.date_time).format('lll')}
+                {item.date_time}
+                {/* {moment(item.date_time).format('lll')} */}
               </TextFormated>
             </View>
             <TouchableOpacity
