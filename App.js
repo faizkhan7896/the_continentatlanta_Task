@@ -1,4 +1,3 @@
-import {NavigationContainer} from '@react-navigation/native';
 import React, {useEffect} from 'react';
 import {
   Dimensions,
@@ -7,6 +6,7 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
+import OneSignal from 'react-native-onesignal';
 import Toast from 'react-native-toast-message';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
@@ -14,7 +14,6 @@ import TextFormatted from './src/components/TextFormated';
 import AuthNavigation from './src/navigation/AppNavigator';
 import store, {persistor} from './src/redux/store';
 import {theme} from './src/utils/theme';
-import OneSignal from 'react-native-onesignal';
 
 export default function App() {
   useEffect(() => {

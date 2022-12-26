@@ -55,32 +55,12 @@ export default function CustomDrawer(props) {
       />
       <View
         style={{
-          paddingTop: 20,
+          // paddingTop: 20,
           paddingHorizontal: 20,
           flexDirection: 'row',
           alignItems: 'center',
           backgroundColor: theme.colors.primary,
         }}>
-        <Image
-          style={{
-            height: 70,
-            width: 70,
-            resizeMode: 'contain',
-            borderRadius: 50,
-            marginRight: 15,
-            // borderWidth: 1,
-            shadowColor: theme.colors.yellow,
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 3.84,
-
-            elevation: 5,
-          }}
-          source={require('../assets/userimg.png')}
-        />
         <View>
           <Text style={{fontSize: 19, fontWeight: '600'}}>{data?.name}</Text>
           <Text style={{color: theme.colors.Gray, marginTop: 5}}>
