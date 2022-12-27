@@ -1,6 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {StyleSheet, View, Text, Modal, ActivityIndicator} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  Modal,
+  ActivityIndicator,
+  Image,
+} from 'react-native';
+import {theme} from '../utils/theme';
 
 const transparent = 'transparent';
 const styles = StyleSheet.create({
@@ -36,10 +44,10 @@ const styles = StyleSheet.create({
     top: 0,
   },
   textContent: {
-    fontSize: 19,
     fontWeight: 'bold',
     height: 50,
-    top: 80,
+    top: 55,
+    color: theme.colors.yellow,
   },
 });
 
@@ -97,17 +105,25 @@ export default class Spinner extends React.PureComponent {
       this.close();
     }
   }
-
+  //   <ActivityIndicator
+  //   color={this.props.color}
+  //   size={this.props.size}
+  //   style={[styles.activityIndicator, {...this.props.indicatorStyle}]}
+  // />
   _renderDefaultContent() {
     return (
       <View style={styles.background}>
         {this.props.customIndicator ? (
           this.props.customIndicator
         ) : (
-          <ActivityIndicator
-            color={this.props.color}
-            size={this.props.size}
-            style={[styles.activityIndicator, {...this.props.indicatorStyle}]}
+          <Image
+            style={{
+              width: 70,
+              height: 70,
+              resizeMode: 'contain',
+              borderRadius: 150,
+            }}
+            source={require('../assets/gif/loading.gif')}
           />
         )}
         <View style={[styles.textContainer, {...this.props.indicatorStyle}]}>
@@ -122,7 +138,7 @@ export default class Spinner extends React.PureComponent {
   _renderSpinner() {
     const spinner = (
       <View
-        style={[styles.container, {backgroundColor: this.props.overlayColor}]}
+        style={[styles.container, {backgroundColor: '#00000099'}]}
         key={
           this.props.spinnerKey
             ? this.props.spinnerKey

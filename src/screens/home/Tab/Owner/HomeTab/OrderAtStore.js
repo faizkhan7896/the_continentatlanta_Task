@@ -14,7 +14,7 @@ export default function AddProduct({navigation}) {
         backgroundColor: theme.colors.primary,
       }}>
       <Statusbar
-        barStyle={'light-content'}
+        barStyle={'dark-content'}
         backgroundColor={theme.colors.Black}
       />
       <Header

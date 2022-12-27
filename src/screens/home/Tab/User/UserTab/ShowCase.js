@@ -5,6 +5,7 @@ import {
   FlatList,
   Image,
   ImageBackground,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -19,6 +20,9 @@ import {theme} from '../../../../../utils/theme';
 import {ShowToast} from '../../../../../utils/ToastFunction';
 import {RefreshControl} from 'react-native-web-refresh-control';
 import {useSelector} from 'react-redux';
+import moment from 'moment';
+import RNLocation from 'react-native-location';
+import Geolocation from '@react-native-community/geolocation';
 
 export default function ShowCase({navigation, setGet_followed_event}) {
   const dimensions = useWindowDimensions();
@@ -27,6 +31,11 @@ export default function ShowCase({navigation, setGet_followed_event}) {
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [isFocused, setIsFocused] = useState(true);
+  const [l, setL] = useState(true);
+  const [markets, setMarkets] = useState([]);
+  const [location, setLocation] = useState('');
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
 
   async function LikeUnlike(id) {
     try {
@@ -48,7 +57,7 @@ export default function ShowCase({navigation, setGet_followed_event}) {
       }
     } catch (e) {
       // alert('An error occured.');
-      ShowToast('An error occured.', 'error');
+      // ShowToast('An error occured.', 'error');
       console.log(e);
     }
   }
@@ -63,9 +72,9 @@ export default function ShowCase({navigation, setGet_followed_event}) {
         method: 'GET',
         headers: {'Cache-Control': 'no-cache'},
       });
-      console.log(res);
+      // console.log(res);
       const rslt = await res.json();
-      console.log(rslt);
+      // console.log(rslt);
 
       if (rslt.success == '1') {
         setData(rslt.post_data.reverse());
@@ -82,7 +91,7 @@ export default function ShowCase({navigation, setGet_followed_event}) {
       }
     } catch (e) {
       // alert('An error occured.');
-      ShowToast('An error occured.', 'error');
+      // ShowToast('An error occured.', 'error');
       if (!silent) {
         setLoading(false);
       }
@@ -97,13 +106,141 @@ export default function ShowCase({navigation, setGet_followed_event}) {
     GetProduct(true);
   }, []);
 
+  async function GetMarkets(silent = false) {
+    try {
+      if (!silent) {
+        setLoading(true);
+      }
+      const url =
+        baseUrl +
+        'get_all_market_of_user?user_id=' +
+        auth?.id +
+        'lat=' +
+        latitude +
+        '&long=' +
+        longitude;
+
+      console.log(url);
+
+      const res = await fetch(url, {
+        method: 'GET',
+        headers: {'Cache-Control': 'no-cache'},
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        setMarkets(rslt.market_data.reverse());
+        if (!silent) {
+          setLoading(false);
+        }
+        setRefreshing(false);
+      } else {
+        if (!silent) {
+          setLoading(false);
+        }
+        if (rslt.message == 'Market Not Found') {
+          setMarkets([]);
+        }
+        setRefreshing(false);
+      }
+    } catch (e) {
+      // alert('An error occured.');
+      // ShowToast('An error occured.', 'error');
+      if (!silent) {
+        setLoading(false);
+      }
+      setRefreshing(false);
+
+      console.log(e);
+    }
+  }
+
+  async function LeaveMarket(id) {
+    try {
+      setLoading(true);
+      const url = baseUrl + 'leave_market';
+      console.log(url);
+
+      const body = new FormData();
+      body.append('user_id', auth?.id);
+      body.append('market_id', id);
+
+      console.log(body);
+
+      const res = await fetch(url, {
+        method: 'POST',
+        body: body,
+        headers: {
+          'content-type': 'multipart/form-data',
+        },
+      });
+      console.log(res);
+      const rslt = await res.json();
+      console.log(rslt);
+
+      if (rslt.success == '1') {
+        GetMarkets();
+      } else {
+        ShowToast(rslt.message || 'Unknown error', 'error');
+        GetMarkets();
+      }
+      GetMarkets();
+      setLoading(false);
+    } catch (e) {
+      GetMarkets();
+      setLoading(false);
+      // alert('An error occured.');
+      // ShowToast('An error occured.', 'error');
+
+      console.log(e);
+    }
+  }
+
+  const currentLocation = async () => {
+    await RNLocation.requestPermission({
+      ios: 'whenInUse',
+      android: {
+        detail: 'coarse',
+      },
+    });
+    Geolocation.getCurrentPosition(async info => {
+      setLongitude(info.coords.longitude);
+      setLatitude(info.coords.latitude);
+
+      // ShowToast(JSON.stringify(info.coords));
+      const url =
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=' +
+        info.coords.latitude +
+        ',' +
+        info.coords.longitude +
+        '&key=AIzaSyCj_8-SZsoxYxZwN_Wi_7hU8kDSeQx_YVQ';
+      try {
+        // setLoading(true);
+        const res = await fetch(url);
+        // console.log(res);
+
+        const json = await res.json();
+        // console.log(json);
+        setLocation(json.results[0]?.formatted_address);
+      } catch (e) {
+        // setLoading(false);
+        ShowToast(e.toString());
+      }
+    }, console.warn);
+  };
+
   useEffect(() => {
     GetProduct();
+    GetMarkets();
+    currentLocation();
   }, []);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
       GetProduct(true);
+      GetMarkets(true);
     });
     return unsubscribe;
   }, [navigation]);
@@ -115,235 +252,495 @@ export default function ShowCase({navigation, setGet_followed_event}) {
     return () => clearInterval(int);
   }, [isFocused]);
 
-  // const fadeAnim = new Animated.Value(0);
-
-  // // const fadeout = () => {
-  // Animated.timing(fadeAnim, {
-  //   toValue: 1,
-  //   duration: 3000,
-  //   useNativeDriver: true,
-  // }).start();
-
-  // const position = new Animated.ValueXY({x: 0, y: 100});
-  // Animated.spring(position, {
-  //   toValue: {x: -30, y: -10},
-  //   speed: 10,
-  //   bounciness: 40,
-  //   useNativeDriver: true,
-  // }).start();
-
-  // const post = new Animated.ValueXY({x: 0, y: 0});
-  // Animated.spring(post, {
-  //   toValue: {x: 10, y: -130},
-  //   speed: 10,
-  //   bounciness: 20,
-  //   useNativeDriver: true,
-  // }).start();
-
   return (
     <View style={{flex: 1}}>
-      <LoadingSpinner size={60} visible={loading} color={theme.colors.yellow} />
-
-      <FlatList
-        data={data}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        ListEmptyComponent={
-          <View
-            style={{
-              // alignItems: 'center',
-              flex: 1,
-              backgroundColor: '#fff',
-              justifyContent: 'center',
-            }}>
-            <Image
-              source={require('../../../../../assets/DataNotFound.png')}
-              style={{
-                height: dimensions.width / 2,
-                width: dimensions.width / 2,
-                resizeMode: 'contain',
-                alignSelf: 'center',
-                // borderWidth: 1,
-              }}
-            />
-            <Text
-              style={{
-                fontSize: 24,
-                fontWeight: '700',
-                color: theme.colors.Black,
-                marginVertical: 15,
-                textAlign: 'center',
-              }}>
-              Data Not Found
-            </Text>
-          </View>
-        }
-        numColumns={2}
-        showsVerticalScrollIndicator={false}
-        scrollEnabled={true}
-        contentContainerStyle={{marginVertical: 15}}
-        // ItemSeparatorComponent={() => <View style={{width: 20}} />}
-        renderItem={({item, index}) => (
-          <TouchableOpacity
-            onPress={() => navigation.navigate('ProductDetail', {item})}
-            style={{
-              // borderRadius: 12,
-              backgroundColor: theme.colors.primary,
-              // justifyContent: 'space-between',
-              marginHorizontal: 4,
-              marginVertical: 4,
-              borderWidth: 1,
-              borderColor: theme.colors.green,
-            }}>
+      <LoadingSpinner
+        textContent="Loading..."
+        size={60}
+        visible={loading}
+        color={theme.colors.yellow}
+      />
+      <ScrollView>
+        {markets.map((v, i) => (
+          <View style={{}}>
             <View
               style={{
-                backgroundColor: 'transparent',
-                width: dimensions.width / 2.1,
-                height: dimensions.width / 2,
-                // borderRadius: 12,
-                overflow: 'hidden',
+                alignItems: 'center',
+                // flex: 1,
+                backgroundColor: '#fff',
+                justifyContent: 'space-between',
+                flexDirection: 'row',
+                marginHorizontal: 5,
               }}>
-              <ImageBackground
-                source={{uri: item.image}}
+              <View
                 style={{
-                  width: dimensions.width / 2.1,
-                  height: dimensions.width / 2,
-                  backgroundColor: theme.colors.Tabbg,
-                }}
-                imageStyle={{
-                  resizeMode: 'cover',
-                  // borderRadius: 12,
+                  backgroundColor: '#fff',
+                  alignItems: 'flex-start',
                 }}>
-                <View
+                <Text
                   style={{
-                    position: 'absolute',
-                    right: 13,
-                    top: 5,
-                  }}></View>
-                <View
-                  style={{
-                    position: 'absolute',
-                    bottom: 0,
-                    flexDirection: 'row',
-                    alignItems: 'center',
+                    fontWeight: '700',
+                    color: theme.colors.Black,
+                    textAlign: 'center',
                   }}>
-                  <TouchableOpacity
-                    onPress={() => LikeUnlike(item.id)}
-                    style={{flex: 1}}>
-                    <LinearGradient
-                      colors={[
-                        theme.colors.Linear_first,
-                        theme.colors.Linear_second,
-                        theme.colors.Linear_third,
-                      ]}
-                      start={{x: 0.3, y: 0}}
-                      end={{x: 0.5, y: 3.5}}
-                      style={{
-                        // width: Dimensions.get('window').width / 6.9,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        paddingVertical: 6,
-                      }}>
-                      <TextFormated
-                        style={{
-                          fontWeight: '500',
-                          color: theme.colors.primary,
-                          fontSize: 10,
-                        }}>
-                        LIKE {item?.like}
-                      </TextFormated>
-                    </LinearGradient>
-                  </TouchableOpacity>
-                  {item.ask_status == 'YES' && (
-                    <TouchableOpacity
-                      onPress={() => {}}
-                      style={{
-                        // width: Dimensions.get('window').width / 6.9,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        paddingVertical: 6,
-                        backgroundColor: theme.colors.red,
-                        flex: 1,
-                      }}>
-                      <TextFormated
-                        style={{
-                          fontWeight: '500',
-                          color: theme.colors.primary,
-                          fontSize: 10,
-                        }}>
-                        ASK
-                      </TextFormated>
-                    </TouchableOpacity>
-                  )}
-                  <TouchableOpacity
-                    onPress={() => {}}
-                    style={{
-                      // width: Dimensions.get('window').width / 6.9,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      paddingVertical: 6,
-                      backgroundColor: theme.colors.purple,
-                      flex: 1,
-                    }}>
-                    <TextFormated
-                      style={{
-                        fontWeight: '500',
-                        color: theme.colors.primary,
-                        fontSize: 10,
-                      }}>
-                      ORDER {item?.order}
-                    </TextFormated>
-                  </TouchableOpacity>
+                  {v?.maekrt_data?.market_name +
+                    ', ' +
+                    moment(v?.maekrt_data?.date_time).format('ll')}
+                </Text>
 
-                  {item.rent_status == 'YES' && (
+                <Text
+                  style={{
+                    fontWeight: '700',
+                    color: theme.colors.Black,
+                    textAlign: 'center',
+                    marginTop: 5,
+                  }}>
+                  {v?.maekrt_data?.duration}
+                </Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => {
+                  LeaveMarket(v?.market_id);
+                }}
+                style={{
+                  backgroundColor: theme.colors.red,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: 5,
+                  paddingVertical: 15,
+                  flex: 0.3,
+                }}>
+                <Text
+                  style={{
+                    fontWeight: '600',
+                    color: theme.colors.primary,
+                    fontSize: 12,
+                  }}>
+                  LEAVE
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <FlatList
+              data={markets[i]?.selected_products?.slice(0, 9)}
+              showsHorizontalScrollIndicator={false}
+              scrollEnabled={true}
+              contentContainerStyle={{
+                marginVertical: 15,
+                // paddingHorizontal: 20,
+                alignItems: 'center',
+              }}
+              // style={{marginHorizontal: 5}}
+              horizontal
+              // ItemSeparatorComponent={() => <View style={{width: 20}} />}
+              ListFooterComponent={
+                <View>
+                  {markets[i]?.selected_products?.length > 9 && (
                     <TouchableOpacity
-                      onPress={() => {}}
+                      onPress={() => navigation.navigate('AllMarketProduct')}
                       style={{
-                        // width: Dimensions.get('window').width / 6.9,
+                        backgroundColor: theme.colors.primary,
                         alignItems: 'center',
                         justifyContent: 'center',
-                        paddingVertical: 6,
-                        backgroundColor: theme.colors.Chat_container,
-                        flex: 1,
+                        borderRadius: 5,
+                        paddingVertical: 15,
+                        width: dimensions.width / 4,
+                        height: dimensions.width / 3,
                       }}>
-                      <TextFormated
+                      <Text
                         style={{
-                          fontWeight: '500',
-                          color: theme.colors.primary,
-                          fontSize: 10,
+                          fontWeight: '600',
+                          color: theme.colors.Black,
+                          fontSize: 12,
+                          paddingHorizontal: 20,
                         }}>
-                        RENT
-                      </TextFormated>
+                        VIEW ALL
+                      </Text>
                     </TouchableOpacity>
                   )}
                 </View>
-              </ImageBackground>
+              }
+              renderItem={({item, index}) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    return navigation.navigate('ProductDetail', {item});
+                    // console.log(item);
+                  }}
+                  style={{
+                    // borderRadius: 12,
+                    backgroundColor: theme.colors.primary,
+                    // justifyContent: 'space-between',
+                    marginHorizontal: 4,
+                    marginVertical: 4,
+                    borderWidth: 1,
+                    borderColor: theme.colors.green,
+                  }}>
+                  <View
+                    style={{
+                      backgroundColor: 'transparent',
+                      width: dimensions.width / 3,
+                      height: dimensions.width / 3,
+                      // borderRadius: 12,
+                      overflow: 'hidden',
+                    }}>
+                    <ImageBackground
+                      source={{
+                        uri: 'https://shopnguyenlieumypham.com/wp-content/uploads/no-image/product-456x456.jpg',
+                      }}
+                      // source={{uri: item.image}}
+                      style={{
+                        width: dimensions.width / 3,
+                        height: dimensions.width / 3,
+                        backgroundColor: theme.colors.Tabbg,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}
+                      imageStyle={{
+                        width: dimensions.width / 4,
+                        resizeMode: 'contain',
+                        height: dimensions.width / 4,
+                        marginHorizontal: 18,
+                        marginTop: 8,
+                      }}>
+                      <ImageBackground
+                        source={{uri: item.image}}
+                        style={{
+                          width: dimensions.width / 3,
+                          height: dimensions.width / 3,
+                        }}
+                        imageStyle={{
+                          resizeMode: 'cover',
+                        }}></ImageBackground>
+                      <View
+                        style={{
+                          position: 'absolute',
+                          right: 13,
+                          top: 5,
+                        }}></View>
+                      <View
+                        style={{
+                          position: 'absolute',
+                          bottom: 0,
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                        }}>
+                        <TouchableOpacity
+                          onPress={() => LikeUnlike(item.id)}
+                          style={{flex: 1}}>
+                          <LinearGradient
+                            colors={[
+                              theme.colors.Linear_first,
+                              theme.colors.Linear_second,
+                              theme.colors.Linear_third,
+                            ]}
+                            start={{x: 0.3, y: 0}}
+                            end={{x: 0.5, y: 3.5}}
+                            style={{
+                              // width: Dimensions.get('window').width / 6.9,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              paddingVertical: 6,
+                            }}>
+                            <TextFormated
+                              style={{
+                                fontWeight: '500',
+                                color: theme.colors.primary,
+                                fontSize: 10,
+                              }}>
+                              LIKE {item?.like}
+                            </TextFormated>
+                          </LinearGradient>
+                        </TouchableOpacity>
+                        {item.ask_status == 'YES' && (
+                          <TouchableOpacity
+                            onPress={() => {}}
+                            style={{
+                              // width: Dimensions.get('window').width / 6.9,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              paddingVertical: 6,
+                              backgroundColor: theme.colors.red,
+                              flex: 1,
+                            }}>
+                            <TextFormated
+                              style={{
+                                fontWeight: '500',
+                                color: theme.colors.primary,
+                                fontSize: 10,
+                              }}>
+                              ASK
+                            </TextFormated>
+                          </TouchableOpacity>
+                        )}
+                        <TouchableOpacity
+                          onPress={() => {}}
+                          style={{
+                            // width: Dimensions.get('window').width / 6.9,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            paddingVertical: 6,
+                            backgroundColor: theme.colors.purple,
+                            flex: 1,
+                          }}>
+                          <TextFormated
+                            style={{
+                              fontWeight: '500',
+                              color: theme.colors.primary,
+                              fontSize: 10,
+                            }}>
+                            ORDER {item?.order}
+                          </TextFormated>
+                        </TouchableOpacity>
+
+                        {item.rent_status == 'YES' && (
+                          <TouchableOpacity
+                            onPress={() => {}}
+                            style={{
+                              // width: Dimensions.get('window').width / 6.9,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              paddingVertical: 6,
+                              backgroundColor: theme.colors.Chat_container,
+                              flex: 1,
+                            }}>
+                            <TextFormated
+                              style={{
+                                fontWeight: '500',
+                                color: theme.colors.primary,
+                                fontSize: 10,
+                              }}>
+                              RENT
+                            </TextFormated>
+                          </TouchableOpacity>
+                        )}
+                      </View>
+                    </ImageBackground>
+                  </View>
+                </TouchableOpacity>
+              )}
+            />
+          </View>
+        ))}
+
+        <FlatList
+          data={data}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          ListEmptyComponent={
+            <View
+              style={{
+                flex: 1,
+                alignItems: 'center',
+                backgroundColor: '#fff',
+                justifyContent: 'center',
+              }}>
+              <Image
+                source={require('../../../../../assets/gif/DataNotFound.gif')}
+                style={{
+                  height: dimensions.width / 1.5,
+                  width: dimensions.width / 1.5,
+                  resizeMode: 'contain',
+                  alignSelf: 'center',
+                  borderWidth: 3,
+                  borderColor: theme.colors.primary,
+                }}
+              />
             </View>
-          </TouchableOpacity>
-        )}
-      />
+          }
+          numColumns={2}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{marginVertical: 15}}
+          // ItemSeparatorComponent={() => <View style={{width: 20}} />}
+          scrollEnabled={false}
+          renderItem={({item, index}) => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('ProductDetail', {item})}
+              style={{
+                // borderRadius: 12,
+                backgroundColor: theme.colors.primary,
+                // justifyContent: 'space-between',
+                marginHorizontal: 4,
+                marginVertical: 4,
+                borderWidth: 1,
+                borderColor: theme.colors.green,
+              }}>
+              <View
+                style={{
+                  backgroundColor: 'transparent',
+                  width: dimensions.width / 2.1,
+                  height: dimensions.width / 2,
+                  // borderRadius: 12,
+                  overflow: 'hidden',
+                }}>
+                <ImageBackground
+                  source={{
+                    uri: 'https://shopnguyenlieumypham.com/wp-content/uploads/no-image/product-456x456.jpg',
+                  }}
+                  // source={{uri: item.image}}
+                  style={{
+                    width: dimensions.width / 2.1,
+                    height: dimensions.width / 2,
+                    backgroundColor: theme.colors.Tabbg,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                  imageStyle={{
+                    width: dimensions.width / 3,
+                    resizeMode: 'contain',
+                    height: dimensions.width / 3,
+                    marginHorizontal: 30,
+                    marginTop: 30,
+                  }}>
+                  <ImageBackground
+                    source={{uri: item.image}}
+                    style={{
+                      width: dimensions.width / 2.1,
+                      height: dimensions.width / 2,
+                    }}
+                    imageStyle={{
+                      resizeMode: 'cover',
+                    }}></ImageBackground>
+                  <View
+                    style={{
+                      position: 'absolute',
+                      right: 13,
+                      top: 5,
+                    }}></View>
+                  <View
+                    style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    <TouchableOpacity
+                      onPress={() => LikeUnlike(item.id)}
+                      style={{flex: 1}}>
+                      <LinearGradient
+                        colors={[
+                          theme.colors.Linear_first,
+                          theme.colors.Linear_second,
+                          theme.colors.Linear_third,
+                        ]}
+                        start={{x: 0.3, y: 0}}
+                        end={{x: 0.5, y: 3.5}}
+                        style={{
+                          // width: Dimensions.get('window').width / 6.9,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          paddingVertical: 6,
+                        }}>
+                        <TextFormated
+                          style={{
+                            fontWeight: '500',
+                            color: theme.colors.primary,
+                            fontSize: 10,
+                          }}>
+                          LIKE {item?.like}
+                        </TextFormated>
+                      </LinearGradient>
+                    </TouchableOpacity>
+                    {item.ask_status == 'YES' && (
+                      <TouchableOpacity
+                        onPress={() => {}}
+                        style={{
+                          // width: Dimensions.get('window').width / 6.9,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          paddingVertical: 6,
+                          backgroundColor: theme.colors.red,
+                          flex: 1,
+                        }}>
+                        <TextFormated
+                          style={{
+                            fontWeight: '500',
+                            color: theme.colors.primary,
+                            fontSize: 10,
+                          }}>
+                          ASK
+                        </TextFormated>
+                      </TouchableOpacity>
+                    )}
+                    <TouchableOpacity
+                      onPress={() => {}}
+                      style={{
+                        // width: Dimensions.get('window').width / 6.9,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        paddingVertical: 6,
+                        backgroundColor: theme.colors.purple,
+                        flex: 1,
+                      }}>
+                      <TextFormated
+                        style={{
+                          fontWeight: '500',
+                          color: theme.colors.primary,
+                          fontSize: 10,
+                        }}>
+                        ORDER {item?.order}
+                      </TextFormated>
+                    </TouchableOpacity>
+
+                    {item.rent_status == 'YES' && (
+                      <TouchableOpacity
+                        onPress={() => {}}
+                        style={{
+                          // width: Dimensions.get('window').width / 6.9,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          paddingVertical: 6,
+                          backgroundColor: theme.colors.Chat_container,
+                          flex: 1,
+                        }}>
+                        <TextFormated
+                          style={{
+                            fontWeight: '500',
+                            color: theme.colors.primary,
+                            fontSize: 10,
+                          }}>
+                          RENT
+                        </TextFormated>
+                      </TouchableOpacity>
+                    )}
+                  </View>
+                </ImageBackground>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+      </ScrollView>
 
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('JoinedMarkets');
         }}
         style={{
-          paddingVertical: 15,
-          paddingHorizontal: 15,
+          // paddingVertical: 7,
+          paddingHorizontal: 7,
           backgroundColor: theme.colors.green,
           borderRadius: 120,
           position: 'absolute',
           bottom: 40,
-          right: 20,
+          right: 30,
+          overflow: 'hidden',
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+
+          elevation: 5,
         }}>
         <Image
           style={{
-            height: 45,
-            width: 45,
-            resizeMode: 'contain',
+            borderRadius: 120,
+            height: 70,
+            width: 55,
+            resizeMode: 'cover',
           }}
-          source={require('../../../../../assets/gif/shop.gif')}
+          source={require('../../../../../assets/gif/market.gif')}
         />
       </TouchableOpacity>
     </View>

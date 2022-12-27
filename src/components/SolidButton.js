@@ -21,6 +21,9 @@ export default function SolidButton({
   paddingHorizontal,
   paddingVertical,
   activeOpacity,
+  img_height,
+  img_width,
+  rotate,
 }) {
   return (
     <TouchableOpacity
@@ -45,9 +48,6 @@ export default function SolidButton({
         elevation: 5,
         marginHorizontal: marginHorizontal || 15,
       }}>
-      {/* {loading ? (
-        <ActivityIndicator size={'small'} style={{margin: 2}} color="#fff" />
-      ) : ( */}
       {text ? (
         loading ? (
           <ActivityIndicator size={'small'} style={{margin: 2}} color="#fff" />
@@ -65,9 +65,10 @@ export default function SolidButton({
       ) : (
         <Image
           style={{
-            height: 12,
-            width: 12,
+            height: img_height || 12,
+            width: img_width || 12,
             resizeMode: 'contain',
+            transform: [{rotate: rotate || '0deg'}],
           }}
           source={source}
         />

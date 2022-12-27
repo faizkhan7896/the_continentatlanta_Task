@@ -40,6 +40,7 @@ export default function CustomTextInput({
   View_marginTop,
   borderColor,
   borderRadius,
+  maxLength,
 }) {
   return (
     <View>
@@ -88,6 +89,7 @@ export default function CustomTextInput({
             />
           )}
           <TextInput
+            maxLength={maxLength}
             paddingHorizontal={15}
             editable={editable}
             style={[

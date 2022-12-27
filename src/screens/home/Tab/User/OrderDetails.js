@@ -907,7 +907,8 @@ export default function Orders({navigation}) {
                     fontSize: 12,
                     marginTop: 10,
                   }}>
-                  {moment(data[0]?.post?.date_time).format('lll')}
+                  {data[0]?.post?.date_time}
+                  {/* {moment(data[0]?.post?.date_time).format('lll')} */}
                 </Text>
               </View>
               <View

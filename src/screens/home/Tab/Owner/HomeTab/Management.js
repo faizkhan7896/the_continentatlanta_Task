@@ -2,23 +2,21 @@ import moment from 'moment';
 import React, {useCallback, useEffect, useState} from 'react';
 import {
   Dimensions,
-  FlatList,
   Image,
   ImageBackground,
-  RefreshControl,
   StyleSheet,
   Text,
   TouchableOpacity,
   useWindowDimensions,
   View,
 } from 'react-native';
+import {SwipeListView} from 'react-native-swipe-list-view';
 import {useSelector} from 'react-redux';
 import LoadingSpinner from '../../../../../components/LoadingSpinner';
 import {default as TextFormated} from '../../../../../components/TextFormated';
 import {baseUrl} from '../../../../../utils/constance';
 import {theme} from '../../../../../utils/theme';
 import {ShowToast} from '../../../../../utils/ToastFunction';
-import {SwipeListView} from 'react-native-swipe-list-view';
 
 export default function History({navigation, setGet_followed_event}) {
   const dimensions = useWindowDimensions();
@@ -284,7 +282,12 @@ export default function History({navigation, setGet_followed_event}) {
 
   return (
     <View style={{flex: 1}}>
-      <LoadingSpinner size={60} visible={loading} color={theme.colors.yellow} />
+      <LoadingSpinner
+        textContent="Loading..."
+        size={60}
+        visible={loading}
+        color={theme.colors.yellow}
+      />
 
       <SwipeListView
         data={data}
@@ -304,31 +307,22 @@ export default function History({navigation, setGet_followed_event}) {
         ListEmptyComponent={
           <View
             style={{
-              // alignItems: 'center',
               flex: 1,
+              alignItems: 'center',
               backgroundColor: '#fff',
               justifyContent: 'center',
             }}>
             <Image
-              source={require('../../../../../assets/DataNotFound.png')}
+              source={require('../../../../../assets/gif/DataNotFound.gif')}
               style={{
-                height: dimensions.width / 2,
-                width: dimensions.width / 2,
+                height: dimensions.width / 1.5,
+                width: dimensions.width / 1.5,
                 resizeMode: 'contain',
                 alignSelf: 'center',
-                // borderWidth: 1,
+                borderWidth: 3,
+                borderColor: theme.colors.primary,
               }}
             />
-            <Text
-              style={{
-                fontSize: 24,
-                fontWeight: '700',
-                color: theme.colors.Black,
-                marginVertical: 15,
-                textAlign: 'center',
-              }}>
-              Data Not Found
-            </Text>
           </View>
         }
         renderHiddenItem={(data, rowMap) => (
@@ -429,7 +423,8 @@ export default function History({navigation, setGet_followed_event}) {
                         fontSize: 12,
                         marginTop: 5,
                       }}>
-                      {moment(item.date_time).format('lll')}
+                      {item.date_time}
+                      {/* {moment(item.date_time).format('lll')} */}
                     </TextFormated>
                   </View>
                   <TouchableOpacity
@@ -819,7 +814,20 @@ export default function History({navigation, setGet_followed_event}) {
             navigation.navigate('OwnerSignup');
             return;
           }
-          navigation.navigate('AddProduct');
+          if (profileData?.signup_status == 'Account Under Review') {
+            // navigation.navigate('OwnerSignup');
+            ShowToast('Your account is under review.');
+            return;
+          }
+          if (profileData?.signup_status == 'Account Activated Successfully') {
+            navigation.navigate('AddProduct');
+            return;
+          }
+          if (profileData?.signup_status == 'Account Disabled') {
+            ShowToast('Your account is disabled.');
+            // navigation.navigate('OwnerSignup');
+            return;
+          }
         }}
         style={{
           // paddingVertical: 15,

@@ -22,6 +22,8 @@ import {ShowToast} from '../../utils/ToastFunction';
 import moment from 'moment';
 import {SIGNUP} from '../../redux/ActionTypes';
 import store from '../../redux/store';
+import OneSignal from 'react-native-onesignal';
+import {firebase} from '@react-native-firebase/messaging';
 
 export default function Login({navigation}) {
   const {params} = useRoute();
@@ -75,12 +77,13 @@ export default function Login({navigation}) {
     //   ShowToast('You must be older than 13 years', 'error');
     //   return;
     // }
+    // return;
 
     try {
       setLoading(true);
       const url = baseUrl + 'signup';
 
-      // const token = await firebase.messaging().getToken();
+      const token = await firebase.messaging().getToken();
       // alert(token);
       const body = new FormData();
       body.append('email', email);
@@ -108,6 +111,8 @@ export default function Login({navigation}) {
           type: SIGNUP,
           payload: rslt.user_data,
         });
+        OneSignal.setExternalUserId(rslt.user_data.id);
+
         ShowToast(rslt.message + ' Signup successfully.');
       } else {
         ShowToast(rslt.message || 'Unknown error', 'error');
@@ -153,7 +158,7 @@ export default function Login({navigation}) {
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       {/* <LoadingSpinner size={60} visible={loading} color={'#0091E7'} /> */}
       <Statusbar
-        barStyle={'light-content'}
+        barStyle={'dark-content'}
         backgroundColor={theme.colors.primary}
       />
       <DatePicker
@@ -292,6 +297,7 @@ export default function Login({navigation}) {
             value={number}
             searchbar={require('../../assets/Number.png')}
             placeholder={'Mobile Number'}
+            maxLength={11}
           />
         </View>
         <View style={{marginHorizontal: 20}}>
@@ -301,6 +307,7 @@ export default function Login({navigation}) {
             paddingVertical={15}
             borderRadius={10}
             marginTop={50}
+            loading={loading}
           />
         </View>
         {/* <View

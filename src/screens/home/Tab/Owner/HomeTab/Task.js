@@ -816,7 +816,12 @@ export default function History({navigation, setGet_followed_event}) {
 
   return (
     <View style={{flex: 1}}>
-      <LoadingSpinner size={60} visible={loading} color={theme.colors.yellow} />
+      <LoadingSpinner
+        textContent="Loading..."
+        size={60}
+        visible={loading}
+        color={theme.colors.yellow}
+      />
 
       <FlatList
         data={data}
@@ -826,31 +831,22 @@ export default function History({navigation, setGet_followed_event}) {
         ListEmptyComponent={
           <View
             style={{
-              // alignItems: 'center',
               flex: 1,
+              alignItems: 'center',
               backgroundColor: '#fff',
               justifyContent: 'center',
             }}>
             <Image
-              source={require('../../../../../assets/DataNotFound.png')}
+              source={require('../../../../../assets/gif/DataNotFound.gif')}
               style={{
-                height: dimensions.width / 2,
-                width: dimensions.width / 2,
+                height: dimensions.width / 1.5,
+                width: dimensions.width / 1.5,
                 resizeMode: 'contain',
                 alignSelf: 'center',
-                // borderWidth: 1,
+                borderWidth: 3,
+                borderColor: theme.colors.primary,
               }}
             />
-            <Text
-              style={{
-                fontSize: 24,
-                fontWeight: '700',
-                color: theme.colors.Black,
-                marginVertical: 15,
-                textAlign: 'center',
-              }}>
-              Data Not Found
-            </Text>
           </View>
         }
         showsVerticalScrollIndicator={false}
@@ -1046,7 +1042,7 @@ function OrderItem({
 
   const [visible, setVisible] = useState(false);
   const [Step3, setStep3] = useState(false);
-  const [status, setStatus] = useState({});
+  const [status, setStatus] = useState([]);
   const [SubOrderIds, setSubOrderIds] = useState([]);
   const [fileResponse, setFileResponse] = useState([]);
   const [thumb, setThumb] = useState([]);
@@ -1066,8 +1062,11 @@ function OrderItem({
   const [relode, setRelode] = useState({});
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [ceckedCount, setCeckedCount] = useState(0);
+  const [ceckedCount_1, setCeckedCount_1] = useState(0);
   // alert(JSON.stringify(status));
-  // console.log(status);
+  // console.log(ceckedCount);
+  // console.log(item?.sub_orders.length);
 
   async function SubmitAvailablity(order_id, status) {
     try {
@@ -1475,7 +1474,8 @@ function OrderItem({
                   fontSize: 12,
                   marginTop: 5,
                 }}>
-                {moment(item.date_time).format('lll')}
+                {item.date_time}
+                {/* {moment(item.date_time).format('lll')} */}
               </TextFormated>
             </View>
             <TouchableOpacity
@@ -1719,7 +1719,11 @@ function OrderItem({
 
       <View style={{marginVertical: 20}}>
         <SolidButton
-          source={require('../../../../../assets/ScrollDown.png')}
+          source={require('../../../../../assets/gif/down.gif')}
+          rotate={visible == true && '180deg'}
+          paddingVertical={7}
+          img_height={24}
+          img_width={24}
           backgroundColor={theme.colors.ScrollDown}
           onPress={() => {
             setVisible(!visible);
@@ -1829,14 +1833,14 @@ function OrderItem({
                                 color: theme.colors.Black,
                                 paddingHorizontal: 10,
                               }}>
-                              {v?.price}
+                              {'¥' + v?.price}
                             </Text>
                           </View>
                         </View>
                       </View>
 
                       {/* {v.status == 'PENDING' ? ( */}
-                      {item?.status == 'PENDING' ? (
+                      {item?.availablity_submitted == 'WAITING' ? (
                         <View style={{flexDirection: 'row'}}>
                           <View style={{}}>
                             <TouchableOpacity
@@ -1844,6 +1848,11 @@ function OrderItem({
                               onPress={() => {
                                 if (submitted == false) {
                                   setStatus(i => ({...i, [v.id]: 'ACCEPT'}));
+                                  setCeckedCount(i => ({
+                                    ...i,
+                                    [v.id]: ceckedCount + 1,
+                                  }));
+                                  // setCeckedCount(ceckedCount + 1);
                                 } else {
                                 }
                               }}>
@@ -1859,13 +1868,6 @@ function OrderItem({
                                       ? theme.colors.green
                                       : theme.colors.Black,
                                 }}
-                                //   tintColor:
-                                //     Object.values(status).find(
-                                //       i => i == 'ACCEPT',
-                                //     ) && Object.keys(status).find(x => x == v.id)
-                                //       ? theme.colors.green
-                                //       : theme.colors.Black,
-                                // }}
                               />
                             </TouchableOpacity>
                           </View>
@@ -1876,6 +1878,7 @@ function OrderItem({
                               onPress={() => {
                                 if (submitted == false) {
                                   setStatus(i => ({...i, [v.id]: 'CANCEL'}));
+                                  setCeckedCount_1(ceckedCount_1 + 1);
                                 } else {
                                 }
                               }}>
@@ -1961,10 +1964,12 @@ function OrderItem({
               <SolidButton
                 text="SUBMIT"
                 backgroundColor={
-                  submitted == false ? theme.colors.green : theme.colors.Gray
+                  item?.availablity_submitted == 'WAITING'
+                    ? theme.colors.green
+                    : theme.colors.Gray
                 }
                 onPress={() => {
-                  if (submitted == false) {
+                  if (item?.availablity_submitted == 'WAITING') {
                     SubmitAvailablity(
                       Object.keys(status).join(','),
                       Object.values(status).join(','),
@@ -1974,14 +1979,18 @@ function OrderItem({
                 }}
                 marginHorizontal={1}
                 // loading={loading}
-                activeOpacity={submitted == false ? 0 : 1}
+                activeOpacity={item?.availablity_submitted == 'WAITING' ? 0 : 1}
               />
             </View>
           )}
           {item?.order_otp != 'PENDING' && (
             <View style={{marginVertical: 20}}>
               <SolidButton
-                source={require('../../../../../assets/ScrollDown.png')}
+                source={require('../../../../../assets/gif/down.gif')}
+                rotate={Step3 == true && '180deg'}
+                paddingVertical={7}
+                img_width={24}
+                img_height={24}
                 backgroundColor={theme.colors.ScrollDown}
                 onPress={() => {
                   if (item?.video_1 != 'https://pickpic4u.com/uploads/NO') {

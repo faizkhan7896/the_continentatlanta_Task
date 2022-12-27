@@ -1,23 +1,18 @@
-import moment from 'moment';
 import {default as React, useState} from 'react';
 import {
   FlatList,
   Image,
   ImageBackground,
-  Text,
   TouchableOpacity,
   useWindowDimensions,
   View,
 } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
-import TextFormatted, {
-  default as TextFormated,
-} from '../../../components/TextFormated';
-import {theme} from '../../../utils/theme';
-import {data} from '../../../utils/data';
-import Statusbar from '../../../components/Statusbar';
 import Button from '../../../components/Button';
 import Header from '../../../components/Header';
+import Statusbar from '../../../components/Statusbar';
+import TextFormatted from '../../../components/TextFormated';
+import {data} from '../../../utils/data';
+import {theme} from '../../../utils/theme';
 
 export default function Orders({navigation}) {
   const dimensions = useWindowDimensions();

@@ -5,6 +5,7 @@ import {
   BackHandler,
   Dimensions,
   Image,
+  ImageBackground,
   Linking,
   Platform,
   StatusBar,
@@ -92,15 +93,18 @@ export default function Payments({navigation}) {
         barStyle="dark-content"
         translucent
       />
-      <Image
+
+      <ImageBackground
         source={require('../../../assets/support.png')}
         style={{
           height: dimensions.width,
           width: dimensions.width,
           resizeMode: 'contain',
           alignSelf: 'center',
-        }}
-      />
+          paddingTop: 30,
+        }}>
+        <Header navigation={navigation} Headertext={''} />
+      </ImageBackground>
       <Text
         style={{
           fontSize: 24,

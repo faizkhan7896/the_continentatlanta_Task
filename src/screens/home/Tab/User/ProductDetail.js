@@ -21,6 +21,7 @@ import Statusbar from '../../../../components/Statusbar';
 import TextFormated from '../../../../components/TextFormated';
 import TextInput from '../../../../components/TextInput';
 import {baseUrl} from '../../../../utils/constance';
+import {sendNotification} from '../../../../utils/funcs';
 import {theme} from '../../../../utils/theme';
 import {ShowToast} from '../../../../utils/ToastFunction';
 
@@ -67,10 +68,11 @@ export default function LogOut({navigation}) {
   const [prices, setPrices] = useState([]);
 
   const scrollRef = useRef();
-  // alert(JSON.stringify(selectedProduct.length));
+  // alert(JSON.stringify(auth.name));
 
-  // alert(JSON.stringify(data?.id));
-  // console.log('selectedProduct', selectedProduct);
+  // alert(JSON.stringify(data?.user_id));
+
+  // console.log('selectedProduct', data);
 
   async function GetSinglePost() {
     try {
@@ -221,6 +223,11 @@ export default function LogOut({navigation}) {
       if (rslt.success == '1') {
         ShowToast('Order created successfully.');
         navigation.goBack();
+        sendNotification({
+          tokens: [data?.user_id],
+          title: 'New Order',
+          body: auth.name + ' created a new order',
+        });
       } else {
         ShowToast(rslt.message || 'Unknown error', 'error');
       }
@@ -727,8 +734,13 @@ export default function LogOut({navigation}) {
               text="SUBMIT"
               backgroundColor={theme.colors.green}
               onPress={() => {
-                // alert(JSON.stringify(data?.post_position[0].position));
                 CreateOrder();
+                // alert(JSON.stringify(data?.post_position[0].position));
+                // sendNotification({
+                //   tokens: [data?.user_id],
+                //   title: 'New Order',
+                //   body: auth.name + ' created a new order',
+                // });
               }}
               loading={loading}
             />

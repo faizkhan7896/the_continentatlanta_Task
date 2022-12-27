@@ -115,7 +115,12 @@ export default function ShowCase({navigation, setGet_followed_event}) {
     <View style={{flex: 1, backgroundColor: theme.colors.primary}}>
       <Statusbar backgroundColor="#fff" barStyle="dark-content" />
       <Header navigation={navigation} Headertext={'Market'} />
-      <LoadingSpinner size={60} visible={loading} color={theme.colors.yellow} />
+      <LoadingSpinner
+        textContent="Loading..."
+        size={60}
+        visible={loading}
+        color={theme.colors.yellow}
+      />
       <ScrollView>
         <View style={{}}>
           <View
@@ -178,31 +183,22 @@ export default function ShowCase({navigation, setGet_followed_event}) {
             ListEmptyComponent={
               <View
                 style={{
-                  // alignItems: 'center',
                   flex: 1,
+                  alignItems: 'center',
                   backgroundColor: '#fff',
                   justifyContent: 'center',
                 }}>
                 <Image
-                  source={require('../../../../assets/DataNotFound.png')}
+                  source={require('../../../../assets/gif/DataNotFound.gif')}
                   style={{
-                    height: dimensions.width / 2,
-                    width: dimensions.width / 2,
+                    height: dimensions.width / 1.5,
+                    width: dimensions.width / 1.5,
                     resizeMode: 'contain',
                     alignSelf: 'center',
-                    // borderWidth: 1,
+                    borderWidth: 3,
+                    borderColor: theme.colors.primary,
                   }}
                 />
-                <Text
-                  style={{
-                    fontSize: 24,
-                    fontWeight: '700',
-                    color: theme.colors.Black,
-                    marginVertical: 15,
-                    textAlign: 'center',
-                  }}>
-                  Data Not Found
-                </Text>
               </View>
             }
             numColumns={2}

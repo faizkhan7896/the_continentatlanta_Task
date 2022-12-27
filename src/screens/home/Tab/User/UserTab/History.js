@@ -387,7 +387,12 @@ export default function History({navigation, setGet_followed_event}) {
 
   return (
     <View style={{flex: 1}}>
-      <LoadingSpinner size={60} visible={loading} color={theme.colors.yellow} />
+      <LoadingSpinner
+        textContent="Loading..."
+        size={60}
+        visible={loading}
+        color={theme.colors.yellow}
+      />
 
       <FlatList
         data={data}
@@ -397,31 +402,22 @@ export default function History({navigation, setGet_followed_event}) {
         ListEmptyComponent={
           <View
             style={{
-              // alignItems: 'center',
               flex: 1,
+              alignItems: 'center',
               backgroundColor: '#fff',
               justifyContent: 'center',
             }}>
             <Image
-              source={require('../../../../../assets/DataNotFound.png')}
+              source={require('../../../../../assets/gif/DataNotFound.gif')}
               style={{
-                height: dimensions.width / 2,
-                width: dimensions.width / 2,
+                height: dimensions.width / 1.5,
+                width: dimensions.width / 1.5,
                 resizeMode: 'contain',
                 alignSelf: 'center',
-                // borderWidth: 1,
+                borderWidth: 3,
+                borderColor: theme.colors.primary,
               }}
             />
-            <Text
-              style={{
-                fontSize: 24,
-                fontWeight: '700',
-                color: theme.colors.Black,
-                marginVertical: 15,
-                textAlign: 'center',
-              }}>
-              Data Not Found
-            </Text>
           </View>
         }
         showsVerticalScrollIndicator={false}
@@ -1221,7 +1217,8 @@ function OrderItem({
                   fontSize: 12,
                   marginTop: 5,
                 }}>
-                {moment(item.date_time).format('lll')}
+                {item.date_time}
+                {/* {moment(item.date_time).format('lll')} */}
               </TextFormated>
             </View>
             <TouchableOpacity
@@ -1466,12 +1463,16 @@ function OrderItem({
 
       <View style={{marginVertical: 20}}>
         <SolidButton
-          source={require('../../../../../assets/ScrollDown.png')}
+          source={require('../../../../../assets/gif/down.gif')}
+          rotate={visible == true && '180deg'}
+          paddingVertical={7}
           backgroundColor={theme.colors.ScrollDown}
           onPress={() => {
             setVisible(!visible);
           }}
           marginHorizontal={0.1}
+          img_width={24}
+          img_height={24}
         />
       </View>
       {/* )} */}
@@ -1699,10 +1700,16 @@ function OrderItem({
                 <View style={{flex: 1}}>
                   <SolidButton
                     text="SUBMIT"
-                    backgroundColor={theme.colors.green}
+                    backgroundColor={
+                      item?.availablity_submitted != 'WAITING'
+                        ? theme.colors.green
+                        : theme.colors.Gray
+                    }
                     onPress={() => {
-                      // alert(JSON.stringify(item?.item?.post_position[0].position));
-                      AcceptOrder(item?.id);
+                      if (item?.availablity_submitted != 'WAITING') {
+                        AcceptOrder(item?.id);
+                      } else {
+                      }
                     }}
                     marginHorizontal={1}
                     loading={Accept_loading}
@@ -1736,7 +1743,11 @@ function OrderItem({
           {item?.order_otp != 'PENDING' && (
             <View style={{marginVertical: 20}}>
               <SolidButton
-                source={require('../../../../../assets/ScrollDown.png')}
+                source={require('../../../../../assets/gif/down.gif')}
+                rotate={Step3 == true && '180deg'}
+                paddingVertical={7}
+                img_width={24}
+                img_height={24}
                 backgroundColor={theme.colors.ScrollDown}
                 onPress={() => {
                   if (item?.video_1 != 'https://pickpic4u.com/uploads/NO') {
@@ -1986,8 +1997,15 @@ function OrderItem({
                     <ActivityIndicator size={'small'} style={{}} color="#fff" />
                   ) : (
                     <TouchableOpacity
+                      // onPress={() => {
+                      //   playing ? pause() : play();
+                      // }}>
                       onPress={() => {
-                        playing ? pause() : play();
+                        if (
+                          item?.audio_1 != 'https://pickpic4u.com/uploads/NO'
+                        ) {
+                          playing ? pause() : play();
+                        }
                       }}>
                       <Image
                         source={

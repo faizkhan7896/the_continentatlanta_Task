@@ -1,21 +1,3 @@
-// import {View, Text, Dimensions} from 'react-native';
-// import React from 'react';
-
-// export default function Map() {
-//   return (
-// <View
-//   style={{
-//     backgroundColor: '#fff',
-//     height: 500,
-//     width: Dimensions.get('window').width,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   }}>
-//       <Text style={{fontSize: 24, fontWeight: '600'}}>Map</Text>
-//     </View>
-//   );
-// }
-
 import moment from 'moment';
 import React, {useEffect, useState} from 'react';
 import {
@@ -36,6 +18,9 @@ import CustomTextInput from '../../../../../components/TextInput';
 import {baseUrl} from '../../../../../utils/constance';
 import {theme} from '../../../../../utils/theme';
 import {ShowToast} from '../../../../../utils/ToastFunction';
+import LoadingSpinner from '../../../../../components/LoadingSpinner';
+import RNLocation from 'react-native-location';
+import Geolocation from '@react-native-community/geolocation';
 
 const MARKERS = [
   {latitude: 22.761794329667982, longitude: 75.88739432394505},
@@ -58,7 +43,7 @@ export default function MapSearch({navigation}) {
   const [selectedLon, setSelectedLon] = useState();
   const [modal, setModal] = useState(false);
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState();
+  const [date, setDate] = useState('');
   const [loading, setLoading] = useState(false);
   const [Modal_2, setModal_2] = useState(false);
   const [Modal_3, setModal_3] = useState(false);
@@ -73,12 +58,18 @@ export default function MapSearch({navigation}) {
   const [joined, setJoined] = useState(false);
   const [deleted, setDeleted] = useState(false);
   const [Leave, setLeave] = useState(false);
+  const [location, setLocation] = useState('');
+  const [latitude, setLatitude] = useState('');
+  const [longitude, setLongitude] = useState('');
 
   const [data, setData] = useState();
-  // alert(JSON.stringify(Modal_2));
+  // alert(JSON.stringify(data));
 
   async function GetMarkets(silent = false) {
     try {
+      if (!silent) {
+        setLoading(true);
+      }
       const url = baseUrl + 'get_all_market';
       console.log(url);
 
@@ -94,12 +85,20 @@ export default function MapSearch({navigation}) {
 
       if (rslt.success == '1') {
         setData(rslt.market_data);
+
+        if (!silent) {
+          setLoading(false);
+        }
       } else {
-        // ShowToast(rslt.message || 'Unknown error', 'error');
+        if (!silent) {
+          setLoading(false);
+        } // ShowToast(rslt.message || 'Unknown error', 'error');
       }
     } catch (e) {
-      // alert('An error occured.');
-      ShowToast('An error occured.', 'error');
+      if (!silent) {
+        setLoading(false);
+      } // alert('An error occured.');
+      // ShowToast('An error occured.', 'error');
       console.log(e);
     }
   }
@@ -127,7 +126,7 @@ export default function MapSearch({navigation}) {
 
       if (rslt.success == '1') {
         setDeleted(true);
-        GetMarkets();
+        GetMarkets(true);
         setTimeout(() => {
           setDeleted(false);
           setModal_2(false);
@@ -172,7 +171,7 @@ export default function MapSearch({navigation}) {
         setTimeout(() => {
           setJoined(false);
           setModal_2(false);
-          GetMarkets();
+          GetMarkets(true);
         }, 1800);
       } else {
         ShowToast(rslt.message || 'Unknown error', 'error');
@@ -216,7 +215,7 @@ export default function MapSearch({navigation}) {
           setLeave(false);
           setDeleted(false);
           setModal_2(false);
-          GetMarkets();
+          GetMarkets(true);
         }, 1800);
       } else {
         ShowToast(rslt.message || 'Unknown error', 'error');
@@ -231,9 +230,43 @@ export default function MapSearch({navigation}) {
     }
   }
 
-  // useEffect(() => {
-  //   GetMarkets();
-  // }, []);
+  const currentLocation = async () => {
+    await RNLocation.requestPermission({
+      ios: 'whenInUse',
+      android: {
+        detail: 'coarse',
+      },
+    });
+    Geolocation.getCurrentPosition(async info => {
+      setLongitude(info.coords.longitude);
+      setLatitude(info.coords.latitude);
+
+      // ShowToast(JSON.stringify(info.coords));
+      const url =
+        'https://maps.googleapis.com/maps/api/geocode/json?latlng=' +
+        info.coords.latitude +
+        ',' +
+        info.coords.longitude +
+        '&key=AIzaSyCj_8-SZsoxYxZwN_Wi_7hU8kDSeQx_YVQ';
+      try {
+        // setLoading(true);
+        const res = await fetch(url);
+        // console.log(res);
+
+        const json = await res.json();
+        // console.log(json);
+        setLocation(json.results[0]?.formatted_address);
+      } catch (e) {
+        // setLoading(false);
+        ShowToast(e.toString());
+      }
+    }, console.warn);
+  };
+
+  useEffect(() => {
+    currentLocation();
+    GetMarkets(true);
+  }, []);
 
   useEffect(() => {
     const int = setInterval(() => {
@@ -262,6 +295,13 @@ export default function MapSearch({navigation}) {
         barStyle={'dark-content'}
         backgroundColor={theme.colors.primary}
       />
+      <LoadingSpinner
+        textContent="Loading..."
+        size={60}
+        visible={loading}
+        color={theme.colors.yellow}
+      />
+
       <DatePicker
         modal
         open={open}
@@ -304,8 +344,8 @@ export default function MapSearch({navigation}) {
 
       <MapView
         initialRegion={{
-          latitude: MARKERS[0].latitude || 0,
-          longitude: MARKERS[0].longitude || 0,
+          latitude: latitude || MARKERS[0].latitude || 0,
+          longitude: longitude || MARKERS[0].longitude || 0,
           latitudeDelta: 0.1222,
           longitudeDelta: 0.0621,
         }}
@@ -319,20 +359,25 @@ export default function MapSearch({navigation}) {
               }}
               draggable={true}
               key={index}
-              image={require('../../../../../assets/Deal.png')}
               coordinate={{
                 latitude: item.lat || 0,
                 longitude: item.long || 0,
-              }}
-              style={{tintColor: theme.colors.green}}
-            />
+              }}>
+              <Image
+                source={
+                  item?.attendees.find(v => v?.id == auth?.id)
+                    ? require('../../../../../assets/Joined.png')
+                    : require('../../../../../assets/Deal.png')
+                }
+                style={{width: 24, height: 24}}
+              />
+            </Marker>
           ))
         ) : (
           <Marker
-            // image={require('../../../../../assets/Deal.png')}
             coordinate={{
-              latitude: MARKERS[0].latitude || 0,
-              longitude: MARKERS[0].longitude || 0,
+              latitude: latitude || MARKERS[0].latitude || 0,
+              longitude: longitude || MARKERS[0].longitude || 0,
             }}
             onDragEnd={v => {
               setSelectedLat(v?.nativeEvent?.coordinate?.latitude);
@@ -365,6 +410,15 @@ export default function MapSearch({navigation}) {
           position: 'absolute',
           bottom: 40,
           right: 20,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+
+          elevation: 5,
         }}>
         <Image
           style={{

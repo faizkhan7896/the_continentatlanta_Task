@@ -1,28 +1,25 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {useRoute} from '@react-navigation/native';
+import moment from 'moment';
+import React, {useEffect, useState} from 'react';
 import {
-  Animated,
   Dimensions,
   FlatList,
   Image,
   ImageBackground,
   StyleSheet,
-  Text,
   TouchableOpacity,
   useWindowDimensions,
   View,
 } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import {default as TextFormated} from '../../../../components/TextFormated';
+import {useSelector} from 'react-redux';
+import Header from '../../../../components/Header';
 import LoadingSpinner from '../../../../components/LoadingSpinner';
+import Statusbar from '../../../../components/Statusbar';
+import {default as TextFormated} from '../../../../components/TextFormated';
 import {baseUrl} from '../../../../utils/constance';
 import {theme} from '../../../../utils/theme';
 import {ShowToast} from '../../../../utils/ToastFunction';
-import {RefreshControl} from 'react-native-web-refresh-control';
-import {useSelector} from 'react-redux';
-import Statusbar from '../../../../components/Statusbar';
-import Header from '../../../../components/Header';
-import {useRoute} from '@react-navigation/native';
-import moment from 'moment';
 
 export default function ShowCase({navigation, setGet_followed_event}) {
   const dimensions = useWindowDimensions();
@@ -33,7 +30,8 @@ export default function ShowCase({navigation, setGet_followed_event}) {
   const [isFocused, setIsFocused] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState([]);
   const {params} = useRoute();
-  // alert(JSON.stringify(params.market_name));
+
+  // alert(JSON.stringify(params?.date));
 
   async function LikeUnlike(id) {
     try {
@@ -93,7 +91,7 @@ export default function ShowCase({navigation, setGet_followed_event}) {
       }
     } catch (e) {
       // alert('An error occured.');
-      ShowToast('An error occured.', 'error');
+      // ShowToast('An error occured.', 'error');
       if (!silent) {
         setLoading(false);
       }
@@ -104,16 +102,12 @@ export default function ShowCase({navigation, setGet_followed_event}) {
   }
 
   async function AddMarket() {
-    if (selectedProduct.length == 0) {
-      ShowToast('You have to add at least one product', 'error');
-      return;
-    }
     try {
       setLoading(true);
       const url = baseUrl + 'create_market';
 
-      // const token = await firebase.messaging().getToken();
-      // alert(token);
+      console.log(url);
+
       const body = new FormData();
       body.append('creator_user_id', auth.id);
       body.append('market_name', params?.market_name);
@@ -124,9 +118,11 @@ export default function ShowCase({navigation, setGet_followed_event}) {
           '-' +
           moment(params?.closeTime).format('LT'),
       );
+      body.append('start_date_time', params?.openTime);
+      body.append('end_date_time', params?.closeTime);
       body.append('lat', params?.selectedLat);
       body.append('long', params?.selectedLon);
-      body.append('date_time', params?.date);
+      body.append('date_time', new Date(params?.date).toISOString());
       body.append('selected_products', selectedProduct.join(','));
 
       console.log(body);
@@ -183,7 +179,12 @@ export default function ShowCase({navigation, setGet_followed_event}) {
         flex: 1,
         backgroundColor: '#fff',
       }}>
-      <LoadingSpinner size={60} visible={loading} color={theme.colors.yellow} />
+      <LoadingSpinner
+        textContent="Loading..."
+        size={60}
+        visible={loading}
+        color={theme.colors.yellow}
+      />
 
       <Statusbar
         barStyle="dark-content"
@@ -203,54 +204,30 @@ export default function ShowCase({navigation, setGet_followed_event}) {
         }}>
         <FlatList
           data={data}
-          // refreshControl={
-          //   <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          // }
           ListEmptyComponent={
             <View
               style={{
-                alignItems: 'center',
                 flex: 1,
+                alignItems: 'center',
                 backgroundColor: '#fff',
                 justifyContent: 'center',
               }}>
               <Image
-                source={require('../../../../assets/DataNotFound.png')}
+                source={require('../../../../assets/gif/DataNotFound.gif')}
                 style={{
-                  height: dimensions.width / 2,
-                  width: dimensions.width / 2,
+                  height: dimensions.width / 1.5,
+                  width: dimensions.width / 1.5,
                   resizeMode: 'contain',
                   alignSelf: 'center',
-                  borderWidth: 1,
+                  borderWidth: 3,
+                  borderColor: theme.colors.primary,
                 }}
               />
-              <Text
-                style={{
-                  fontSize: 24,
-                  fontWeight: '700',
-                  color: theme.colors.Black,
-                  marginVertical: 15,
-                  textAlign: 'center',
-                }}>
-                Data Not Found
-              </Text>
             </View>
           }
           numColumns={2}
-          style={{
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-          }}
-          contentContainerStyle={
-            {
-              // flexDirection: 'row',
-              // flexWrap: 'wrap',
-            }
-          }
-          // horizontal
           showsVerticalScrollIndicator={false}
           scrollEnabled={true}
-          // contentContainerStyle={{marginVertical: 15}}
           ItemSeparatorComponent={() => <View style={{width: 20}} />}
           renderItem={({item, index}) => (
             <TouchableOpacity

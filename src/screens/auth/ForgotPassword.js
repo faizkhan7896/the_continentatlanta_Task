@@ -34,8 +34,15 @@ export default function Login({navigation}) {
     if (!email) {
       ShowToast('Please enter your email.', 'error');
       return;
+    } else if (
+      email.match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+      )
+    ) {
+    } else {
+      ShowToast('Invalid email address.', 'error');
+      return;
     }
-
     try {
       setLoading(true);
       const url = baseUrl + 'forgot_password';
@@ -58,7 +65,9 @@ export default function Login({navigation}) {
 
       if (rslt.success == '1') {
         ShowToast(rslt.message);
-        navigation.replace('Otp', {email: email});
+
+        navigation.goBack();
+        // navigation.replace('Otp', {email: email});
       } else {
         ShowToast(rslt.result || rslt.message || 'Unknown error', 'error');
       }
@@ -76,7 +85,7 @@ export default function Login({navigation}) {
     <View style={{flex: 1, backgroundColor: '#fff'}}>
       {/* <LoadingSpinner size={60} visible={loading} color={'#0091E7'} /> */}
       <Statusbar
-        barStyle={'light-content'}
+        barStyle={'dark-content'}
         backgroundColor={theme.colors.primary}
       />
       <Header navigation={navigation} />
