@@ -62,8 +62,15 @@ export default function CustomDrawer(props) {
           backgroundColor: theme.colors.primary,
         }}>
         <View>
-          <Text style={{fontSize: 19, fontWeight: '600'}}>{data?.name}</Text>
-          <Text style={{color: theme.colors.Gray, marginTop: 5}}>
+          <Text
+            style={{
+              fontSize: 19,
+              fontWeight: '600',
+              color: theme.colors.primary,
+            }}>
+            {data?.name}
+          </Text>
+          <Text style={{color: theme.colors.primary, marginTop: 5}}>
             {data?.email}
           </Text>
         </View>

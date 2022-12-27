@@ -86,7 +86,7 @@ export default function Login({navigation}) {
   };
 
   return (
-    <ScrollView style={{flex: 1, backgroundColor: theme.colors.primary}}>
+    <ScrollView style={{flex: 1, backgroundColor: theme.colors.Black}}>
       <StatusBar hidden={true} />
 
       <View style={{position: 'absolute', left: 25, top: 30, zIndex: 100}}>
@@ -204,6 +204,70 @@ export default function Login({navigation}) {
             />
           </TouchableOpacity>
         </View>
+      </View>
+
+      <View
+        style={{
+          alignItems: 'flex-start',
+          // width: Dimensions.get('window').width - 40,
+          marginVertical: 20,
+          paddingHorizontal: 20,
+          backgroundColor: '#000',
+          paddingVertical: 25,
+        }}>
+        <Text
+          style={{
+            fontSize: 35,
+            width: Dimensions.get('window').width - 80,
+            color: theme.colors.primary,
+          }}>
+          Gallery
+        </Text>
+        <View
+          style={{
+            borderColor: '#fff',
+            width: Dimensions.get('window').width / 1.15,
+            borderBottomWidth: 2,
+            marginTop: 20,
+          }}
+        />
+      </View>
+
+      <View
+        style={{
+          alignItems: 'center',
+          backgroundColor: theme.colors.Black,
+          // paddingBottom: 50,
+        }}>
+        <Image
+          source={require('../assets/img2.jpeg')}
+          style={{
+            width: Dimensions.get('window').width,
+            height: Dimensions.get('window').height - 145,
+            resizeMode: 'contain',
+            alignSelf: 'center',
+          }}
+        />
+        <Image
+          source={require('../assets/img3.jpeg')}
+          style={{
+            width: Dimensions.get('window').width,
+            height: Dimensions.get('window').height - 145,
+            resizeMode: 'contain',
+            alignSelf: 'center',
+            // backgroundColor: 'red',
+          }}
+        />
+        <Image
+          source={require('../assets/img1.jpeg')}
+          style={{
+            width: Dimensions.get('window').width,
+            height: Dimensions.get('window').height - 145,
+            resizeMode: 'contain',
+            alignSelf: 'center',
+            // backgroundColor: 'red',
+          }}
+        />
       </View>
     </ScrollView>
   );

@@ -205,6 +205,89 @@ export default function MemberShip({navigation}) {
           </TouchableOpacity>
         </View>
       </View>
+
+      <View
+        style={{
+          alignItems: 'center',
+          backgroundColor: theme.colors.Black,
+          paddingBottom: 50,
+        }}>
+        <View
+          style={{alignItems: 'center', paddingTop: 50, paddingHorizontal: 5}}>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: '500',
+              color: '#8f8b8b',
+              textAlign: 'center',
+              letterSpacing: 2,
+              lineHeight: 25,
+            }}>
+            Generally identified by convention rather that any strict criteria,
+            seven regions are commonly regarded as continents and then there is
+            us. We are not a set of agreed, specific, or generally accepted
+            standards, we do not take the form of a custom. We are a personal
+            experience anytime the day anytime of the year. Whether enjoying
+            dishes from the full dinner menu in our dining room or sipping a
+            neat scotch in our cigar lounge, while sitting in the comfort and
+            aroma of leather and cigars, we are the somewhere to be for anyone.
+            With our Ultra-chic ambience and adaptable vibrations, The Continent
+            caters to patrons alike and yet significantly different.
+          </Text>
+
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: '500',
+              color: '#8f8b8b',
+              textAlign: 'center',
+              letterSpacing: 2,
+              lineHeight: 25,
+              marginTop: 40,
+            }}>
+            Chef Scotley Innis brings origins to surface to celebrate the
+            generations in the making and the ones who’ve made it. The menu
+            brings elemental, ingredient-driven cooking to the forefront,
+            evoking the greatness of the past while remaining modern in its
+            execution. Dishes that put taste buds pleasure over spectacle,
+            taking inspiration from Africa, Asia and The Caribbean.
+          </Text>
+
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: '500',
+              color: '#8f8b8b',
+              textAlign: 'center',
+              letterSpacing: 2,
+              lineHeight: 25,
+              marginTop: 40,
+            }}>
+            We invite you to share in our story, allowing us to treat you in
+            flavors of our roots at a seat at our table, where all are friends
+            and a member of our family.
+          </Text>
+
+          <Image
+            source={require('../assets/img4.png')}
+            style={{
+              width: Dimensions.get('window').width - 10,
+              height: Dimensions.get('window').height / 1.4,
+              resizeMode: 'cover',
+              marginTop: 50,
+            }}
+          />
+          <Image
+            source={require('../assets/img5.png')}
+            style={{
+              width: Dimensions.get('window').width - 10,
+              height: Dimensions.get('window').height / 1.4,
+              resizeMode: 'cover',
+              marginTop: 20,
+            }}
+          />
+        </View>
+      </View>
     </ScrollView>
   );
 }

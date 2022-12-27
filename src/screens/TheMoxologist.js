@@ -8,6 +8,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   useWindowDimensions,
   View,
@@ -28,62 +29,6 @@ export default function MemberShip({navigation}) {
   const SelectedTab = useSelector(state => state.SelectedTab);
   const [carouselPaginationIndex, setCarouselPaginationIndex] = useState(0);
   const CarouselRef = useRef();
-
-  const List = ({title, disc, price, width, color}) => {
-    return (
-      <View
-        style={{
-          alignItems: 'center',
-          width: Dimensions.get('window').width - 40,
-          marginVertical: 20,
-        }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            width: Dimensions.get('window').width - 40,
-          }}>
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: '600',
-              color: color || theme.colors.Black,
-            }}>
-            {title}
-          </Text>
-          {price && (
-            <View
-              style={{
-                height: 0.5,
-                width: Dimensions.get('window').width / 8,
-                backgroundColor: '#e8e5df',
-              }}
-            />
-          )}
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: '600',
-              color: theme.colors.Black,
-            }}>
-            {price}
-          </Text>
-        </View>
-        {disc && (
-          <Text
-            style={{
-              color: '#5d5d5d',
-              marginTop: 5,
-              width: Dimensions.get('window').width - 40,
-              paddingRight: 20,
-            }}>
-            {disc}
-          </Text>
-        )}
-      </View>
-    );
-  };
 
   return (
     <ScrollView style={{flex: 1, backgroundColor: theme.colors.primary}}>
@@ -199,6 +144,334 @@ export default function MemberShip({navigation}) {
                 width: 18,
                 resizeMode: 'contain',
                 tintColor: theme.colors.primary,
+              }}
+              source={require('../assets/instagram.png')}
+            />
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View
+        style={{
+          alignItems: 'center',
+          backgroundColor: theme.colors.Black,
+          // paddingBottom: 50,
+        }}>
+        <Image
+          source={require('../assets/img11.png')}
+          style={{
+            width: Dimensions.get('window').width,
+            height:
+              Dimensions.get('window').height +
+              Dimensions.get('window').height / 2.6,
+            resizeMode: 'contain',
+            marginTop: 50,
+            alignSelf: 'center',
+          }}
+        />
+      </View>
+
+      <View
+        style={{
+          alignItems: 'flex-start',
+          // width: Dimensions.get('window').width - 40,
+          marginVertical: 20,
+          paddingHorizontal: 20,
+          backgroundColor: '#f7f3ed',
+          paddingVertical: 25,
+        }}>
+        <Text
+          style={{
+            fontSize: 28,
+            fontWeight: '600',
+            width: Dimensions.get('window').width - 80,
+            color: theme.colors.Black,
+          }}>
+          Hand-Crafted Cocktails, Rare Spirits & Fine Cigars.
+        </Text>
+        <View
+          style={{
+            height: 4,
+            borderColor: '#221f61',
+            width: Dimensions.get('window').width / 6,
+            borderTopWidth: 1,
+            borderBottomWidth: 1,
+          }}
+        />
+
+        <Text
+          style={{
+            color: '#5d5d5d',
+            fontSize: 18,
+            marginTop: 15,
+            fontWeight: '500',
+          }}>
+          The fusion inspired menu is in collaboration with the distinguished
+          Chef Scotley Innis and Master Mixologist, Mike Haze. The two have
+          paired eclectic menus that speak both to their culinary techniques and
+          craft cocktail delights. Expect the cuisine to be dishes made
+          from-scratch, with comfort food and fresh cocktail favorites that rely
+          heavily on local produce, fresh juice and herbs. Tableside drink
+          options are available and made to order. Enjoy crafted cocktail
+          fountains, modern twists to classic cocktails made with expert
+          precision.
+        </Text>
+      </View>
+
+      <View
+        style={{
+          alignItems: 'center',
+          // width: Dimensions.get('window').width - 40,
+          marginVertical: 10,
+          paddingHorizontal: 20,
+          backgroundColor: '#fff',
+          paddingVertical: 10,
+        }}>
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: '600',
+            color: theme.colors.Black,
+          }}>
+          CNN TRAVEL
+        </Text>
+
+        <Text
+          style={{
+            color: '#5d5d5d',
+            fontSize: 12,
+            marginTop: 8,
+            fontWeight: '500',
+            textAlign: 'center',
+            lineHeight: 20,
+            fontStyle: 'italic',
+          }}>
+          "Join Mike Haze, the creative director behind Red Phone Booth on a
+          tour with CNN's Signature Sips."
+        </Text>
+      </View>
+
+      <View
+        style={{
+          alignItems: 'center',
+          // width: Dimensions.get('window').width - 40,
+          marginVertical: 10,
+          paddingHorizontal: 20,
+          backgroundColor: '#fff',
+          paddingVertical: 10,
+        }}>
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: '600',
+            color: theme.colors.Black,
+          }}>
+          ATLANTA Magazine
+        </Text>
+
+        <Text
+          style={{
+            color: '#5d5d5d',
+            fontSize: 12,
+            marginTop: 8,
+            fontWeight: '500',
+            textAlign: 'center',
+            lineHeight: 20,
+            fontStyle: 'italic',
+          }}>
+          "Mike Haze, of the Red Phone Booth, will be slinging cocktails crafted
+          with fresh produce and herbs, and there’s a cigar lounge, too."
+        </Text>
+      </View>
+
+      <View
+        style={{
+          alignItems: 'center',
+          backgroundColor: theme.colors.primary,
+        }}>
+        <Image
+          source={require('../assets/img9.png')}
+          style={{
+            width: Dimensions.get('window').width,
+            height: Dimensions.get('window').height / 1.55,
+            resizeMode: 'contain',
+            marginTop: 50,
+            alignSelf: 'center',
+          }}
+        />
+      </View>
+
+      <View
+        style={{
+          backgroundColor: '#f7f3ed',
+          paddingBottom: 50,
+          marginVertical: 50,
+        }}>
+        <Image
+          source={require('../assets/img10.png')}
+          style={{
+            width: Dimensions.get('window').width,
+            height: Dimensions.get('window').height / 1.6,
+            resizeMode: 'contain',
+            marginVertical: 50,
+            marginTop: 50,
+            alignSelf: 'center',
+          }}
+        />
+        <Text
+          style={{
+            fontSize: 28,
+            fontWeight: '600',
+            color: theme.colors.Black,
+            alignSelf: 'center',
+          }}>
+          Book a reservation
+        </Text>
+        <View
+          style={{
+            marginHorizontal: 25,
+            marginTop: 50,
+          }}>
+          <TextInput
+            placeholder={'Name'}
+            style={{
+              paddingHorizontal: 15,
+              backgroundColor: '#fff',
+              paddingTop: 4,
+              paddingBottom: 4,
+            }}
+          />
+          <TextInput
+            placeholder={'Email'}
+            style={{
+              paddingHorizontal: 15,
+              backgroundColor: '#fff',
+              paddingTop: 4,
+              paddingBottom: 4,
+              marginTop: 25,
+            }}
+          />
+          <TextInput
+            placeholder={'Party Size'}
+            style={{
+              paddingHorizontal: 15,
+              backgroundColor: '#fff',
+              paddingTop: 4,
+              paddingBottom: 4,
+              marginTop: 25,
+            }}
+          />
+          <TextInput
+            placeholder={'Message'}
+            style={{
+              paddingHorizontal: 15,
+              backgroundColor: '#fff',
+              paddingTop: 4,
+              paddingBottom: 4,
+              marginTop: 25,
+            }}
+          />
+
+          <TouchableOpacity
+            // onPress={onPress}
+            // activeOpacity={activeOpacity}
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingVertical: 15,
+              flexDirection: 'row',
+              borderRadius: 6,
+              backgroundColor: '#000',
+              // flex: 1,
+              shadowColor: '#000',
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 3.84,
+
+              elevation: 5,
+              marginVertical: 30,
+            }}>
+            <Text
+              style={{
+                color: theme.colors.primary,
+                fontSize: 16,
+                paddingHorizontal: 20,
+              }}>
+              BOOK NOW
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+      <View
+        style={{
+          alignItems: 'center',
+          // width: Dimensions.get('window').width - 40,
+          paddingHorizontal: 20,
+          backgroundColor: '#fff',
+          paddingVertical: 20,
+        }}>
+        <Text
+          style={{
+            fontSize: 28,
+            fontWeight: '600',
+            color: theme.colors.Black,
+            textAlign: 'center',
+          }}>
+          Follow The Continent Online
+        </Text>
+
+        <Text
+          style={{
+            color: '#5d5d5d',
+            marginTop: 20,
+            textAlign: 'center',
+            lineHeight: 20,
+            marginHorizontal: 40,
+          }}>
+          A International Restaurant With a Flare for Fine Dining
+        </Text>
+      </View>
+      <View
+        style={{
+          paddingVertical: 22,
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#fff',
+        }}>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <TouchableOpacity>
+            <Image
+              style={{
+                height: 18,
+                width: 18,
+                resizeMode: 'contain',
+                tintColor: theme.colors.Black,
+              }}
+              source={require('../assets/fb.png')}
+            />
+          </TouchableOpacity>
+          <View style={{width: 20}} />
+          <TouchableOpacity>
+            <Image
+              style={{
+                height: 18,
+                width: 18,
+                resizeMode: 'contain',
+                tintColor: theme.colors.Black,
+              }}
+              source={require('../assets/twitter.png')}
+            />
+          </TouchableOpacity>
+          <View style={{width: 20}} />
+          <TouchableOpacity>
+            <Image
+              style={{
+                height: 18,
+                width: 18,
+                resizeMode: 'contain',
+                tintColor: theme.colors.Black,
               }}
               source={require('../assets/instagram.png')}
             />
