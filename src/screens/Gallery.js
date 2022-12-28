@@ -46,6 +46,7 @@ export default function Login({navigation}) {
           }}>
           <Text
             style={{
+              fontFamily: 'Lora',
               fontSize: 20,
               fontWeight: '600',
               color: color || theme.colors.Black,
@@ -63,6 +64,7 @@ export default function Login({navigation}) {
           )}
           <Text
             style={{
+              fontFamily: 'Lora',
               fontSize: 20,
               fontWeight: '600',
               color: theme.colors.Black,
@@ -73,6 +75,7 @@ export default function Login({navigation}) {
         {disc && (
           <Text
             style={{
+              fontFamily: 'Lora',
               color: '#5d5d5d',
               marginTop: 5,
               width: Dimensions.get('window').width - 40,
@@ -217,6 +220,7 @@ export default function Login({navigation}) {
         }}>
         <Text
           style={{
+            fontFamily: 'Lora-Bold',
             fontSize: 35,
             width: Dimensions.get('window').width - 80,
             color: theme.colors.primary,

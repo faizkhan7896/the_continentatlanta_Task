@@ -46,7 +46,8 @@ export default function MemberShip({navigation}) {
           }}>
           <Text
             style={{
-              fontSize: 20,
+              fontFamily: 'Lora-Medium',
+              fontSize: 18,
               fontWeight: '600',
               color: color || theme.colors.Black,
             }}>
@@ -63,7 +64,8 @@ export default function MemberShip({navigation}) {
           )}
           <Text
             style={{
-              fontSize: 20,
+              fontFamily: 'Lora-Medium',
+              fontSize: 18,
               fontWeight: '600',
               color: theme.colors.Black,
             }}>
@@ -73,6 +75,7 @@ export default function MemberShip({navigation}) {
         {disc && (
           <Text
             style={{
+              fontFamily: 'Lora-Medium',
               color: '#5d5d5d',
               marginTop: 5,
               width: Dimensions.get('window').width - 40,
@@ -216,12 +219,11 @@ export default function MemberShip({navigation}) {
           style={{alignItems: 'center', paddingTop: 50, paddingHorizontal: 5}}>
           <Text
             style={{
-              fontSize: 20,
+              fontFamily: 'Lora-Medium',
+              fontSize: 18,
               fontWeight: '500',
               color: '#8f8b8b',
               textAlign: 'center',
-              letterSpacing: 2,
-              lineHeight: 25,
             }}>
             Generally identified by convention rather that any strict criteria,
             seven regions are commonly regarded as continents and then there is
@@ -237,12 +239,12 @@ export default function MemberShip({navigation}) {
 
           <Text
             style={{
-              fontSize: 20,
+              fontFamily: 'Lora-Medium',
+              fontSize: 18,
               fontWeight: '500',
               color: '#8f8b8b',
               textAlign: 'center',
-              letterSpacing: 2,
-              lineHeight: 25,
+
               marginTop: 40,
             }}>
             Chef Scotley Innis brings origins to surface to celebrate the
@@ -255,12 +257,12 @@ export default function MemberShip({navigation}) {
 
           <Text
             style={{
-              fontSize: 20,
+              fontFamily: 'Lora-Medium',
+              fontSize: 18,
               fontWeight: '500',
               color: '#8f8b8b',
               textAlign: 'center',
-              letterSpacing: 2,
-              lineHeight: 25,
+
               marginTop: 40,
             }}>
             We invite you to share in our story, allowing us to treat you in

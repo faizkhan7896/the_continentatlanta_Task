@@ -27,7 +27,7 @@ function App({navigation}) {
         drawerLabelStyle: {marginLeft: 20, fontSize: 16},
       }}
       backBehavior="firstRoute"
-      initialRouteName="Menu">
+      initialRouteName="Welcome">
       {/* <Drawer.Screen
         name="Home"
         component={Home}

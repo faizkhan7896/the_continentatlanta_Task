@@ -46,6 +46,7 @@ export default function Login({navigation}) {
           }}>
           <Text
             style={{
+              fontFamily: 'Lora-Medium',
               fontSize: 20,
               fontWeight: '600',
               color: color || theme.colors.Black,
@@ -63,6 +64,7 @@ export default function Login({navigation}) {
           )}
           <Text
             style={{
+              fontFamily: 'Lora-Medium',
               fontSize: 20,
               fontWeight: '600',
               color: theme.colors.Black,
@@ -73,6 +75,7 @@ export default function Login({navigation}) {
         {disc && (
           <Text
             style={{
+              fontFamily: 'Lora-Regular',
               color: '#5d5d5d',
               marginTop: 5,
               width: Dimensions.get('window').width - 40,
@@ -87,6 +90,7 @@ export default function Login({navigation}) {
   //   <View style={{width: width || Dimensions.get('window').width / 1.5}}>
   //   <Text
   //     style={{
+  // fontFamily: 'Lora',
   //       fontSize: 20,
   //       fontWeight: '600',
   //       color: color || theme.colors.Black,
@@ -94,6 +98,7 @@ export default function Login({navigation}) {
   //     {title}
   //   </Text>
   // {/* {disc && <Text style={{color: '#5d5d5d', marginTop: 5}}>{disc}</Text>} */}
+  // fontFamily: 'Lora',
   // </View>
 
   return (
@@ -230,6 +235,7 @@ export default function Login({navigation}) {
         <View style={{alignItems: 'center'}}>
           <Text
             style={{
+              fontFamily: 'Lora-Bold',
               fontSize: 24,
               fontWeight: '600',
               color: theme.colors.Black,
@@ -265,6 +271,7 @@ export default function Login({navigation}) {
         <View style={{alignItems: 'center'}}>
           <Text
             style={{
+              fontFamily: 'Lora-Bold',
               fontSize: 24,
               fontWeight: '600',
               color: theme.colors.Black,
@@ -298,6 +305,7 @@ export default function Login({navigation}) {
         <View style={{alignItems: 'center'}}>
           <Text
             style={{
+              fontFamily: 'Lora-Bold',
               fontSize: 24,
               fontWeight: '600',
               color: theme.colors.Black,
@@ -332,6 +340,7 @@ export default function Login({navigation}) {
         <View style={{alignItems: 'center', paddingTop: 20}}>
           <Text
             style={{
+              fontFamily: 'Lora-Bold',
               fontSize: 24,
               fontWeight: '600',
               color: '#8f8b8b',
@@ -372,6 +381,7 @@ export default function Login({navigation}) {
         <View style={{alignItems: 'center', paddingTop: 100}}>
           <Text
             style={{
+              fontFamily: 'Lora-Bold',
               fontSize: 24,
               fontWeight: '600',
               color: '#8f8b8b',
@@ -405,6 +415,7 @@ export default function Login({navigation}) {
         <View style={{alignItems: 'center'}}>
           <Text
             style={{
+              fontFamily: 'Lora-Bold',
               fontSize: 24,
               fontWeight: '600',
               color: theme.colors.Black,
@@ -444,6 +455,7 @@ export default function Login({navigation}) {
         <View style={{alignItems: 'center'}}>
           <Text
             style={{
+              fontFamily: 'Lora-Bold',
               fontSize: 24,
               fontWeight: '600',
               color: theme.colors.Black,
@@ -478,6 +490,7 @@ export default function Login({navigation}) {
         <View style={{alignItems: 'center'}}>
           <Text
             style={{
+              fontFamily: 'Lora-Bold',
               fontSize: 24,
               fontWeight: '600',
               color: theme.colors.Black,

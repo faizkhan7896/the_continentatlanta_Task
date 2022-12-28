@@ -8,6 +8,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   useWindowDimensions,
   View,
@@ -46,6 +47,7 @@ export default function MemberShip({navigation}) {
           }}>
           <Text
             style={{
+              fontFamily: 'Lora',
               fontSize: 20,
               fontWeight: '600',
               color: color || theme.colors.Black,
@@ -63,6 +65,7 @@ export default function MemberShip({navigation}) {
           )}
           <Text
             style={{
+              fontFamily: 'Lora',
               fontSize: 20,
               fontWeight: '600',
               color: theme.colors.Black,
@@ -73,6 +76,7 @@ export default function MemberShip({navigation}) {
         {disc && (
           <Text
             style={{
+              fontFamily: 'Lora',
               color: '#5d5d5d',
               marginTop: 5,
               width: Dimensions.get('window').width - 40,
@@ -204,6 +208,216 @@ export default function MemberShip({navigation}) {
             />
           </TouchableOpacity>
         </View>
+      </View>
+
+      <View style={{backgroundColor: theme.colors.Black}}>
+        <ImageBackground
+          source={require('../assets/img3.jpeg')}
+          style={{
+            width: Dimensions.get('window').width,
+            height: Dimensions.get('window').height,
+            resizeMode: 'contain',
+            alignSelf: 'center',
+          }}>
+          <View
+            style={{
+              marginHorizontal: 25,
+              marginTop: 50,
+              backgroundColor: '#000000B3',
+              paddingVertical: 20,
+              paddingHorizontal: 25,
+            }}>
+            <Text
+              style={{
+                fontFamily: 'Lora-Medium',
+                // fontSize: 12,
+                fontWeight: '500',
+                color: '#8f8b8b',
+                textAlign: 'center',
+                marginVertical: 40,
+              }}>
+              Thank you for your interest in becoming a member of our cigar
+              lounge. Please complete the form below and someone from our team
+              will contact you with an invite to tour our space and to complete
+              our membership application. We look forward to the pleasure of
+              meeting you and having you a part of our family.
+            </Text>
+
+            <TextInput
+              placeholder={'Full Name'}
+              style={{
+                fontFamily: 'Lora-Medium',
+                paddingHorizontal: 15,
+                backgroundColor: '#fff',
+                paddingTop: 4,
+                paddingBottom: 4,
+              }}
+            />
+            <TextInput
+              placeholder={'Email'}
+              style={{
+                fontFamily: 'Lora-Medium',
+                paddingHorizontal: 15,
+                backgroundColor: '#fff',
+                paddingTop: 4,
+                paddingBottom: 4,
+                marginTop: 25,
+              }}
+            />
+            <TextInput
+              placeholder={'Phone Number'}
+              style={{
+                fontFamily: 'Lora-Medium',
+                paddingHorizontal: 15,
+                backgroundColor: '#fff',
+                paddingTop: 4,
+                paddingBottom: 4,
+                marginTop: 25,
+              }}
+            />
+
+            <TouchableOpacity
+              // onPress={onPress}
+              // activeOpacity={activeOpacity}
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingVertical: 15,
+                flexDirection: 'row',
+                borderRadius: 6,
+                backgroundColor: '#A50A0A',
+                // flex: 1,
+                shadowColor: '#000',
+                shadowOffset: {
+                  width: 0,
+                  height: 2,
+                },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+
+                elevation: 5,
+                marginVertical: 30,
+              }}>
+              <Text
+                style={{
+                  fontFamily: 'Lora-Medium',
+                  color: theme.colors.primary,
+                  fontSize: 16,
+                  paddingHorizontal: 20,
+                }}>
+                SUBMIT REQUEST
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ImageBackground>
+        <Image
+          source={require('../assets/img16.png')}
+          style={{
+            width: Dimensions.get('window').width,
+            height: Dimensions.get('window').width,
+            resizeMode: 'cover',
+          }}
+        />
+        <Text
+          style={{
+            fontFamily: 'Lora-Bold',
+            fontSize: 20,
+            fontWeight: '900',
+            color: '#8f8b8b',
+            textAlign: 'center',
+
+            marginTop: 40,
+          }}>
+          MEMBERSHIP PROGRAM
+        </Text>
+        <Text
+          style={{
+            fontFamily: 'Lora-Medium',
+            fontSize: 18,
+            color: '#8f8b8b',
+            textAlign: 'center',
+
+            // marginTop: 40,
+            paddingHorizontal: 15,
+          }}>
+          Continent Restaurant & Cigar Lounge is excited to announce the launch
+          of its cigar membership program. The Continent Cigar Lounge is a chic
+          haven furnished with rich décor. It’s the ultimate place to conduct
+          business meetings, have a romantic date, or catch up during a night
+          out with friends and family. Complete with a state-of-the-art
+          ventilation system and walk-in humidor, it offers the perfect
+          environment for smokers and non-smokers.
+        </Text>
+        <Text
+          style={{
+            fontFamily: 'Lora-Bold',
+            fontSize: 20,
+            fontWeight: '900',
+            color: '#8f8b8b',
+            textAlign: 'center',
+
+            marginTop: 40,
+          }}>
+          At $350 a month, membership includes:
+        </Text>
+        <Text
+          style={{
+            fontFamily: 'Lora-Medium',
+            fontSize: 18,
+            color: '#8f8b8b',
+            textAlign: 'center',
+
+            // marginTop: 40,
+            paddingHorizontal: 15,
+          }}>
+          ● 20% discount on dining
+        </Text>
+        <Text
+          style={{
+            fontFamily: 'Lora-Medium',
+            fontSize: 18,
+            color: '#8f8b8b',
+            textAlign: 'center',
+
+            // marginTop: 40,
+            paddingHorizontal: 15,
+          }}>
+          ● Reserved Seating
+        </Text>
+        <Text
+          style={{
+            fontFamily: 'Lora-Medium',
+            fontSize: 18,
+            color: '#8f8b8b',
+            textAlign: 'center',
+
+            // marginTop: 40,
+            paddingHorizontal: 15,
+          }}>
+          ● Special welcome gift box
+        </Text>
+        <Text
+          style={{
+            fontFamily: 'Lora-Medium',
+            fontSize: 18,
+            color: '#8f8b8b',
+            textAlign: 'center',
+
+            marginTop: 20,
+            paddingHorizontal: 15,
+          }}>
+          The Continent prides itself on consistently offering a welcoming
+          atmosphere, attentive staff
+        </Text>
+        <Image
+          source={require('../assets/img17.png')}
+          style={{
+            width: Dimensions.get('window').width,
+            height: Dimensions.get('window').height,
+            resizeMode: 'contain',
+            alignSelf: 'center',
+          }}
+        />
       </View>
     </ScrollView>
   );

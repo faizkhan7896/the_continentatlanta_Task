@@ -181,6 +181,7 @@ export default function MemberShip({navigation}) {
         }}>
         <Text
           style={{
+            fontFamily: 'Lora-Bold',
             fontSize: 28,
             fontWeight: '600',
             width: Dimensions.get('window').width - 80,
@@ -200,6 +201,7 @@ export default function MemberShip({navigation}) {
 
         <Text
           style={{
+            fontFamily: 'Lora-Medium',
             color: '#5d5d5d',
             fontSize: 18,
             marginTop: 15,
@@ -228,6 +230,7 @@ export default function MemberShip({navigation}) {
         }}>
         <Text
           style={{
+            fontFamily: 'Lora-Bold',
             fontSize: 20,
             fontWeight: '600',
             color: theme.colors.Black,
@@ -237,6 +240,7 @@ export default function MemberShip({navigation}) {
 
         <Text
           style={{
+            fontFamily: 'Lora-Regular',
             color: '#5d5d5d',
             fontSize: 12,
             marginTop: 8,
@@ -262,6 +266,7 @@ export default function MemberShip({navigation}) {
         }}>
         <Text
           style={{
+            fontFamily: 'Lora-Bold',
             fontSize: 20,
             fontWeight: '600',
             color: theme.colors.Black,
@@ -271,6 +276,7 @@ export default function MemberShip({navigation}) {
 
         <Text
           style={{
+            fontFamily: 'Lora-Regular',
             color: '#5d5d5d',
             fontSize: 12,
             marginTop: 8,
@@ -320,6 +326,7 @@ export default function MemberShip({navigation}) {
         />
         <Text
           style={{
+            fontFamily: 'Lora-Bold',
             fontSize: 28,
             fontWeight: '600',
             color: theme.colors.Black,
@@ -335,6 +342,7 @@ export default function MemberShip({navigation}) {
           <TextInput
             placeholder={'Name'}
             style={{
+              fontFamily: 'Lora-Regular',
               paddingHorizontal: 15,
               backgroundColor: '#fff',
               paddingTop: 4,
@@ -344,6 +352,7 @@ export default function MemberShip({navigation}) {
           <TextInput
             placeholder={'Email'}
             style={{
+              fontFamily: 'Lora-Regular',
               paddingHorizontal: 15,
               backgroundColor: '#fff',
               paddingTop: 4,
@@ -354,6 +363,7 @@ export default function MemberShip({navigation}) {
           <TextInput
             placeholder={'Party Size'}
             style={{
+              fontFamily: 'Lora-Regular',
               paddingHorizontal: 15,
               backgroundColor: '#fff',
               paddingTop: 4,
@@ -364,6 +374,7 @@ export default function MemberShip({navigation}) {
           <TextInput
             placeholder={'Message'}
             style={{
+              fontFamily: 'Lora-Regular',
               paddingHorizontal: 15,
               backgroundColor: '#fff',
               paddingTop: 4,
@@ -396,6 +407,7 @@ export default function MemberShip({navigation}) {
             }}>
             <Text
               style={{
+                fontFamily: 'Lora-Medium',
                 color: theme.colors.primary,
                 fontSize: 16,
                 paddingHorizontal: 20,
@@ -415,6 +427,7 @@ export default function MemberShip({navigation}) {
         }}>
         <Text
           style={{
+            fontFamily: 'Lora',
             fontSize: 28,
             fontWeight: '600',
             color: theme.colors.Black,
@@ -425,6 +438,7 @@ export default function MemberShip({navigation}) {
 
         <Text
           style={{
+            fontFamily: 'Lora',
             color: '#5d5d5d',
             marginTop: 20,
             textAlign: 'center',
